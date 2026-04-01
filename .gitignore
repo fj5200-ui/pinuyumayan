@@ -41,3 +41,11 @@ pids/
 
 # Test coverage
 coverage/
+.env
+.env.local
+.env*.local
+apps/api/.env
+packages/database/.env
+supabase/.temp/
+.next/
+dist/
