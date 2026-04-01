@@ -2,7 +2,7 @@
 import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from "react";
 import { api, setAuth, logout as doLogout, getToken, getUser } from "./api";
 
-interface User { id: number; email: string; name: string; role: string; avatarUrl?: string; bio?: string; tribeId?: number; }
+interface User { id: number; email: string; name: string; role: string; avatarUrl?: string; bio?: string; tribeId?: number; createdAt?: string; }
 interface AuthCtx { user: User | null; loading: boolean; login: (email: string, password: string) => Promise<void>; register: (email: string, password: string, name: string) => Promise<void>; logout: () => void; refresh: () => Promise<void>; isAdmin: boolean; isEditor: boolean; }
 
 const AuthContext = createContext<AuthCtx>({} as AuthCtx);

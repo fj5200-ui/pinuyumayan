@@ -11,6 +11,7 @@ const NAV = [
   { href: "/articles", label: "文化誌", icon: "📝" },
   { href: "/language", label: "族語", icon: "📖" },
   { href: "/events", label: "活動", icon: "🎉" },
+  { href: "/community", label: "社群", icon: "💬" },
   { href: "/media", label: "媒體", icon: "🎬" },
   { href: "/about", label: "關於", icon: "ℹ️" },
 ];

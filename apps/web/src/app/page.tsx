@@ -7,6 +7,7 @@ import { GridSkeleton } from "@/components/ui/Skeleton";
 export default function Home() {
   const [data, setData] = useState<any>({ tribes: [], articles: [], events: [], vocab: [] });
   const [daily, setDaily] = useState<any>(null);
+  const [stats, setStats] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -16,14 +17,20 @@ export default function Home() {
       api.get<any>("/api/events").catch(() => ({ events: [] })),
       api.get<any>("/api/language/vocabulary?limit=5").catch(() => ({ vocabulary: [], words: [] })),
       api.get<any>("/api/language/daily").catch(() => null),
-    ]).then(([t, a, e, v, d]) => {
+      api.get<any>("/api/admin/stats").catch(() => null),
+    ]).then(([t, a, e, v, d, s]) => {
       setData({ tribes: (t.tribes || []).slice(0, 4), articles: (a.articles || []).slice(0, 3), events: (e.events || []).slice(0, 3), vocab: (v.vocabulary || v.words || []).slice(0, 5) });
       setDaily(d);
+      setStats(s);
       setLoading(false);
     });
   }, []);
 
   const { tribes, articles, events, vocab } = data;
+  const statItems = stats
+    ? [{ n: stats.tribes, l: "卑南八社", icon: "🏘️" }, { n: `${stats.vocabulary}+`, l: "族語詞彙", icon: "📖" }, { n: `${stats.articles}+`, l: "文化文章", icon: "📝" }, { n: `${stats.events}+`, l: "活動祭典", icon: "🎉" }]
+    : [{ n: "8", l: "卑南八社", icon: "🏘️" }, { n: "15+", l: "族語詞彙", icon: "📖" }, { n: "6+", l: "文化文章", icon: "📝" }, { n: "6+", l: "活動祭典", icon: "🎉" }];
+
   return (
     <>
       {/* Hero */}
@@ -38,6 +45,7 @@ export default function Home() {
               <Link href="/tribes" className="bg-white text-amber-800 px-6 py-3 rounded-xl font-semibold hover:bg-amber-50 transition shadow-lg">探索部落</Link>
               <Link href="/language" className="border-2 border-white/50 px-6 py-3 rounded-xl font-semibold hover:bg-white/10 transition">學習族語</Link>
               <Link href="/tribes/map" className="border-2 border-white/50 px-6 py-3 rounded-xl font-semibold hover:bg-white/10 transition">🗺️ 部落地圖</Link>
+              <Link href="/community" className="border-2 border-white/50 px-6 py-3 rounded-xl font-semibold hover:bg-white/10 transition">💬 社群</Link>
             </div>
           </div>
         </div>
@@ -63,11 +71,15 @@ export default function Home() {
         </section>
       )}
 
-      {/* Stats */}
+      {/* Stats — dynamic from API */}
       <section className="bg-white dark:bg-stone-800 border-b dark:border-stone-700">
         <div className="max-w-7xl mx-auto px-4 py-8 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-          {[{ n: "8", l: "卑南八社" }, { n: "15+", l: "族語詞彙" }, { n: "6+", l: "文化文章" }, { n: "6+", l: "活動祭典" }].map(s => (
-            <div key={s.l}><p className="text-3xl font-bold text-amber-700 dark:text-amber-400">{s.n}</p><p className="text-stone-500 dark:text-stone-400 text-sm">{s.l}</p></div>
+          {statItems.map(s => (
+            <div key={s.l} className="group">
+              <p className="text-2xl mb-1">{s.icon}</p>
+              <p className="text-3xl font-bold text-amber-700 dark:text-amber-400">{s.n}</p>
+              <p className="text-stone-500 dark:text-stone-400 text-sm">{s.l}</p>
+            </div>
           ))}
         </div>
       </section>
@@ -153,6 +165,18 @@ export default function Home() {
                     <div className="text-sm text-stone-400 mt-3 flex items-center gap-2"><span>📅 {e.startDate}</span>{e.location && <span>📍 {e.location}</span>}</div>
                   </div>
                 ))}
+              </div>
+            </div>
+          </section>
+
+          {/* Community CTA */}
+          <section className="bg-gradient-to-r from-amber-700 to-orange-600 dark:from-stone-800 dark:to-stone-900 text-white py-16">
+            <div className="max-w-4xl mx-auto px-4 text-center">
+              <h2 className="text-3xl font-bold mb-4">加入 Pinuyumayan 社群</h2>
+              <p className="text-white/80 text-lg mb-8">一起記錄、分享、傳承卑南族珍貴的文化遺產</p>
+              <div className="flex flex-wrap justify-center gap-4">
+                <Link href="/register" className="bg-white text-amber-800 px-8 py-3 rounded-xl font-semibold hover:bg-amber-50 transition">免費註冊</Link>
+                <Link href="/community" className="border-2 border-white/50 px-8 py-3 rounded-xl font-semibold hover:bg-white/10 transition">瀏覽社群</Link>
               </div>
             </div>
           </section>

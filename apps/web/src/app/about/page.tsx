@@ -44,7 +44,8 @@ export default function AboutPage() {
               "🏘️ 卑南八社介紹", "🗺️ 互動部落地圖", "📝 文化誌文章",
               "📖 族語詞彙庫", "🎯 族語測驗", "📅 每日一詞",
               "🎉 活動祭典", "🎬 多媒體庫", "🔍 全站搜尋",
-              "🌙 暗色模式", "👤 會員系統", "⚙️ 管理後台",
+              "🌙 暗色模式", "👤 會員系統", "⚙️ CMS管理後台",
+              "💬 社群討論", "📊 學習進度", "📋 操作日誌",
             ].map(f => (
               <div key={f} className="bg-stone-50 dark:bg-stone-700 rounded-lg px-3 py-2 text-sm text-stone-600 dark:text-stone-300">{f}</div>
             ))}

@@ -38,4 +38,24 @@ export class AuthController {
     const user = await this.authService.updateProfile(req.user.id, dto);
     return { user };
   }
+
+  @Post('change-password')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: '修改密碼' })
+  async changePassword(@Req() req: any, @Body() body: { oldPassword: string; newPassword: string }) {
+    return this.authService.changePassword(req.user.id, body.oldPassword, body.newPassword);
+  }
+
+  @Post('forgot-password')
+  @ApiOperation({ summary: '忘記密碼 — 發送重設連結' })
+  async forgotPassword(@Body() body: { email: string }) {
+    return this.authService.resetPasswordRequest(body.email);
+  }
+
+  @Post('reset-password')
+  @ApiOperation({ summary: '重設密碼' })
+  async resetPassword(@Body() body: { token: string; newPassword: string }) {
+    return this.authService.resetPassword(body.token, body.newPassword);
+  }
 }
