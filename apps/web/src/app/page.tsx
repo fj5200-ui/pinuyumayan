@@ -1,21 +1,25 @@
+"use client";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { api } from "@/lib/api";
 
-const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+export default function Home() {
+  const [data, setData] = useState<any>({ tribes: [], articles: [], events: [], vocab: [] });
+  const [loading, setLoading] = useState(true);
 
-async function getData() {
-  try {
-    const [tribes, articles, events, vocab] = await Promise.all([
-      fetch(`${API}/api/tribes`, { next: { revalidate: 60 } }).then(r => r.json()),
-      fetch(`${API}/api/articles`, { next: { revalidate: 60 } }).then(r => r.json()),
-      fetch(`${API}/api/events`, { next: { revalidate: 60 } }).then(r => r.json()),
-      fetch(`${API}/api/language/vocabulary?limit=5`, { next: { revalidate: 60 } }).then(r => r.json()),
-    ]);
-    return { tribes: tribes.tribes?.slice(0, 4) || [], articles: articles.articles?.slice(0, 3) || [], events: events.events?.slice(0, 3) || [], vocab: vocab.words?.slice(0, 5) || [] };
-  } catch { return { tribes: [], articles: [], events: [], vocab: [] }; }
-}
+  useEffect(() => {
+    Promise.all([
+      api.get<any>("/api/tribes").catch(() => ({ tribes: [] })),
+      api.get<any>("/api/articles").catch(() => ({ articles: [] })),
+      api.get<any>("/api/events").catch(() => ({ events: [] })),
+      api.get<any>("/api/language/vocabulary?limit=5").catch(() => ({ words: [] })),
+    ]).then(([t, a, e, v]) => {
+      setData({ tribes: (t.tribes || []).slice(0, 4), articles: (a.articles || []).slice(0, 3), events: (e.events || []).slice(0, 3), vocab: (v.words || []).slice(0, 5) });
+      setLoading(false);
+    });
+  }, []);
 
-export default async function Home() {
-  const { tribes, articles, events, vocab } = await getData();
+  const { tribes, articles, events, vocab } = data;
   return (
     <>
       {/* Hero */}
@@ -43,90 +47,89 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Tribes */}
-      <section className="max-w-7xl mx-auto px-4 py-16">
-        <div className="flex items-center justify-between mb-8">
-          <div><h2 className="text-3xl font-bold text-stone-800">🏘️ 卑南八社</h2><p className="text-stone-500 mt-1">認識卑南族各部落的歷史與文化</p></div>
-          <Link href="/tribes" className="text-amber-700 hover:text-amber-800 font-medium">查看全部 →</Link>
-        </div>
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {tribes.map((t: any) => (
-            <Link key={t.id} href={`/tribes/${t.id}`} className="bg-white rounded-xl shadow-sm hover:shadow-md transition-all p-6 border border-stone-100 hover:-translate-y-1">
-              <div className="text-4xl mb-3">🏔️</div>
-              <h3 className="font-bold text-lg text-stone-800">{t.name}</h3>
-              {t.traditionalName && <p className="text-amber-600 text-sm mb-2">{t.traditionalName}</p>}
-              <p className="text-stone-500 text-sm line-clamp-2">{t.description}</p>
-              {t.population && <p className="text-xs text-stone-400 mt-3">人口約 {t.population?.toLocaleString()} 人</p>}
-            </Link>
-          ))}
-        </div>
-      </section>
-
-      {/* Articles */}
-      <section className="bg-white py-16">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="flex items-center justify-between mb-8">
-            <div><h2 className="text-3xl font-bold text-stone-800">📝 文化誌</h2><p className="text-stone-500 mt-1">深入了解卑南族文化的各個面向</p></div>
-            <Link href="/articles" className="text-amber-700 hover:text-amber-800 font-medium">查看全部 →</Link>
-          </div>
-          <div className="grid md:grid-cols-3 gap-6">
-            {articles.map((a: any) => (
-              <Link key={a.id} href={`/articles/${a.slug}`} className="bg-stone-50 rounded-xl hover:shadow-md transition-all overflow-hidden group">
-                <div className="bg-gradient-to-r from-amber-100 to-orange-100 h-40 flex items-center justify-center text-5xl">📜</div>
-                <div className="p-5">
-                  <span className="text-xs bg-amber-100 text-amber-700 px-2 py-1 rounded-full font-medium">{a.category}</span>
-                  <h3 className="font-bold text-lg mt-2 group-hover:text-amber-700 transition line-clamp-2">{a.title}</h3>
-                  <p className="text-stone-500 text-sm mt-2 line-clamp-2">{a.excerpt}</p>
-                  <div className="text-xs text-stone-400 mt-3 flex items-center gap-3">
-                    <span>👤 {a.authorName || "佚名"}</span><span>👁️ {a.views}</span>
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Daily Word */}
-      <section className="max-w-7xl mx-auto px-4 py-16">
-        <div className="flex items-center justify-between mb-8">
-          <div><h2 className="text-3xl font-bold text-stone-800">📖 族語學習</h2><p className="text-stone-500 mt-1">一起來學卑南語</p></div>
-          <Link href="/language" className="text-amber-700 hover:text-amber-800 font-medium">更多詞彙 →</Link>
-        </div>
-        <div className="grid md:grid-cols-5 gap-4">
-          {vocab.map((v: any) => (
-            <div key={v.id} className="bg-white rounded-xl shadow-sm p-5 border border-stone-100 text-center hover:shadow-md transition">
-              <p className="text-2xl font-bold text-amber-700 mb-1">{v.puyumaWord}</p>
-              <p className="text-stone-800 font-medium">{v.chineseMeaning}</p>
-              <p className="text-stone-400 text-sm">{v.englishMeaning}</p>
-              <p className="text-xs text-stone-400 mt-2 bg-stone-50 rounded-full px-2 py-1">{v.category}</p>
+      {loading ? <div className="text-center py-20 text-stone-400 text-lg">載入資料中...</div> : (
+        <>
+          {/* Tribes */}
+          <section className="max-w-7xl mx-auto px-4 py-16">
+            <div className="flex items-center justify-between mb-8">
+              <div><h2 className="text-3xl font-bold text-stone-800">🏘️ 卑南八社</h2><p className="text-stone-500 mt-1">認識卑南族各部落的歷史與文化</p></div>
+              <Link href="/tribes" className="text-amber-700 hover:text-amber-800 font-medium">查看全部 →</Link>
             </div>
-          ))}
-        </div>
-      </section>
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {tribes.map((t: any) => (
+                <Link key={t.id} href={`/tribes/${t.id}`} className="bg-white rounded-xl shadow-sm hover:shadow-md transition-all p-6 border border-stone-100 hover:-translate-y-1">
+                  <div className="text-4xl mb-3">🏔️</div>
+                  <h3 className="font-bold text-lg text-stone-800">{t.name}</h3>
+                  {t.traditionalName && <p className="text-amber-600 text-sm mb-2">{t.traditionalName}</p>}
+                  <p className="text-stone-500 text-sm line-clamp-2">{t.description}</p>
+                  {t.population && <p className="text-xs text-stone-400 mt-3">人口約 {t.population?.toLocaleString()} 人</p>}
+                </Link>
+              ))}
+            </div>
+          </section>
 
-      {/* Events */}
-      <section className="bg-gradient-to-r from-amber-50 to-orange-50 py-16">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="flex items-center justify-between mb-8">
-            <div><h2 className="text-3xl font-bold text-stone-800">🎉 活動祭典</h2><p className="text-stone-500 mt-1">即將舉行的文化活動</p></div>
-            <Link href="/events" className="text-amber-700 hover:text-amber-800 font-medium">查看全部 →</Link>
-          </div>
-          <div className="grid md:grid-cols-3 gap-6">
-            {events.map((e: any) => (
-              <div key={e.id} className="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition">
-                <span className="text-xs bg-orange-100 text-orange-700 px-2 py-1 rounded-full font-medium">{e.type}</span>
-                <h3 className="font-bold text-lg mt-2">{e.title}</h3>
-                <p className="text-stone-500 text-sm mt-2 line-clamp-2">{e.description}</p>
-                <div className="text-sm text-stone-400 mt-3 flex items-center gap-2">
-                  <span>📅 {e.startDate}</span>
-                  {e.location && <span>📍 {e.location}</span>}
-                </div>
+          {/* Articles */}
+          <section className="bg-white py-16">
+            <div className="max-w-7xl mx-auto px-4">
+              <div className="flex items-center justify-between mb-8">
+                <div><h2 className="text-3xl font-bold text-stone-800">📝 文化誌</h2><p className="text-stone-500 mt-1">深入了解卑南族文化的各個面向</p></div>
+                <Link href="/articles" className="text-amber-700 hover:text-amber-800 font-medium">查看全部 →</Link>
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
+              <div className="grid md:grid-cols-3 gap-6">
+                {articles.map((a: any) => (
+                  <Link key={a.id} href={`/articles/${a.slug}`} className="bg-stone-50 rounded-xl hover:shadow-md transition-all overflow-hidden group">
+                    <div className="bg-gradient-to-r from-amber-100 to-orange-100 h-40 flex items-center justify-center text-5xl">📜</div>
+                    <div className="p-5">
+                      <span className="text-xs bg-amber-100 text-amber-700 px-2 py-1 rounded-full font-medium">{a.category}</span>
+                      <h3 className="font-bold text-lg mt-2 group-hover:text-amber-700 transition line-clamp-2">{a.title}</h3>
+                      <p className="text-stone-500 text-sm mt-2 line-clamp-2">{a.excerpt}</p>
+                      <div className="text-xs text-stone-400 mt-3 flex items-center gap-3"><span>👤 {a.authorName || "佚名"}</span><span>👁️ {a.views}</span></div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          {/* Vocab */}
+          <section className="max-w-7xl mx-auto px-4 py-16">
+            <div className="flex items-center justify-between mb-8">
+              <div><h2 className="text-3xl font-bold text-stone-800">📖 族語學習</h2><p className="text-stone-500 mt-1">一起來學卑南語</p></div>
+              <Link href="/language" className="text-amber-700 hover:text-amber-800 font-medium">更多詞彙 →</Link>
+            </div>
+            <div className="grid md:grid-cols-5 gap-4">
+              {vocab.map((v: any) => (
+                <div key={v.id} className="bg-white rounded-xl shadow-sm p-5 border border-stone-100 text-center hover:shadow-md transition">
+                  <p className="text-2xl font-bold text-amber-700 mb-1">{v.puyumaWord}</p>
+                  <p className="text-stone-800 font-medium">{v.chineseMeaning}</p>
+                  <p className="text-stone-400 text-sm">{v.englishMeaning}</p>
+                  <p className="text-xs text-stone-400 mt-2 bg-stone-50 rounded-full px-2 py-1">{v.category}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          {/* Events */}
+          <section className="bg-gradient-to-r from-amber-50 to-orange-50 py-16">
+            <div className="max-w-7xl mx-auto px-4">
+              <div className="flex items-center justify-between mb-8">
+                <div><h2 className="text-3xl font-bold text-stone-800">🎉 活動祭典</h2><p className="text-stone-500 mt-1">即將舉行的文化活動</p></div>
+                <Link href="/events" className="text-amber-700 hover:text-amber-800 font-medium">查看全部 →</Link>
+              </div>
+              <div className="grid md:grid-cols-3 gap-6">
+                {events.map((e: any) => (
+                  <div key={e.id} className="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition">
+                    <span className="text-xs bg-orange-100 text-orange-700 px-2 py-1 rounded-full font-medium">{e.type}</span>
+                    <h3 className="font-bold text-lg mt-2">{e.title}</h3>
+                    <p className="text-stone-500 text-sm mt-2 line-clamp-2">{e.description}</p>
+                    <div className="text-sm text-stone-400 mt-3 flex items-center gap-2"><span>📅 {e.startDate}</span>{e.location && <span>📍 {e.location}</span>}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        </>
+      )}
     </>
   );
 }
