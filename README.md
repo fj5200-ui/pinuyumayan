@@ -6,10 +6,11 @@
 - **Tech Stack**: TypeScript + Next.js 16 + NestJS 10 + PostgreSQL (Supabase) + Drizzle ORM + Tailwind CSS
 
 ## URLs
-- **Frontend**: https://3000-ih1azl11kr64zoz11zsb2-2e77fc33.sandbox.novita.ai
-- **API**: https://3001-ih1azl11kr64zoz11zsb2-2e77fc33.sandbox.novita.ai
+- **Frontend (Vercel)**: https://pinuyumayan.vercel.app
+- **API (Sandbox)**: https://3001-ih1azl11kr64zoz11zsb2-2e77fc33.sandbox.novita.ai
 - **Swagger Docs**: https://3001-ih1azl11kr64zoz11zsb2-2e77fc33.sandbox.novita.ai/api/docs
 - **Supabase**: https://supabase.com/dashboard/project/uzwuqythcvqyhhxvqpzf
+- **Vercel Dashboard**: https://vercel.com/fj5200-1122s-projects/pinuyumayan
 
 ## Architecture
 
@@ -103,10 +104,10 @@ pm2 start "npx next start -p 3000 -H 0.0.0.0" --name web --cwd apps/web
 ```
 
 ## Deployment Status
-- **Supabase PostgreSQL**: ✅ Connected (uzwuqythcvqyhhxvqpzf)
+- **Supabase PostgreSQL**: ✅ Connected (uzwuqythcvqyhhxvqpzf, ap-southeast-1)
+- **Next.js Frontend (Vercel)**: ✅ Deployed → https://pinuyumayan.vercel.app
 - **NestJS API**: ✅ Running (sandbox port 3001)
-- **Next.js Frontend**: ✅ Running (sandbox port 3000)
-- **Cloudflare Pages**: ⏳ Pending (requires API token permissions)
+- **Next steps**: Deploy API to Railway/Render for permanent hosting
 
 ## Last Updated
 2026-04-01
