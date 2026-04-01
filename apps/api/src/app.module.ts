@@ -13,6 +13,7 @@ import { FollowsModule } from './follows/follows.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { SearchModule } from './search/search.module';
 import { AdminModule } from './admin/admin.module';
+import { DiscussionsModule } from './discussions/discussions.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { AdminModule } from './admin/admin.module';
     NotificationsModule,
     SearchModule,
     AdminModule,
+    DiscussionsModule,
   ],
   controllers: [],
   providers: [],

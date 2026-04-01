@@ -6,14 +6,21 @@ import { useState } from "react";
 
 const MENU = [
   { href: "/admin", label: "總覽", icon: "📊" },
+  { type: "divider", label: "內容管理" },
   { href: "/admin/articles", label: "文章管理", icon: "📝" },
   { href: "/admin/tribes", label: "部落管理", icon: "🏘️" },
   { href: "/admin/vocabulary", label: "族語管理", icon: "📖" },
   { href: "/admin/events", label: "活動管理", icon: "🎉" },
   { href: "/admin/media", label: "媒體管理", icon: "🎬" },
+  { type: "divider", label: "社群管理" },
   { href: "/admin/users", label: "會員管理", icon: "👥" },
   { href: "/admin/comments", label: "留言管理", icon: "💬" },
+  { type: "divider", label: "系統工具" },
+  { href: "/admin/feature-flags", label: "Feature Flags", icon: "🚩" },
+  { href: "/admin/ai-tools", label: "AI 工具", icon: "🤖" },
+  { href: "/admin/monitoring", label: "系統監控", icon: "📡" },
   { href: "/admin/audit-logs", label: "操作日誌", icon: "📋" },
+  { href: "/admin/settings", label: "系統設定", icon: "⚙️" },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -39,16 +46,22 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <p className="text-xs text-stone-400 mt-1">{user.name} ({user.role})</p>
         </div>
         <nav className="p-2">
-          {MENU.map(m => (
-            <Link key={m.href} href={m.href} onClick={() => setSidebarOpen(false)}
-              className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition mb-1 ${
-                (m.href === "/admin" ? pathname === "/admin" : pathname.startsWith(m.href))
-                  ? "bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-300"
-                  : "text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800"
-              }`}>
-              <span>{m.icon}</span>{m.label}
-            </Link>
-          ))}
+          {MENU.map((m, i) => {
+            if ((m as any).type === "divider") {
+              return <p key={i} className="text-xs font-bold text-stone-400 dark:text-stone-500 uppercase tracking-wider mt-4 mb-1 px-4">{m.label}</p>;
+            }
+            const item = m as { href: string; label: string; icon: string };
+            return (
+              <Link key={item.href} href={item.href} onClick={() => setSidebarOpen(false)}
+                className={`flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition mb-0.5 ${
+                  (item.href === "/admin" ? pathname === "/admin" : pathname.startsWith(item.href))
+                    ? "bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-300"
+                    : "text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800"
+                }`}>
+                <span className="text-base">{item.icon}</span>{item.label}
+              </Link>
+            );
+          })}
         </nav>
         <div className="p-4 border-t dark:border-stone-700 mt-auto">
           <Link href="/" className="flex items-center gap-2 text-sm text-stone-500 hover:text-amber-700 transition">

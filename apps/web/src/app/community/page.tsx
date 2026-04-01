@@ -12,7 +12,7 @@ const BOARDS = [
   { id: "events", name: "活動公告", icon: "📢", desc: "部落活動、社區資訊" },
 ];
 
-interface Post { id: string; board: string; title: string; content: string; author: string; authorId?: number; replies: number; likes: number; createdAt: string; }
+interface Post { id: number; board: string; title: string; content: string; authorName: string; repliesCount?: number; likes: number; createdAt: string; }
 
 export default function CommunityPage() {
   const { user } = useAuth();
@@ -23,28 +23,61 @@ export default function CommunityPage() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(true);
+  const [selectedPost, setSelectedPost] = useState<any>(null);
+  const [replyText, setReplyText] = useState("");
 
-  // Demo posts (in production, this would be a real API)
-  useEffect(() => {
+  const loadPosts = async () => {
     setLoading(true);
-    const demoPosts: Post[] = [
-      { id: "1", board: "general", title: "歡迎來到 Pinuyumayan 社群！", content: "這是一個讓所有關心卑南族文化的朋友交流的空間。歡迎大家分享部落故事、族語學習心得，或任何文化相關的話題。", author: "Admin", replies: 3, likes: 8, createdAt: "2026-03-30" },
-      { id: "2", board: "language", title: "族語日常問候用語整理", content: "整理了一些常用的卑南語問候語，分享給正在學習的朋友們。uninan (謝謝)、marekumare (你好)...", author: "族語教師", replies: 5, likes: 12, createdAt: "2026-03-29" },
-      { id: "3", board: "culture", title: "2026年大獵祭準備工作開始", content: "今年的大獵祭將在12月舉行，各位族人開始準備了嗎？歡迎分享準備的過程和心得。", author: "部落幹部", replies: 7, likes: 15, createdAt: "2026-03-28" },
-      { id: "4", board: "events", title: "南王部落春季文化體驗營", content: "4月底將舉辦為期兩天的文化體驗營，內容包含族語教學、傳統工藝和部落導覽。歡迎報名參加！", author: "活動組", replies: 2, likes: 6, createdAt: "2026-03-27" },
-      { id: "5", board: "general", title: "有人知道卑南族的創世傳說嗎？", content: "最近在研究各族的創世神話，想了解卑南族的創世傳說，有族人可以分享嗎？", author: "文化研究者", replies: 4, likes: 9, createdAt: "2026-03-26" },
-      { id: "6", board: "language", title: "分享：用族語說顏色", content: "紅色 kavaang、白色 palit、黑色 tulem、藍色/綠色 hiyumang，大家來補充更多吧！", author: "學習者", replies: 6, likes: 11, createdAt: "2026-03-25" },
-    ];
-    setTimeout(() => { setPosts(demoPosts.filter(p => board === "all" ? true : p.board === board)); setLoading(false); }, 300);
-  }, [board]);
+    try {
+      const r = await api.get<any>(`/api/discussions?board=${board}`);
+      setPosts(r.discussions || []);
+    } catch {
+      // Fallback demo data
+      setPosts([
+        { id: 1, board: "general", title: "歡迎來到 Pinuyumayan 社群！", content: "這是一個讓所有關心卑南族文化的朋友交流的空間。", authorName: "Admin", repliesCount: 3, likes: 8, createdAt: "2026-03-30" },
+        { id: 2, board: "language", title: "族語日常問候用語整理", content: "常用的卑南語問候語：uninan (謝謝)、marekumare (你好)", authorName: "族語教師", repliesCount: 5, likes: 12, createdAt: "2026-03-29" },
+      ]);
+    }
+    setLoading(false);
+  };
 
-  const submitPost = () => {
+  useEffect(() => { loadPosts(); }, [board]);
+
+  const submitPost = async () => {
     if (!user) { toast("請先登入", "error"); return; }
     if (!title.trim() || !content.trim()) { toast("請填寫標題和內容", "error"); return; }
-    const newPost: Post = { id: Date.now().toString(), board, title, content, author: user.name, authorId: user.id, replies: 0, likes: 0, createdAt: new Date().toISOString().split("T")[0] };
-    setPosts(prev => [newPost, ...prev]);
-    setShowNewPost(false); setTitle(""); setContent("");
-    toast("貼文已發布", "success");
+    try {
+      await api.post("/api/discussions", { board, title, content });
+      setShowNewPost(false); setTitle(""); setContent("");
+      toast("貼文已發布", "success");
+      loadPosts();
+    } catch (e: any) { toast(e.message || "發布失敗", "error"); }
+  };
+
+  const openPost = async (id: number) => {
+    try {
+      const r = await api.get<any>(`/api/discussions/${id}`);
+      setSelectedPost(r.discussion);
+    } catch { toast("載入失敗", "error"); }
+  };
+
+  const submitReply = async () => {
+    if (!user) { toast("請先登入", "error"); return; }
+    if (!replyText.trim()) return;
+    try {
+      await api.post(`/api/discussions/${selectedPost.id}/replies`, { content: replyText });
+      setReplyText("");
+      openPost(selectedPost.id); // Refresh
+      toast("回覆已送出", "success");
+    } catch { toast("回覆失敗", "error"); }
+  };
+
+  const toggleLike = async (id: number) => {
+    if (!user) { toast("請先登入", "error"); return; }
+    try {
+      await api.post(`/api/discussions/${id}/like`, {});
+      loadPosts();
+    } catch {}
   };
 
   return (
@@ -60,14 +93,15 @@ export default function CommunityPage() {
           <div className="bg-white dark:bg-stone-800 rounded-xl border dark:border-stone-700 p-4 sticky top-20">
             <h3 className="font-bold text-sm text-stone-500 dark:text-stone-400 mb-3">討論板</h3>
             {BOARDS.map(b => (
-              <button key={b.id} onClick={() => setBoard(b.id)}
+              <button key={b.id} onClick={() => { setBoard(b.id); setSelectedPost(null); }}
                 className={`w-full text-left p-3 rounded-lg mb-1 transition text-sm ${board === b.id ? "bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-300" : "hover:bg-stone-50 dark:hover:bg-stone-700/50 text-stone-600 dark:text-stone-400"}`}>
                 <span className="mr-2">{b.icon}</span>{b.name}
+                <p className="text-xs text-stone-400 mt-0.5 ml-6">{b.desc}</p>
               </button>
             ))}
             <hr className="my-3 dark:border-stone-700" />
             {user ? (
-              <button onClick={() => setShowNewPost(true)} className="w-full bg-amber-700 text-white py-2.5 rounded-lg hover:bg-amber-800 transition text-sm font-medium">
+              <button onClick={() => { setShowNewPost(true); setSelectedPost(null); }} className="w-full bg-amber-700 text-white py-2.5 rounded-lg hover:bg-amber-800 transition text-sm font-medium">
                 ✏️ 發新貼文
               </button>
             ) : (
@@ -78,7 +112,7 @@ export default function CommunityPage() {
           </div>
         </aside>
 
-        {/* Posts */}
+        {/* Posts / Detail */}
         <div className="md:col-span-3">
           {/* New post form */}
           {showNewPost && (
@@ -93,31 +127,74 @@ export default function CommunityPage() {
             </div>
           )}
 
-          {loading ? <div className="text-center py-10 text-stone-400">載入中...</div> : posts.length === 0 ? (
-            <div className="text-center py-20 bg-white dark:bg-stone-800 rounded-xl border dark:border-stone-700">
-              <p className="text-4xl mb-4">💬</p>
-              <p className="text-stone-500">此討論板暫無貼文</p>
-              {user && <button onClick={() => setShowNewPost(true)} className="text-amber-700 dark:text-amber-400 text-sm mt-2 hover:underline">成為第一個發文者</button>}
+          {/* Post Detail View */}
+          {selectedPost ? (
+            <div className="bg-white dark:bg-stone-800 rounded-xl border dark:border-stone-700 p-6">
+              <button onClick={() => setSelectedPost(null)} className="text-sm text-amber-700 dark:text-amber-400 hover:underline mb-4 block">← 返回列表</button>
+              <h2 className="text-2xl font-bold dark:text-stone-100 mb-2">{selectedPost.title}</h2>
+              <div className="flex items-center gap-3 text-sm text-stone-400 mb-4">
+                <span>👤 {selectedPost.authorName}</span>
+                <span>📅 {selectedPost.createdAt}</span>
+                <span>❤️ {selectedPost.likes}</span>
+              </div>
+              <p className="text-stone-700 dark:text-stone-300 whitespace-pre-wrap mb-6">{selectedPost.content}</p>
+
+              {/* Replies */}
+              <div className="border-t dark:border-stone-700 pt-4">
+                <h3 className="font-bold dark:text-stone-100 mb-4">💬 回覆 ({selectedPost.replies?.length || 0})</h3>
+                {selectedPost.replies?.length > 0 ? (
+                  <div className="space-y-3 mb-4">
+                    {selectedPost.replies.map((r: any) => (
+                      <div key={r.id} className="bg-stone-50 dark:bg-stone-700/50 rounded-lg p-4">
+                        <p className="text-stone-700 dark:text-stone-300">{r.content}</p>
+                        <p className="text-xs text-stone-400 mt-2">👤 {r.authorName} · {r.createdAt}</p>
+                      </div>
+                    ))}
+                  </div>
+                ) : <p className="text-stone-400 text-sm mb-4">暫無回覆</p>}
+
+                {user ? (
+                  <div className="flex gap-2">
+                    <input value={replyText} onChange={e => setReplyText(e.target.value)} onKeyDown={e => e.key === "Enter" && submitReply()}
+                      placeholder="輸入回覆..." className="flex-1 px-4 py-2 border rounded-lg dark:border-stone-600 dark:bg-stone-700 dark:text-stone-100 text-sm" />
+                    <button onClick={submitReply} className="bg-amber-700 text-white px-4 py-2 rounded-lg hover:bg-amber-800 text-sm">送出</button>
+                  </div>
+                ) : <p className="text-sm text-stone-400"><Link href="/login" className="text-amber-700 dark:text-amber-400 hover:underline">登入</Link>後即可回覆</p>}
+              </div>
             </div>
           ) : (
-            <div className="space-y-3">
-              {posts.map(p => (
-                <div key={p.id} className="bg-white dark:bg-stone-800 rounded-xl border dark:border-stone-700 p-5 hover:shadow-sm transition">
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <h3 className="font-bold text-lg dark:text-stone-100 mb-1">{p.title}</h3>
-                      <p className="text-stone-600 dark:text-stone-400 text-sm line-clamp-2">{p.content}</p>
-                      <div className="flex items-center gap-4 mt-3 text-xs text-stone-400">
-                        <span>👤 {p.author}</span>
-                        <span>📅 {p.createdAt}</span>
-                        <span>💬 {p.replies} 回覆</span>
-                        <span>❤️ {p.likes}</span>
+            /* Post List */
+            <>
+              {loading ? <div className="text-center py-10 text-stone-400">載入中...</div> : posts.length === 0 ? (
+                <div className="text-center py-20 bg-white dark:bg-stone-800 rounded-xl border dark:border-stone-700">
+                  <p className="text-4xl mb-4">💬</p>
+                  <p className="text-stone-500">此討論板暫無貼文</p>
+                  {user && <button onClick={() => setShowNewPost(true)} className="text-amber-700 dark:text-amber-400 text-sm mt-2 hover:underline">成為第一個發文者</button>}
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {posts.map(p => (
+                    <div key={p.id} onClick={() => openPost(p.id)}
+                      className="bg-white dark:bg-stone-800 rounded-xl border dark:border-stone-700 p-5 hover:shadow-sm transition cursor-pointer">
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <h3 className="font-bold text-lg dark:text-stone-100 mb-1 hover:text-amber-700 dark:hover:text-amber-400 transition">{p.title}</h3>
+                          <p className="text-stone-600 dark:text-stone-400 text-sm line-clamp-2">{p.content}</p>
+                          <div className="flex items-center gap-4 mt-3 text-xs text-stone-400">
+                            <span>👤 {p.authorName}</span>
+                            <span>📅 {p.createdAt}</span>
+                            <span>💬 {p.repliesCount || 0} 回覆</span>
+                            <button onClick={(e) => { e.stopPropagation(); toggleLike(p.id); }} className="hover:text-red-500 transition">
+                              ❤️ {p.likes}
+                            </button>
+                          </div>
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  ))}
                 </div>
-              ))}
-            </div>
+              )}
+            </>
           )}
         </div>
       </div>
