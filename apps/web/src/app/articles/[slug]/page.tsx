@@ -20,8 +20,14 @@ export default function ArticleDetail() {
 
   useEffect(() => {
     if (!params.slug) return;
-    api.get<any>(`/api/articles/${params.slug}`).then(d => { setArticle(d.article || d); setLoading(false); }).catch(() => setLoading(false));
-    api.get<any>(`/api/comments/article/${params.slug}`).then(d => setComments(d.comments || [])).catch(() => {});
+    api.get<any>(`/api/articles/${params.slug}`).then(d => {
+      const a = d.article || d;
+      setArticle(a);
+      setLoading(false);
+      if (a?.id) {
+        api.get<any>(`/api/comments/article/${a.id}`).then(cd => setComments(cd.comments || [])).catch(() => {});
+      }
+    }).catch(() => setLoading(false));
   }, [params.slug]);
 
   useEffect(() => {
@@ -34,7 +40,7 @@ export default function ArticleDetail() {
     try {
       await api.post(`/api/comments/article/${article.id}`, { content: newComment });
       setNewComment("");
-      const d = await api.get<any>(`/api/comments/article/${params.slug}`);
+      const d = await api.get<any>(`/api/comments/article/${article.id}`);
       setComments(d.comments || []);
       toast("留言成功", "success");
     } catch { toast("留言失敗", "error"); }
@@ -43,7 +49,7 @@ export default function ArticleDetail() {
   const toggleLike = async () => {
     if (!user) { toast("請先登入", "error"); return; }
     try {
-      await api.post(`/api/comments/like`, { articleId: article.id });
+      await api.post(`/api/comments/article/${article.id}/like`, {});
       setLiked(!liked); setLikeCount(c => liked ? c - 1 : c + 1);
     } catch { toast("操作失敗", "error"); }
   };

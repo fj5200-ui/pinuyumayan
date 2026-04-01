@@ -1,12 +1,14 @@
 "use client";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import Link from "next/link";
+import Script from "next/script";
 import { api } from "@/lib/api";
 
 export default function TribesMapPage() {
   const [tribes, setTribes] = useState<any[]>([]);
   const [selected, setSelected] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [leafletReady, setLeafletReady] = useState(false);
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstance = useRef<any>(null);
 
@@ -14,8 +16,8 @@ export default function TribesMapPage() {
     api.get<any>("/api/tribes").then(d => { setTribes(d.tribes || []); setLoading(false); }).catch(() => setLoading(false));
   }, []);
 
-  useEffect(() => {
-    if (tribes.length === 0 || !mapRef.current) return;
+  const initMap = useCallback(() => {
+    if (tribes.length === 0 || !mapRef.current || !leafletReady) return;
     const L = (window as any).L;
     if (!L) return;
     if (mapInstance.current) mapInstance.current.remove();
@@ -28,10 +30,14 @@ export default function TribesMapPage() {
       marker.bindPopup(`<b>${t.name}</b><br/>${t.traditionalName || ""}<br/>人口: ${t.population?.toLocaleString() || "未知"}`);
       marker.on("click", () => setSelected(t));
     });
-  }, [tribes]);
+  }, [tribes, leafletReady]);
+
+  useEffect(() => { initMap(); }, [initMap]);
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-12">
+      <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+      <Script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" strategy="afterInteractive" onReady={() => setLeafletReady(true)} />
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="text-4xl font-bold text-stone-800 dark:text-stone-100">🗺️ 部落地圖</h1>
@@ -39,9 +45,6 @@ export default function TribesMapPage() {
         </div>
         <Link href="/tribes" className="text-amber-700 dark:text-amber-400 hover:underline">← 部落列表</Link>
       </div>
-      {/* Load Leaflet CSS and JS */}
-      <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-      <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" async />
       <div className="grid lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2">
           {loading ? (
@@ -56,7 +59,7 @@ export default function TribesMapPage() {
             <button key={t.id} onClick={() => {
               setSelected(t);
               if (mapInstance.current && t.latitude) mapInstance.current.setView([t.latitude, t.longitude], 14);
-            }} className={`w-full text-left p-3 rounded-xl border transition ${selected?.id === t.id ? "bg-amber-50 dark:bg-amber-900/30 border-amber-300 dark:border-amber-700" : "bg-white dark:bg-stone-800 border-stone-100 dark:border-stone-700 hover:bg-stone-50 dark:hover:bg-stone-750"}`}>
+            }} className={`w-full text-left p-3 rounded-xl border transition ${selected?.id === t.id ? "bg-amber-50 dark:bg-amber-900/30 border-amber-300 dark:border-amber-700" : "bg-white dark:bg-stone-800 border-stone-100 dark:border-stone-700 hover:bg-stone-50 dark:hover:bg-stone-700"}`}>
               <div className="font-bold text-stone-800 dark:text-stone-100">{t.name}</div>
               <div className="text-sm text-amber-600 dark:text-amber-400">{t.traditionalName}</div>
               <div className="text-xs text-stone-400 mt-1">{t.region} · 人口 {t.population?.toLocaleString()}</div>
