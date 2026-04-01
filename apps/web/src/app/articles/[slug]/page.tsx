@@ -6,6 +6,8 @@ import { api } from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
 import { useToast } from "@/lib/toast-context";
 
+
+
 export default function ArticleDetail() {
   const params = useParams();
   const { user } = useAuth();
