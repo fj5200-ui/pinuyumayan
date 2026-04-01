@@ -3,9 +3,9 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcryptjs';
 import { eq } from 'drizzle-orm';
 import { DRIZZLE } from '../database/database.module';
-import { users } from '../../../../packages/database/src/schema';
+import { users } from '../database/schema';
 import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
-import type * as schema from '../../../../packages/database/src/schema';
+import type * as schema from '../database/schema';
 
 @Injectable()
 export class AuthService {

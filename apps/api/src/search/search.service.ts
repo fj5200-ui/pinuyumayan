@@ -1,9 +1,9 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { ilike, eq, or, sql } from 'drizzle-orm';
 import { DRIZZLE } from '../database/database.module';
-import { articles, vocabulary, tribes, events } from '../../../../packages/database/src/schema';
+import { articles, vocabulary, tribes, events } from '../database/schema';
 import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
-import type * as schema from '../../../../packages/database/src/schema';
+import type * as schema from '../database/schema';
 @Injectable()
 export class SearchService {
   constructor(@Inject(DRIZZLE) private db: PostgresJsDatabase<typeof schema>) {}

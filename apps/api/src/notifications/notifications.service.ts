@@ -1,9 +1,9 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { eq, and, sql, desc } from 'drizzle-orm';
 import { DRIZZLE } from '../database/database.module';
-import { notifications } from '../../../../packages/database/src/schema';
+import { notifications } from '../database/schema';
 import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
-import type * as schema from '../../../../packages/database/src/schema';
+import type * as schema from '../database/schema';
 @Injectable()
 export class NotificationsService {
   constructor(@Inject(DRIZZLE) private db: PostgresJsDatabase<typeof schema>) {}

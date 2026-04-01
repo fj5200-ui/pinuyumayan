@@ -1,9 +1,9 @@
 import { Injectable, Inject, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { eq, and, sql, desc } from 'drizzle-orm';
 import { DRIZZLE } from '../database/database.module';
-import { comments, likes, users, articles, notifications } from '../../../../packages/database/src/schema';
+import { comments, likes, users, articles, notifications } from '../database/schema';
 import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
-import type * as schema from '../../../../packages/database/src/schema';
+import type * as schema from '../database/schema';
 @Injectable()
 export class CommentsService {
   constructor(@Inject(DRIZZLE) private db: PostgresJsDatabase<typeof schema>) {}

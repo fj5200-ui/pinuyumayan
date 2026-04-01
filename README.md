@@ -7,8 +7,9 @@
 
 ## URLs
 - **Frontend (Vercel)**: https://pinuyumayan.vercel.app
-- **API (Sandbox)**: https://3001-ih1azl11kr64zoz11zsb2-2e77fc33.sandbox.novita.ai
-- **Swagger Docs**: https://3001-ih1azl11kr64zoz11zsb2-2e77fc33.sandbox.novita.ai/api/docs
+- **API (Render)**: https://pinuyumayan-api.onrender.com
+- **Swagger Docs**: https://pinuyumayan-api.onrender.com/api/docs
+- **GitHub (API)**: https://github.com/fj5200-ui/pinuyumayan-api
 - **Supabase**: https://supabase.com/dashboard/project/uzwuqythcvqyhhxvqpzf
 - **Vercel Dashboard**: https://vercel.com/fj5200-1122s-projects/pinuyumayan
 
@@ -106,8 +107,8 @@ pm2 start "npx next start -p 3000 -H 0.0.0.0" --name web --cwd apps/web
 ## Deployment Status
 - **Supabase PostgreSQL**: ✅ Connected (uzwuqythcvqyhhxvqpzf, ap-southeast-1)
 - **Next.js Frontend (Vercel)**: ✅ Deployed → https://pinuyumayan.vercel.app
-- **NestJS API**: ✅ Running (sandbox port 3001)
-- **Next steps**: Deploy API to Railway/Render for permanent hosting
+- **NestJS API (Render)**: ✅ Deployed → https://pinuyumayan-api.onrender.com
+- **Swagger API Docs**: https://pinuyumayan-api.onrender.com/api/docs
 
 ## Last Updated
 2026-04-01

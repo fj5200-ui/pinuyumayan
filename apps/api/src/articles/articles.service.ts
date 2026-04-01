@@ -1,9 +1,9 @@
 import { Injectable, Inject, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { eq, desc, sql, and, like, ne, ilike } from 'drizzle-orm';
 import { DRIZZLE } from '../database/database.module';
-import { articles, users } from '../../../../packages/database/src/schema';
+import { articles, users } from '../database/schema';
 import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
-import type * as schema from '../../../../packages/database/src/schema';
+import type * as schema from '../database/schema';
 
 @Injectable()
 export class ArticlesService {
