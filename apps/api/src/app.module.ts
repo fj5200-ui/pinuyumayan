@@ -14,6 +14,11 @@ import { NotificationsModule } from './notifications/notifications.module';
 import { SearchModule } from './search/search.module';
 import { AdminModule } from './admin/admin.module';
 import { DiscussionsModule } from './discussions/discussions.module';
+import { LearningModule } from './learning/learning.module';
+import { RegistrationsModule } from './registrations/registrations.module';
+import { ApprovalModule } from './approval/approval.module';
+import { CulturalSitesModule } from './cultural-sites/cultural-sites.module';
+import { ExportsModule } from './exports/exports.module';
 
 @Module({
   imports: [
@@ -32,6 +37,11 @@ import { DiscussionsModule } from './discussions/discussions.module';
     SearchModule,
     AdminModule,
     DiscussionsModule,
+    LearningModule,
+    RegistrationsModule,
+    ApprovalModule,
+    CulturalSitesModule,
+    ExportsModule,
   ],
   controllers: [],
   providers: [],

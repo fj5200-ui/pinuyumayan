@@ -1,7 +1,8 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { api } from "@/lib/api";
+import { useAuth } from "@/lib/auth-context";
 
 const categories = ["全部", "問候", "親屬", "自然", "數字", "食物", "動物", "文化", "日常", "身體"];
 
@@ -123,31 +124,134 @@ export default function LanguagePage() {
         </div>
       )}
 
-      {tab === "progress" && (
-        <div className="bg-white dark:bg-stone-800 rounded-xl border dark:border-stone-700 p-8">
-          <div className="text-center mb-8">
-            <p className="text-6xl mb-4">📊</p>
-            <h2 className="text-3xl font-bold dark:text-stone-100">{learnedIds.size} <span className="text-stone-400 text-lg">/ {words.length || "?"}</span></h2>
-            <p className="text-stone-500 dark:text-stone-400 mt-1">已掌握詞彙</p>
-            <div className="w-full bg-stone-200 dark:bg-stone-700 rounded-full h-4 mt-4 max-w-md mx-auto">
-              <div className="bg-gradient-to-r from-amber-500 to-orange-500 h-4 rounded-full transition-all" style={{ width: `${words.length ? (learnedIds.size / words.length) * 100 : 0}%` }} />
+      {tab === "progress" && <ProgressTab learnedIds={learnedIds} words={words} categories={categories} />}
+    </div>
+  );
+}
+
+function ProgressTab({ learnedIds, words, categories }: { learnedIds: Set<number>; words: any[]; categories: string[] }) {
+  const { user } = useAuth();
+  const [progress, setProgress] = useState<any>(null);
+  const [leaderboard, setLeaderboard] = useState<any[]>([]);
+
+  useEffect(() => {
+    if (user) {
+      api.get<any>("/api/learning/progress").then(d => setProgress(d)).catch(() => {});
+    }
+    api.get<any>("/api/learning/leaderboard").then(d => setLeaderboard(d.leaderboard || [])).catch(() => {});
+  }, [user]);
+
+  return (
+    <div className="space-y-6">
+      {/* Main progress */}
+      <div className="bg-white dark:bg-stone-800 rounded-xl border dark:border-stone-700 p-8">
+        <div className="text-center mb-8">
+          <p className="text-6xl mb-4">📊</p>
+          <h2 className="text-3xl font-bold dark:text-stone-100">{learnedIds.size} <span className="text-stone-400 text-lg">/ {words.length || "?"}</span></h2>
+          <p className="text-stone-500 dark:text-stone-400 mt-1">已掌握詞彙</p>
+          <div className="w-full bg-stone-200 dark:bg-stone-700 rounded-full h-4 mt-4 max-w-md mx-auto">
+            <div className="bg-gradient-to-r from-amber-500 to-orange-500 h-4 rounded-full transition-all" style={{ width: `${words.length ? (learnedIds.size / words.length) * 100 : 0}%` }} />
+          </div>
+        </div>
+
+        {/* Server-side stats */}
+        {progress && (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+            <div className="text-center p-4 bg-amber-50 dark:bg-amber-900/20 rounded-xl">
+              <p className="text-2xl font-bold text-amber-700 dark:text-amber-400">{progress.totalQuizzes}</p>
+              <p className="text-xs text-stone-500">總測驗次數</p>
+            </div>
+            <div className="text-center p-4 bg-green-50 dark:bg-green-900/20 rounded-xl">
+              <p className="text-2xl font-bold text-green-700 dark:text-green-400">{progress.accuracy}%</p>
+              <p className="text-xs text-stone-500">正確率</p>
+            </div>
+            <div className="text-center p-4 bg-orange-50 dark:bg-orange-900/20 rounded-xl">
+              <p className="text-2xl font-bold text-orange-700 dark:text-orange-400">{progress.streak}🔥</p>
+              <p className="text-xs text-stone-500">連續學習天數</p>
+            </div>
+            <div className="text-center p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl">
+              <p className="text-2xl font-bold text-blue-700 dark:text-blue-400">{progress.todayQuizzes}</p>
+              <p className="text-xs text-stone-500">今日測驗</p>
             </div>
           </div>
-          <div className="grid grid-cols-3 gap-4 max-w-md mx-auto">
-            {categories.filter(c => c !== "全部").map(c => {
-              const catWords = words.filter(w => w.category === c);
-              const catLearned = catWords.filter(w => learnedIds.has(w.id)).length;
-              return (
-                <div key={c} className="text-center p-3 bg-stone-50 dark:bg-stone-700/50 rounded-lg">
-                  <p className="font-bold text-lg dark:text-stone-200">{catLearned}/{catWords.length}</p>
-                  <p className="text-xs text-stone-400">{c}</p>
+        )}
+
+        {/* Badges */}
+        {progress?.allBadges && (
+          <div className="mb-8">
+            <h3 className="font-bold dark:text-stone-100 mb-4">🏅 成就徽章</h3>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              {progress.allBadges.map((b: any) => (
+                <div key={b.id} className={`text-center p-4 rounded-xl border transition ${b.earned ? "bg-amber-50 dark:bg-amber-900/20 border-amber-300 dark:border-amber-700" : "bg-stone-50 dark:bg-stone-800 border-stone-200 dark:border-stone-700 opacity-50"}`}>
+                  <p className="text-3xl mb-1">{b.icon}</p>
+                  <p className="text-sm font-bold dark:text-stone-200">{b.name}</p>
+                  <p className="text-xs text-stone-400">{b.description}</p>
                 </div>
-              );
-            })}
+              ))}
+            </div>
           </div>
-          <div className="text-center mt-8">
-            <Link href="/language/quiz" className="bg-amber-700 text-white px-8 py-3 rounded-xl font-medium hover:bg-amber-800 transition inline-block">🎯 開始測驗</Link>
+        )}
+
+        {/* Weekly chart */}
+        {progress?.weeklyData && (
+          <div className="mb-8">
+            <h3 className="font-bold dark:text-stone-100 mb-4">📅 本週學習紀錄</h3>
+            <div className="flex items-end gap-2 h-32">
+              {progress.weeklyData.map((d: any) => (
+                <div key={d.day} className="flex-1 text-center">
+                  <div className="bg-stone-100 dark:bg-stone-700 rounded-t-lg relative overflow-hidden" style={{ height: "80px" }}>
+                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-amber-500 to-amber-400 transition-all rounded-t-lg"
+                      style={{ height: `${d.total > 0 ? Math.max(10, (d.total / 10) * 100) : 0}%` }} />
+                  </div>
+                  <p className="text-xs text-stone-500 mt-1">{d.day}</p>
+                  <p className="text-xs font-bold dark:text-stone-300">{d.total}</p>
+                </div>
+              ))}
+            </div>
           </div>
+        )}
+
+        {/* Category breakdown */}
+        <div className="grid grid-cols-3 gap-4 max-w-md mx-auto">
+          {categories.filter(c => c !== "全部").map(c => {
+            const catWords = words.filter(w => w.category === c);
+            const catLearned = catWords.filter(w => learnedIds.has(w.id)).length;
+            return (
+              <div key={c} className="text-center p-3 bg-stone-50 dark:bg-stone-700/50 rounded-lg">
+                <p className="font-bold text-lg dark:text-stone-200">{catLearned}/{catWords.length}</p>
+                <p className="text-xs text-stone-400">{c}</p>
+              </div>
+            );
+          })}
+        </div>
+        <div className="text-center mt-8">
+          <Link href="/language/quiz" className="bg-amber-700 text-white px-8 py-3 rounded-xl font-medium hover:bg-amber-800 transition inline-block">🎯 開始測驗</Link>
+        </div>
+      </div>
+
+      {/* Leaderboard */}
+      {leaderboard.length > 0 && (
+        <div className="bg-white dark:bg-stone-800 rounded-xl border dark:border-stone-700 p-6">
+          <h3 className="font-bold dark:text-stone-100 mb-4">🏆 學習排行榜</h3>
+          <div className="space-y-2">
+            {leaderboard.map((entry, i) => (
+              <div key={entry.userId} className="flex items-center gap-4 p-3 bg-stone-50 dark:bg-stone-700/50 rounded-lg">
+                <span className="text-xl font-bold w-8 text-center">{i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : `${i + 1}`}</span>
+                <div className="flex-1">
+                  <p className="font-medium dark:text-stone-200">用戶 #{entry.userId}</p>
+                  <p className="text-xs text-stone-400">{entry.learned} 詞彙 · {entry.quizzes} 次測驗</p>
+                </div>
+                <span className="text-sm font-bold text-amber-700 dark:text-amber-400">{entry.accuracy}%</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {!user && (
+        <div className="bg-amber-50 dark:bg-amber-900/20 rounded-xl border border-amber-200 dark:border-amber-800 p-6 text-center">
+          <p className="dark:text-stone-200 mb-2">登入後可同步學習進度、獲得成就徽章</p>
+          <Link href="/login" className="text-amber-700 dark:text-amber-400 font-medium hover:underline">立即登入 →</Link>
         </div>
       )}
     </div>

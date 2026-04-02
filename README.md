@@ -1,4 +1,4 @@
-# Pinuyumayan 卑南族入口網 v4.2
+# Pinuyumayan 卑南族入口網 v4.3
 
 ## Project Overview
 - **Name**: Pinuyumayan (卑南族入口網)
@@ -28,7 +28,7 @@ pinuyumayan/
 └── vercel.json       # Vercel monorepo deployment config
 ```
 
-### Backend — NestJS API (13 Modules)
+### Backend — NestJS API (18 Modules)
 | Module | Endpoints | Description |
 |--------|-----------|-------------|
 | Auth | POST /register, /login, /change-password, /forgot-password, /reset-password, GET /me, PUT /me | JWT 認證 + 密碼管理 |
@@ -44,10 +44,15 @@ pinuyumayan/
 | Search | GET /?q=keyword | 全站搜尋 |
 | Admin | GET /stats, /dashboard, /users, /comments, /audit-logs, PUT /users/:id/role, DELETE /comments/:id, POST+PUT+DELETE /tribes, /events, /media, /vocabulary | 管理後台完整 CRUD |
 | Discussions | GET /, /:id, POST /, /:id/replies, /:id/like, DELETE /:id | 社群討論系統 |
+| Learning | GET /progress, /leaderboard, POST /quiz-result, /mark-learned | 學習進度追蹤 + 徽章 + 排行榜 |
+| Registrations | POST /events/:id, DELETE /events/:id, GET /events/:id, /my, /check/:id | 活動報名系統 |
+| Approval | GET /queue, POST /:id/approve, /:id/reject, /submit | 內容審核管理 |
+| CulturalSites | GET /, /:id, /nearby | 文化景點 + 地理搜尋 |
+| Exports | GET /:type (users/articles/vocabulary/events/tribes) | CSV 匯出 |
 
-### Frontend — Next.js Pages (31 Routes)
+### Frontend — Next.js Pages (35 Routes)
 
-#### 前台頁面 (17 頁)
+#### 前台頁面 (18 頁)
 | Page | Path | Description | Status |
 |------|------|-------------|--------|
 | 首頁 | / | Hero + 動態統計 + 每日一詞 + 部落/文章/族語/活動摘要 | ✅ |
@@ -56,20 +61,20 @@ pinuyumayan/
 | 部落地圖 | /tribes/map | Leaflet 互動地圖 + 圖層切換 | ✅ |
 | 文化誌 | /articles | 文章列表 (分類篩選) | ✅ |
 | 文章詳情 | /articles/[slug] | 全文、留言、按讚、收藏、閱讀進度條、分享按鈕 | ✅ |
-| 族語學習 | /language | 詞彙分類瀏覽、發音、音訊播放、情境對話 | ✅ |
+| 族語學習 | /language | 詞彙分類瀏覽、發音、對話、學習進度+徽章+排行榜 | ✅ ENHANCED |
 | 族語測驗 | /language/quiz | 四選一測驗、連續答對、雙向模式 | ✅ |
-| 活動祭典 | /events | 活動列表 (類型篩選) | ✅ |
+| 活動祭典 | /events | 活動列表 + 線上報名/取消報名 + 報名人數 | ✅ ENHANCED |
+| 文化景點 | /cultural-sites | 文化景點列表/地圖 + 類型篩選 + GIS 定位 | ✅ NEW |
 | 媒體庫 | /media | 照片/影片/音檔 (類型篩選) | ✅ |
 | 社群討論 | /community | 討論板、發文、回覆、按讚 (API 連動) | ✅ |
-| 搜尋 | /search | 自動完成 + 類型篩選 + 關鍵字高亮 | ✅ NEW |
+| 搜尋 | /search | 自動完成 + 類型篩選 + 關鍵字高亮 | ✅ |
 | 登入 | /login | JWT 登入 + 測試帳號提示 | ✅ |
 | 註冊 | /register | 帳號註冊 + 密碼確認 | ✅ |
 | 忘記密碼 | /forgot-password | 發送重設連結 | ✅ |
 | 個人資料 | /profile | 基本資料/收藏/追蹤/修改密碼 四分頁 | ✅ |
 | 通知 | /notifications | 通知列表、已讀/刪除 | ✅ |
-| 關於 | /about | 平台使命、技術架構、功能列表 | ✅ |
 
-#### 管理後台 (13 頁)
+#### 管理後台 (15 頁)
 | Page | Path | Description | Status |
 |------|------|-------------|--------|
 | Dashboard | /admin | 統計總覽 + 七日新增 + 近期文章/留言 + 熱門文章 | ✅ |
@@ -80,20 +85,30 @@ pinuyumayan/
 | 媒體管理 | /admin/media | 媒體 CRUD + 類型/URL | ✅ |
 | 會員管理 | /admin/users | 用戶列表 + 角色權限管理 | ✅ |
 | 留言管理 | /admin/comments | 留言審核 + 刪除 | ✅ |
-| Feature Flags | /admin/feature-flags | 功能開關管理 + 範圍設定 | ✅ NEW |
-| AI 工具 | /admin/ai-tools | AI 功能管理 + 測試面板 | ✅ NEW |
-| 系統監控 | /admin/monitoring | CPU/記憶體/服務健康/系統日誌 | ✅ NEW |
+| 審核管理 | /admin/approval | 審核隊列 + 核准/退回 + 統計 | ✅ NEW |
+| Feature Flags | /admin/feature-flags | 功能開關管理 + 範圍設定 | ✅ |
+| AI 工具 | /admin/ai-tools | AI 功能管理 + 測試面板 | ✅ |
+| 系統監控 | /admin/monitoring | CPU/記憶體/服務健康/系統日誌 | ✅ |
 | 操作日誌 | /admin/audit-logs | 管理員操作記錄 | ✅ |
-| 系統設定 | /admin/settings | 全站/安全/內容/通知設定 | ✅ NEW |
+| 資料匯出 | /admin/exports | CSV 匯出 (用戶/文章/詞彙/活動/部落) | ✅ NEW |
+| 系統設定 | /admin/settings | 全站/安全/內容/通知設定 | ✅ |
 
-### v4.2 New Features (Phase 4-5)
-- 🚩 **Feature Flags** — 功能開關管理，支援範圍控制 (all/admin/editor/beta)
-- 🤖 **AI 工具管理** — AI 功能列表、狀態切換、測試面板
-- 📡 **系統監控** — 即時 CPU/記憶體/磁碟監控、服務健康檢查、系統日誌
-- ⚙️ **系統設定** — 一般/內容/安全/通知四大分類設定
-- 💬 **社群討論 API** — 後端 Discussions 模組 (CRUD + 回覆 + 按讚)
-- 🔍 **搜尋升級** — 自動完成提示、類型篩選 Tab、關鍵字高亮標記
-- 📋 **Admin 側欄** — 分組式選單 (內容管理/社群管理/系統工具)
+### v4.3 New Features (Phase 5)
+- 🏺 **文化景點** — 文化遺產景點列表與地圖瀏覽，8 個卑南族重要景點，支援類型篩選、GIS 定位
+- 📝 **活動報名** — 活動線上報名/取消報名，即時報名人數顯示，報名狀態管理
+- 📋 **審核管理** — 內容審核隊列 (文章/留言/媒體/活動)，核准/退回/備註，統計面板
+- 📊 **資料匯出** — 管理員 CSV 匯出功能 (5 種資料類型)，UTF-8 BOM 編碼
+- 📈 **學習進度追蹤** — 測驗記錄、正確率統計、連續學習天數、成就徽章 (8 種)、學習排行榜
+- 🎯 **新增 5 個 API 模組** — Learning, Registrations, Approval, CulturalSites, Exports
+- 🗺️ **導航欄新增文化景點** — Header 加入文化景點連結
+
+### v4.2 Features (Phase 4)
+- 🚩 Feature Flags — 功能開關管理
+- 🤖 AI 工具管理 — AI 功能列表、狀態切換、測試面板
+- 📡 系統監控 — 即時 CPU/記憶體/磁碟監控
+- ⚙️ 系統設定 — 一般/內容/安全/通知四大分類設定
+- 💬 社群討論 API — Discussions 模組
+- 🔍 搜尋升級 — 自動完成提示、類型篩選
 
 ### v4.1 Features
 - 🌙 暗色模式 — 全站支援
@@ -101,15 +116,10 @@ pinuyumayan/
 - 🎯 族語測驗 — 四選一雙向模式
 - 📅 每日一詞 — 首頁顯示
 - 💬 留言系統 — 文章留言、按讚、收藏
-- 🏘️ 部落追蹤 — 追蹤/取消追蹤
-- 📑 文章收藏 — 收藏/取消收藏
-- 🔔 通知頁面 — 通知列表、全部已讀
-- ⚙️ 管理後台 — 文章/部落/活動/媒體/詞彙 CRUD + 用戶角色
-- 👤 個人資料 — 編輯資料、收藏/追蹤/修改密碼分頁
+- 🔔 通知頁面 — 通知列表
+- ⚙️ 管理後台 — 完整 CRUD
 - 🦴 Skeleton Loading — 全站載入骨架動畫
-- 🔥 Toast 通知 — 操作回饋
 - 🔐 AuthContext — 全局認證狀態
-- 📱 響應式手機選單
 
 ### Shared Components
 | Component | Path | Description |
@@ -119,14 +129,14 @@ pinuyumayan/
 | ToastProvider | lib/toast-context.tsx | Toast 通知 Context |
 | Skeleton | components/ui/Skeleton.tsx | 載入骨架組件 |
 | Modal | components/ui/Modal.tsx | 通用 Modal |
-| Header | components/layout/Header.tsx | 導航列 |
+| Header | components/layout/Header.tsx | 導航列 (含文化景點) |
 | Footer | components/layout/Footer.tsx | 頁尾 |
 
 ## Data Architecture
 - **Database**: PostgreSQL 17.6 on Supabase (ap-southeast-1)
 - **ORM**: Drizzle ORM v0.39
 - **Tables (11)**: users, tribes, articles, vocabulary, events, media, comments, likes, bookmarks, tribe_follows, notifications
-- **In-Memory**: discussions (production ready for DB migration), audit_logs, feature_flags
+- **In-Memory**: discussions, audit_logs, feature_flags, learning_records, registrations, approval_items, cultural_sites
 
 ## Seed Data
 | Table | Count | Description |
@@ -138,6 +148,8 @@ pinuyumayan/
 | events | 6 | 祭典、活動、工作坊、展覽 |
 | media | 5 | 照片、影片、音檔 |
 | discussions | 4 | 綜合/族語/文化/活動討論 |
+| cultural_sites | 8 | 集會所、祭祀場、遺址、工藝坊等 |
+| approval_items | 4 | 預設審核項目 (3 待審、1 已核准) |
 
 ## Test Accounts
 | Role | Email | Password |
@@ -167,6 +179,9 @@ GET  /api/language/daily          # 每日一詞
 GET  /api/events                  # 活動列表
 GET  /api/media                   # 媒體列表
 GET  /api/search?q=               # 全站搜尋
+GET  /api/cultural-sites          # 文化景點列表 (?type)
+GET  /api/cultural-sites/nearby   # 附近景點 (?lat, ?lng, ?radius)
+GET  /api/cultural-sites/:id      # 單一景點
 
 # Social
 GET    /api/discussions            # 討論列表 (?board)
@@ -178,13 +193,33 @@ POST   /api/comments/article/:id   # 留言 (JWT)
 POST   /api/bookmarks/:articleId   # 收藏 (JWT)
 POST   /api/follows/:tribeId       # 追蹤 (JWT)
 
+# Learning
+GET  /api/learning/progress       # 學習進度 (JWT)
+GET  /api/learning/leaderboard    # 排行榜
+POST /api/learning/quiz-result    # 記錄測驗 (JWT)
+POST /api/learning/mark-learned   # 標記學會 (JWT)
+
+# Registrations
+POST   /api/registrations/events/:id   # 報名活動 (JWT)
+DELETE /api/registrations/events/:id   # 取消報名 (JWT)
+GET    /api/registrations/events/:id   # 活動報名列表
+GET    /api/registrations/my           # 我的報名 (JWT)
+GET    /api/registrations/check/:id    # 檢查報名狀態 (JWT)
+
+# Approval (Admin)
+GET  /api/approval/queue          # 審核隊列 (?status, ?type)
+POST /api/approval/:id/approve    # 核准
+POST /api/approval/:id/reject     # 退回
+POST /api/approval/submit         # 送出審核 (JWT)
+
+# Exports (Admin)
+GET /api/exports/:type            # CSV 匯出 (users/articles/vocabulary/events/tribes)
+
 # Admin
 GET  /api/admin/stats             # 站台統計 (Public)
 GET  /api/admin/dashboard         # 管理 Dashboard (Admin)
 GET  /api/admin/audit-logs        # 操作日誌 (Admin)
 POST /api/admin/tribes            # 新增部落 (Admin)
-PUT  /api/admin/tribes/:id        # 編輯部落 (Admin)
-DELETE /api/admin/tribes/:id      # 刪除部落 (Admin)
 # 同理: /admin/events, /admin/media, /admin/vocabulary, /admin/users, /admin/comments
 ```
 
@@ -225,7 +260,6 @@ pm2 start ecosystem.config.cjs
 - 手寫辨識
 - 語音辨識
 - AI 翻譯 (實際 API 串接)
-- 匯出 CSV
 - 批次操作
 - CI/CD Pipeline
 - E2E 測試
@@ -235,7 +269,8 @@ pm2 start ecosystem.config.cjs
 - **Phase 2** ✅ 密碼管理 + CMS 管理 + 文章進階 + 地圖/語言/社群
 - **Phase 3** ✅ 操作日誌 + API 統計 + Dashboard
 - **Phase 4** ✅ Feature Flags + AI 工具 + 監控 + 設定 + 討論 API + 搜尋升級
-- **Overall**: ~50% of planned system
+- **Phase 5** ✅ 文化景點 + 活動報名 + 審核管理 + 資料匯出 + 學習進度追蹤
+- **Overall**: ~60% of planned system (35 routes, 18 API modules)
 
 ## Last Updated
-2026-04-01 v4.2
+2026-04-02 v4.3

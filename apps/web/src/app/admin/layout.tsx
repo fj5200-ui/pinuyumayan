@@ -15,11 +15,13 @@ const MENU = [
   { type: "divider", label: "社群管理" },
   { href: "/admin/users", label: "會員管理", icon: "👥" },
   { href: "/admin/comments", label: "留言管理", icon: "💬" },
+  { href: "/admin/approval", label: "審核管理", icon: "📋" },
   { type: "divider", label: "系統工具" },
   { href: "/admin/feature-flags", label: "Feature Flags", icon: "🚩" },
   { href: "/admin/ai-tools", label: "AI 工具", icon: "🤖" },
   { href: "/admin/monitoring", label: "系統監控", icon: "📡" },
-  { href: "/admin/audit-logs", label: "操作日誌", icon: "📋" },
+  { href: "/admin/audit-logs", label: "操作日誌", icon: "📜" },
+  { href: "/admin/exports", label: "資料匯出", icon: "📊" },
   { href: "/admin/settings", label: "系統設定", icon: "⚙️" },
 ];
 
