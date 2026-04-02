@@ -83,7 +83,7 @@ function MenuBar({ editor, onOpenMedia }: { editor: any; onOpenMedia: () => void
         <s>S</s>
       </button>
       <button type="button" onClick={() => editor.chain().focus().toggleHighlight().run()} className={btnClass(editor.isActive("highlight"))} title="螢光標記">
-        🖍
+        H
       </button>
 
       <div className="w-px bg-stone-300 dark:bg-stone-600 mx-1" />
@@ -139,26 +139,26 @@ function MenuBar({ editor, onOpenMedia }: { editor: any; onOpenMedia: () => void
 
       {/* Link */}
       <button type="button" onClick={setLink} className={btnClass(editor.isActive("link"))} title="連結">
-        🔗
+        連結
       </button>
 
       {/* Table */}
       <button type="button" onClick={insertTable} className={btnClass(false)} title="插入表格">
-        📊
+        表格
       </button>
 
       <div className="w-px bg-stone-300 dark:bg-stone-600 mx-1" />
 
       {/* Images */}
       <button type="button" onClick={onOpenMedia} className={btnClass(false)} title="從媒體庫選取">
-        🖼️ 媒體庫
+        媒體庫
       </button>
       <label className={`${btnClass(false)} cursor-pointer`} title="本地上傳圖片">
-        📤 上傳
+        上傳
         <input ref={uploadRef} type="file" accept="image/*" onChange={handleLocalUpload} className="hidden" />
       </label>
       <button type="button" onClick={addImageByUrl} className={btnClass(false)} title="圖片URL">
-        🌐 URL
+        URL
       </button>
 
       <div className="w-px bg-stone-300 dark:bg-stone-600 mx-1" />
