@@ -1,6 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
+import { eq, desc, sql, and, count } from 'drizzle-orm';
+import { DRIZZLE } from '../database/database.module';
+import { learningRecords, learnedWords, userBadges, vocabulary } from '../database/schema';
+import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
+import type * as schema from '../database/schema';
 
-export interface LearningRecord { userId: number; wordId: number; correct: boolean; ts: string; }
 export interface Badge { id: string; name: string; icon: string; description: string; condition: string; }
 
 const BADGES: Badge[] = [
@@ -16,98 +20,140 @@ const BADGES: Badge[] = [
 
 @Injectable()
 export class LearningService {
-  private records: Map<number, LearningRecord[]> = new Map();
-  private userBadges: Map<number, Set<string>> = new Map();
-  private learnedWords: Map<number, Set<number>> = new Map();
+  constructor(@Inject(DRIZZLE) private db: PostgresJsDatabase<typeof schema>) {}
 
   async getProgress(userId: number) {
-    const records = this.records.get(userId) || [];
-    const learned = this.learnedWords.get(userId) || new Set();
-    const badges = this.userBadges.get(userId) || new Set();
-    const total = records.length;
-    const correct = records.filter(r => r.correct).length;
-    const accuracy = total > 0 ? Math.round((correct / total) * 100) : 0;
+    // Count records
+    const [{ total }] = await this.db.select({ total: count() }).from(learningRecords).where(eq(learningRecords.userId, userId));
+    const [{ correct }] = await this.db.select({ correct: count() }).from(learningRecords).where(and(eq(learningRecords.userId, userId), eq(learningRecords.correct, true)));
+    const accuracy = Number(total) > 0 ? Math.round((Number(correct) / Number(total)) * 100) : 0;
 
-    // Calculate streaks and daily stats
-    const today = new Date().toISOString().split('T')[0];
-    const todayRecords = records.filter(r => r.ts.startsWith(today));
-    const streak = this.calcStreak(records);
-    const weeklyData = this.calcWeekly(records);
+    // Learned words count
+    const [{ learnedCount }] = await this.db.select({ learnedCount: count() }).from(learnedWords).where(eq(learnedWords.userId, userId));
+
+    // Today's records
+    const todayStr = new Date().toISOString().split('T')[0];
+    const [{ todayTotal }] = await this.db.select({ todayTotal: count() }).from(learningRecords).where(and(eq(learningRecords.userId, userId), sql`${learningRecords.createdAt} >= ${todayStr}::timestamp`));
+    const [{ todayCorrect }] = await this.db.select({ todayCorrect: count() }).from(learningRecords).where(and(eq(learningRecords.userId, userId), eq(learningRecords.correct, true), sql`${learningRecords.createdAt} >= ${todayStr}::timestamp`));
+
+    // Streak (consecutive days)
+    const streak = await this.calcStreak(userId);
+
+    // Badges
+    const earnedBadges = await this.db.select({ badgeId: userBadges.badgeId }).from(userBadges).where(eq(userBadges.userId, userId));
+    const earnedSet = new Set(earnedBadges.map(b => b.badgeId));
+
+    // Weekly data
+    const weeklyData = await this.calcWeekly(userId);
 
     return {
-      totalQuizzes: total, correctAnswers: correct, accuracy,
-      learnedWords: learned.size, streak, todayQuizzes: todayRecords.length,
-      todayCorrect: todayRecords.filter(r => r.correct).length,
-      badges: BADGES.filter(b => badges.has(b.id)),
-      allBadges: BADGES.map(b => ({ ...b, earned: badges.has(b.id) })),
+      totalQuizzes: Number(total), correctAnswers: Number(correct), accuracy,
+      learnedWords: Number(learnedCount), streak, todayQuizzes: Number(todayTotal),
+      todayCorrect: Number(todayCorrect),
+      badges: BADGES.filter(b => earnedSet.has(b.id)),
+      allBadges: BADGES.map(b => ({ ...b, earned: earnedSet.has(b.id) })),
       weeklyData,
     };
   }
 
   async recordQuiz(userId: number, wordId: number, correct: boolean) {
-    if (!this.records.has(userId)) this.records.set(userId, []);
-    this.records.get(userId)!.push({ userId, wordId, correct, ts: new Date().toISOString() });
+    await this.db.insert(learningRecords).values({ userId, wordId, correct });
     if (correct) {
-      if (!this.learnedWords.has(userId)) this.learnedWords.set(userId, new Set());
-      this.learnedWords.get(userId)!.add(wordId);
+      await this.db.insert(learnedWords).values({ userId, wordId }).onConflictDoNothing();
     }
-    this.checkBadges(userId);
-    return { success: true, learned: this.learnedWords.get(userId)?.size || 0 };
+    await this.checkBadges(userId);
+    const [{ learnedCount }] = await this.db.select({ learnedCount: count() }).from(learnedWords).where(eq(learnedWords.userId, userId));
+    return { success: true, learned: Number(learnedCount) };
   }
 
   async markLearned(userId: number, wordIds: number[]) {
-    if (!this.learnedWords.has(userId)) this.learnedWords.set(userId, new Set());
-    wordIds.forEach(id => this.learnedWords.get(userId)!.add(id));
-    this.checkBadges(userId);
-    return { success: true, learned: this.learnedWords.get(userId)!.size };
+    for (const wordId of wordIds) {
+      await this.db.insert(learnedWords).values({ userId, wordId }).onConflictDoNothing();
+    }
+    await this.checkBadges(userId);
+    const [{ learnedCount }] = await this.db.select({ learnedCount: count() }).from(learnedWords).where(eq(learnedWords.userId, userId));
+    return { success: true, learned: Number(learnedCount) };
   }
 
   async getLeaderboard() {
+    // Get top learners by learned words count
+    const rows = await this.db
+      .select({
+        userId: learnedWords.userId,
+        learned: count(),
+      })
+      .from(learnedWords)
+      .groupBy(learnedWords.userId)
+      .orderBy(desc(count()))
+      .limit(20);
+
     const entries: { userId: number; learned: number; quizzes: number; accuracy: number }[] = [];
-    this.learnedWords.forEach((words, userId) => {
-      const records = this.records.get(userId) || [];
-      const correct = records.filter(r => r.correct).length;
-      entries.push({ userId, learned: words.size, quizzes: records.length, accuracy: records.length > 0 ? Math.round((correct / records.length) * 100) : 0 });
-    });
-    return { leaderboard: entries.sort((a, b) => b.learned - a.learned).slice(0, 20) };
-  }
-
-  private checkBadges(userId: number) {
-    if (!this.userBadges.has(userId)) this.userBadges.set(userId, new Set());
-    const badges = this.userBadges.get(userId)!;
-    const learned = this.learnedWords.get(userId)?.size || 0;
-    const records = this.records.get(userId) || [];
-    if (learned >= 1) badges.add('first_word');
-    if (learned >= 10) badges.add('ten_words');
-    if (learned >= 50) badges.add('collector');
-    // Streak check
-    let streak = 0;
-    for (let i = records.length - 1; i >= 0; i--) {
-      if (records[i].correct) streak++; else break;
+    for (const row of rows) {
+      const [{ total }] = await this.db.select({ total: count() }).from(learningRecords).where(eq(learningRecords.userId, row.userId));
+      const [{ correct }] = await this.db.select({ correct: count() }).from(learningRecords).where(and(eq(learningRecords.userId, row.userId), eq(learningRecords.correct, true)));
+      entries.push({
+        userId: row.userId,
+        learned: Number(row.learned),
+        quizzes: Number(total),
+        accuracy: Number(total) > 0 ? Math.round((Number(correct) / Number(total)) * 100) : 0,
+      });
     }
-    if (streak >= 10) badges.add('quiz_master');
+    return { leaderboard: entries };
   }
 
-  private calcStreak(records: LearningRecord[]): number {
+  private async checkBadges(userId: number) {
+    const [{ learnedCount }] = await this.db.select({ learnedCount: count() }).from(learnedWords).where(eq(learnedWords.userId, userId));
+    const learned = Number(learnedCount);
+
+    const toAdd: string[] = [];
+    if (learned >= 1) toAdd.push('first_word');
+    if (learned >= 10) toAdd.push('ten_words');
+    if (learned >= 50) toAdd.push('collector');
+
+    // Check quiz streak
+    const recent = await this.db.select({ correct: learningRecords.correct }).from(learningRecords)
+      .where(eq(learningRecords.userId, userId)).orderBy(desc(learningRecords.createdAt)).limit(20);
+    let streak = 0;
+    for (const r of recent) { if (r.correct) streak++; else break; }
+    if (streak >= 10) toAdd.push('quiz_master');
+
+    for (const badgeId of toAdd) {
+      await this.db.insert(userBadges).values({ userId, badgeId }).onConflictDoNothing();
+    }
+  }
+
+  private async calcStreak(userId: number): Promise<number> {
+    const records = await this.db
+      .select({ day: sql<string>`DATE(${learningRecords.createdAt})` })
+      .from(learningRecords)
+      .where(eq(learningRecords.userId, userId))
+      .groupBy(sql`DATE(${learningRecords.createdAt})`)
+      .orderBy(desc(sql`DATE(${learningRecords.createdAt})`));
+
     if (records.length === 0) return 0;
-    const days = new Set(records.map(r => r.ts.split('T')[0]));
     let streak = 0;
     const today = new Date();
     for (let i = 0; i < 365; i++) {
       const d = new Date(today); d.setDate(d.getDate() - i);
-      if (days.has(d.toISOString().split('T')[0])) streak++; else break;
+      const key = d.toISOString().split('T')[0];
+      if (records.some(r => r.day === key)) streak++;
+      else break;
     }
     return streak;
   }
 
-  private calcWeekly(records: LearningRecord[]) {
+  private async calcWeekly(userId: number) {
     const days = ['日', '一', '二', '三', '四', '五', '六'];
-    const data = days.map((d, i) => {
+    const data: { day: string; date: string; total: number; correct: number }[] = [];
+    for (let i = 0; i < 7; i++) {
       const date = new Date(); date.setDate(date.getDate() - (6 - i));
       const key = date.toISOString().split('T')[0];
-      const dayRecords = records.filter(r => r.ts.startsWith(key));
-      return { day: d, date: key, total: dayRecords.length, correct: dayRecords.filter(r => r.correct).length };
-    });
+      const dayEndDate = new Date(key); dayEndDate.setDate(dayEndDate.getDate() + 1);
+      const dayEndStr = dayEndDate.toISOString().split('T')[0];
+      const [{ total }] = await this.db.select({ total: count() }).from(learningRecords).where(and(eq(learningRecords.userId, userId), sql`${learningRecords.createdAt} >= ${key}::timestamp`, sql`${learningRecords.createdAt} < ${dayEndStr}::timestamp`));
+      const [{ correct }] = await this.db.select({ correct: count() }).from(learningRecords).where(and(eq(learningRecords.userId, userId), eq(learningRecords.correct, true), sql`${learningRecords.createdAt} >= ${key}::timestamp`, sql`${learningRecords.createdAt} < ${dayEndStr}::timestamp`));
+      data.push({ day: days[date.getDay()], date: key, total: Number(total), correct: Number(correct) });
+    }
     return data;
   }
 }

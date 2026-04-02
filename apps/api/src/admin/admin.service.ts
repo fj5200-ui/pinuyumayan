@@ -1,7 +1,7 @@
 import { Injectable, Inject, NotFoundException, BadRequestException } from '@nestjs/common';
 import { eq, sql, desc, count, and, gte, ilike, or } from 'drizzle-orm';
 import { DRIZZLE } from '../database/database.module';
-import { users, comments, articles, tribes, vocabulary, events, media, bookmarks, likes, tribeFollows, notifications } from '../database/schema';
+import { users, comments, articles, tribes, vocabulary, events, media, bookmarks, likes, tribeFollows, notifications, auditLogs } from '../database/schema';
 import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import type * as schema from '../database/schema';
 @Injectable()
@@ -138,17 +138,21 @@ export class AdminService {
   }
   async deleteVocab(id: number) { await this.db.delete(vocabulary).where(eq(vocabulary.id, id)); return { success: true }; }
 
-  // ── Audit log (stored in memory for now, can be persisted later) ──
-  private auditLogs: any[] = [];
-  logAction(userId: number, action: string, target: string, detail?: string) {
-    this.auditLogs.unshift({ id: Date.now(), userId, action, target, detail, timestamp: new Date().toISOString() });
-    if (this.auditLogs.length > 500) this.auditLogs = this.auditLogs.slice(0, 500);
+  // ── Audit log (persisted in DB) ──
+  async logAction(userId: number, action: string, target: string, detail?: string) {
+    try {
+      await this.db.insert(auditLogs).values({ userId, action, target, detail });
+    } catch { /* non-critical */ }
   }
-  getAuditLogs(page = 1, limit = 50) {
+
+  async getAuditLogs(page = 1, limit = 50) {
     const offset = (page - 1) * limit;
+    const [{ total }] = await this.db.select({ total: sql<number>`count(*)` }).from(auditLogs);
+    const logs = await this.db.select().from(auditLogs)
+      .orderBy(desc(auditLogs.createdAt)).limit(limit).offset(offset);
     return {
-      logs: this.auditLogs.slice(offset, offset + limit),
-      pagination: { page, limit, total: this.auditLogs.length, totalPages: Math.ceil(this.auditLogs.length / limit) },
+      logs: logs.map(l => ({ ...l, timestamp: l.createdAt.toISOString() })),
+      pagination: { page, limit, total: Number(total), totalPages: Math.ceil(Number(total) / limit) },
     };
   }
 }

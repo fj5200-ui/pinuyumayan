@@ -387,3 +387,100 @@ export const articleVersionsRelations = relations(articleVersions, ({ one }) => 
   article: one(articles, { fields: [articleVersions.articleId], references: [articles.id] }),
   editor: one(users, { fields: [articleVersions.editedBy], references: [users.id] }),
 }));
+
+// ═══════════════════════════════════════════
+//  Learning Records (Phase 8)
+// ═══════════════════════════════════════════
+
+export const learningRecords = pgTable('learning_records', {
+  id: serial('id').primaryKey(),
+  userId: integer('user_id').notNull().references(() => users.id),
+  wordId: integer('word_id').notNull().references(() => vocabulary.id),
+  correct: boolean('correct').notNull().default(false),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+}, (table) => [
+  index('idx_learning_records_user').on(table.userId),
+  index('idx_learning_records_user_word').on(table.userId, table.wordId),
+]);
+
+export const learnedWords = pgTable('learned_words', {
+  id: serial('id').primaryKey(),
+  userId: integer('user_id').notNull().references(() => users.id),
+  wordId: integer('word_id').notNull().references(() => vocabulary.id),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+}, (table) => [
+  uniqueIndex('idx_learned_words_user_word').on(table.userId, table.wordId),
+]);
+
+export const userBadges = pgTable('user_badges', {
+  id: serial('id').primaryKey(),
+  userId: integer('user_id').notNull().references(() => users.id),
+  badgeId: varchar('badge_id', { length: 50 }).notNull(),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+}, (table) => [
+  uniqueIndex('idx_user_badges_user_badge').on(table.userId, table.badgeId),
+]);
+
+// ═══════════════════════════════════════════
+//  Approval Items (Phase 8)
+// ═══════════════════════════════════════════
+
+export const approvalStatusEnum = pgEnum('approval_status', ['pending', 'approved', 'rejected']);
+export const approvalTypeEnum = pgEnum('approval_type', ['article', 'comment', 'media', 'event']);
+
+export const approvalItems = pgTable('approval_items', {
+  id: serial('id').primaryKey(),
+  type: approvalTypeEnum('type').notNull(),
+  title: varchar('title', { length: 255 }).notNull(),
+  content: text('content').notNull().default(''),
+  submittedBy: varchar('submitted_by', { length: 100 }).notNull(),
+  submittedById: integer('submitted_by_id').notNull().references(() => users.id),
+  status: approvalStatusEnum('status').notNull().default('pending'),
+  reviewedBy: varchar('reviewed_by', { length: 100 }),
+  reviewNote: text('review_note'),
+  reviewedAt: timestamp('reviewed_at'),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+}, (table) => [
+  index('idx_approval_items_status').on(table.status),
+  index('idx_approval_items_type').on(table.type),
+]);
+
+// ═══════════════════════════════════════════
+//  Audit Logs (Phase 8)
+// ═══════════════════════════════════════════
+
+export const auditLogs = pgTable('audit_logs', {
+  id: serial('id').primaryKey(),
+  userId: integer('user_id').notNull(),
+  action: varchar('action', { length: 100 }).notNull(),
+  target: varchar('target', { length: 255 }).notNull(),
+  detail: text('detail'),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+}, (table) => [
+  index('idx_audit_logs_user').on(table.userId),
+  index('idx_audit_logs_created').on(table.createdAt),
+]);
+
+// ── Phase 8 Relations ──
+
+export const learningRecordsRelations = relations(learningRecords, ({ one }) => ({
+  user: one(users, { fields: [learningRecords.userId], references: [users.id] }),
+  word: one(vocabulary, { fields: [learningRecords.wordId], references: [vocabulary.id] }),
+}));
+
+export const learnedWordsRelations = relations(learnedWords, ({ one }) => ({
+  user: one(users, { fields: [learnedWords.userId], references: [users.id] }),
+  word: one(vocabulary, { fields: [learnedWords.wordId], references: [vocabulary.id] }),
+}));
+
+export const userBadgesRelations = relations(userBadges, ({ one }) => ({
+  user: one(users, { fields: [userBadges.userId], references: [users.id] }),
+}));
+
+export const approvalItemsRelations = relations(approvalItems, ({ one }) => ({
+  submitter: one(users, { fields: [approvalItems.submittedById], references: [users.id] }),
+}));
+
+export const auditLogsRelations = relations(auditLogs, ({ one }) => ({
+  user: one(users, { fields: [auditLogs.userId], references: [users.id] }),
+}));

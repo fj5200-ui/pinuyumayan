@@ -43,6 +43,18 @@ export class ArticlesController {
     return this.articlesService.getSitemapData();
   }
 
+  @Get('meta/navigation/:id')
+  @ApiOperation({ summary: '取得上下篇文章導航' })
+  async getNavigation(@Param('id', ParseIntPipe) id: number) {
+    return this.articlesService.getNavigation(id);
+  }
+
+  @Get('meta/author/:id')
+  @ApiOperation({ summary: '取得作者檔案與文章統計' })
+  async getAuthorProfile(@Param('id', ParseIntPipe) id: number) {
+    return this.articlesService.getAuthorProfile(id);
+  }
+
   @Get(':slug')
   @ApiOperation({ summary: '取得單篇文章' })
   async findOne(@Param('slug') slug: string) {

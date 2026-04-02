@@ -1,5 +1,5 @@
 import 'dotenv/config';
-import { createDb, users, tribes, articles, vocabulary, events, media, discussions, discussionReplies, culturalSites, eventRegistrations } from './index.js';
+import { createDb, users, tribes, articles, vocabulary, events, media, discussions, discussionReplies, culturalSites, eventRegistrations, approvalItems, auditLogs } from './index.js';
 import bcrypt from 'bcryptjs';
 
 async function main() {
@@ -126,6 +126,22 @@ async function main() {
     { name: '初鹿文化區', type: '文化區', description: '初鹿部落週邊的文化生活圈，包含傳統家屋遺址和農業文化景觀。', latitude: 22.8270, longitude: 121.0535, tribeId: 5, tribeName: '初鹿部落', tags: '["文化區","家屋","農業"]' },
     { name: '南王 Mangayaw 祭典場', type: '祭典場', description: '南王部落舉行大獵祭（Mangayaw）的傳統場域，每年12月底在此進行為期一週的祭典活動。', latitude: 22.7840, longitude: 121.1075, tribeId: 1, tribeName: '南王部落', tags: '["大獵祭","Mangayaw","祭典"]' },
     { name: '知本猴祭場', type: '祭典場', description: '知本部落舉行猴祭的場所，猴祭是卑南族少年成年禮的重要祭典，意義深遠。', latitude: 22.7015, longitude: 121.0400, tribeId: 2, tribeName: '知本部落', tags: '["猴祭","成年禮","少年"]' },
+  ]).onConflictDoNothing();
+
+  // ── Approval Items ──
+  console.log('  → 插入審核項目...');
+  await db.insert(approvalItems).values([
+    { type: 'article' as const, title: '卑南族年祭的意義', content: '年祭是卑南族最重要的傳統祭典...', submittedBy: '文化編輯', submittedById: 2, status: 'pending' as const },
+    { type: 'comment' as const, title: '文章留言審核', content: '這篇文章寫得很好！', submittedBy: '訪客用戶', submittedById: 3, status: 'pending' as const },
+    { type: 'media' as const, title: '大獵祭影片', content: '上傳大獵祭紀錄影片', submittedBy: '文化編輯', submittedById: 2, status: 'pending' as const },
+    { type: 'article' as const, title: '傳統編織工藝', content: '卑南族的傳統編織工藝...', submittedBy: '文化編輯', submittedById: 2, status: 'approved' as const, reviewedBy: 'Admin', reviewNote: '內容詳實' },
+  ]).onConflictDoNothing();
+
+  // ── Audit Logs ──
+  console.log('  → 插入操作日誌...');
+  await db.insert(auditLogs).values([
+    { userId: 1, action: 'SEED_DATABASE', target: 'system', detail: '初始化資料庫種子資料' },
+    { userId: 1, action: 'APPROVE_ARTICLE', target: 'article:4', detail: '核准文章：傳統編織工藝' },
   ]).onConflictDoNothing();
 
   console.log('✅ Seed completed!');

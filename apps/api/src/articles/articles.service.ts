@@ -161,4 +161,48 @@ export class ArticlesService {
     const articlesList = await this.db.select({ slug: articles.slug, updatedAt: articles.updatedAt }).from(articles).where(eq(articles.published, true));
     return { articles: articlesList };
   }
+
+  /**
+   * Get prev/next articles for navigation
+   */
+  async getNavigation(id: number) {
+    const [current] = await this.db.select({ id: articles.id, createdAt: articles.createdAt })
+      .from(articles).where(and(eq(articles.id, id), eq(articles.published, true)));
+    if (!current) return { prev: null, next: null };
+
+    const [prev] = await this.db.select({
+      id: articles.id, title: articles.title, slug: articles.slug, category: articles.category,
+    }).from(articles)
+      .where(and(eq(articles.published, true), sql`${articles.createdAt} < ${current.createdAt.toISOString()}`))
+      .orderBy(desc(articles.createdAt)).limit(1);
+
+    const [next] = await this.db.select({
+      id: articles.id, title: articles.title, slug: articles.slug, category: articles.category,
+    }).from(articles)
+      .where(and(eq(articles.published, true), sql`${articles.createdAt} > ${current.createdAt.toISOString()}`))
+      .orderBy(articles.createdAt).limit(1);
+
+    return { prev: prev || null, next: next || null };
+  }
+
+  /**
+   * Get author profile with article stats
+   */
+  async getAuthorProfile(authorId: number) {
+    const [author] = await this.db.select({
+      id: users.id, name: users.name, avatarUrl: users.avatarUrl, bio: users.bio,
+    }).from(users).where(eq(users.id, authorId));
+    if (!author) return null;
+
+    const [{ articleCount }] = await this.db.select({ articleCount: sql<number>`count(*)` })
+      .from(articles).where(and(eq(articles.authorId, authorId), eq(articles.published, true)));
+    const [{ totalViews }] = await this.db.select({ totalViews: sql<number>`coalesce(sum(${articles.views}), 0)` })
+      .from(articles).where(and(eq(articles.authorId, authorId), eq(articles.published, true)));
+
+    return {
+      ...author,
+      articleCount: Number(articleCount),
+      totalViews: Number(totalViews),
+    };
+  }
 }
