@@ -49,3 +49,4 @@ packages/database/.env
 supabase/.temp/
 .next/
 dist/
+apps/api/core

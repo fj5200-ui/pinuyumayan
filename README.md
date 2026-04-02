@@ -1,4 +1,4 @@
-# Pinuyumayan 卑南族入口網 v4.7
+# Pinuyumayan 卑南族入口網 v4.8
 
 ## Project Overview
 - **Name**: Pinuyumayan (卑南族入口網)
@@ -56,108 +56,97 @@ pinuyumayan/
 #### 前台頁面 (18 頁)
 | Page | Path | Description | Status |
 |------|------|-------------|--------|
-| 首頁 | / | **升級 v2**: 動畫計數器 + 波浪分隔線 + 互動卡片(hover 效果) + 動態統計 + 每日一詞 + 部落/文章/族語/活動 + 文化景點區 + 排行榜 | ✅ **ENHANCED v2** |
-| 部落列表 | /tribes | 卑南八社一覽 + 地圖檢視按鈕 | ✅ |
-| 部落詳情 | /tribes/[id] | **升級**: 追蹤功能 + 粉絲數 + 分享按鈕 + 文化標籤 + Google Maps 嵌入 + 相關文章推薦 | ✅ **ENHANCED** |
+| 首頁 | / | 動畫計數器 + 波浪分隔線 + 互動卡片(hover) + 動態統計 + 每日一詞 + 部落/文章/族語/活動 + 文化景點 + 排行榜 | ✅ **v2** |
+| 部落列表 | /tribes | 卑南八社一覽 + 地圖檢視 | ✅ |
+| 部落詳情 | /tribes/[id] | 追蹤 + 粉絲數 + 分享 + 文化標籤 + Google Maps + 相關文章 | ✅ **ENHANCED** |
 | 部落地圖 | /tribes/map | Leaflet 互動地圖 + 圖層切換 | ✅ |
-| 文化誌 | /articles | 文章列表 + 分頁 + 搜尋 + 分類篩選 + 封面圖 + 作者頭像 | ✅ ENHANCED |
-| 文章詳情 | /articles/[slug] | v2: Markdown + TOC(active tracking) + 上下篇導航 + 作者卡片 + 閱讀剩餘時間 + breadcrumb + skeleton + 側邊快捷 | ✅ ENHANCED v2 |
-| 族語學習 | /language | 詞彙分類瀏覽、發音、對話、學習進度+徽章+排行榜 | ✅ ENHANCED |
+| 文化誌 | /articles | 文章列表 + 分頁 + 搜尋 + 分類篩選 + 封面圖 + 作者頭像 | ✅ |
+| 文章詳情 | /articles/[slug] | Markdown + TOC(active tracking) + 上下篇導航 + 作者卡片 + 閱讀時間 + breadcrumb + skeleton | ✅ **v2** |
+| 族語學習 | /language | **升級 v3**: Hero+每日一詞 + 🃏閃卡模式(翻轉動畫/ALL/未學/隨機) + 圓形進度環SVG + 分類進度條 + 對話場景(5組) + 排行榜 | ✅ **ENHANCED v3** |
 | 族語測驗 | /language/quiz | 四選一測驗、連續答對、雙向模式 | ✅ |
-| 活動祭典 | /events | **升級**: 多色標籤系統 + 倒計時天數 + 搜尋過濾 + 已結束視覺效果 + 報名/取消 + 報名人數 | ✅ **ENHANCED v2** |
-| 文化景點 | /cultural-sites | 文化景點列表/地圖 + 類型篩選 + GIS 定位 | ✅ |
-| 媒體庫 | /media | 照片/影片/音檔 (類型篩選) | ✅ |
-| 社群討論 | /community | **升級**: 多板塊系統 + 回覆展開 + 按讚互動 + 發文表單驗證 + 字數統計 + 載入動畫 | ✅ **ENHANCED v2** |
-| 搜尋 | /search | 自動完成 + 類型篩選 + 關鍵字高亮 | ✅ |
+| 活動祭典 | /events | 倒計時天數 + 多色標籤 + 搜尋過濾 + 已結束灰化 + 報名人數 | ✅ **v2** |
+| 文化景點 | /cultural-sites | **升級 v2**: Hero動畫+統計 + Leaflet地圖(圖例/導航popup) + 📍附近排序(Haversine) + 距離標示 + 詳情側欄(導航/查看/部落連結) + Skeleton載入 + 底部探索導航 | ✅ **ENHANCED v2** |
+| 媒體庫 | /media | **升級 v2**: Hero + 瀑布流網格 + 類型icon/Badge + 排序(最新/最舊/標題) + 詳情Modal(內嵌播放器) + Lightbox + Skeleton載入 | ✅ **ENHANCED v2** |
+| 社群討論 | /community | 多板塊系統 + 回覆展開 + 按讚互動 + 發文表單驗證 + 字數統計 | ✅ **v2** |
+| 搜尋 | /search | **升級 v2**: Hero深色主題 + 🕐搜尋歷史(localStorage) + 🔥熱門關鍵字(9組) + 搜尋耗時顯示 + 日曆組件(活動結果) + 快速探索導航 + Skeleton載入 | ✅ **ENHANCED v2** |
+| 關於我們 | /about | **升級 v2**: 動態統計卡 + 時間線歷史 + 團隊介紹 + 技術架構圖 + 常見問題FAQ + 訪客留言板 | ✅ **ENHANCED v2** |
 | 登入 | /login | JWT 登入 + 測試帳號提示 | ✅ |
 | 註冊 | /register | 帳號註冊 + 密碼確認 | ✅ |
 | 忘記密碼 | /forgot-password | 發送重設連結 | ✅ |
-| 個人資料 | /profile | 7 分頁: 資料/收藏/追蹤/報名/學習/我的發文/密碼 | ✅ ENHANCED |
+| 個人資料 | /profile | **升級 v2**: Hero(漸層頭像+角色標籤+會員天數) + 統計列(4格) + 7分頁 + 密碼強度條 + 空狀態美化(icon+CTA) | ✅ **ENHANCED v2** |
 | 通知 | /notifications | 通知列表、已讀/刪除 | ✅ |
 
 #### 管理後台 (15 頁)
 | Page | Path | Description | Status |
 |------|------|-------------|--------|
-| Dashboard | /admin | **升級 v2**: 即時時鐘 + 一鍵更新 + 系統健康狀態列 + Sparkline 迷你圖表 + 操作日誌面板 + 審核進度條 + 內容分佈圖表 + 3欄佈局(最新文章/熱門文章/操作日誌) | ✅ **ENHANCED v2** |
-| 文章管理 | /admin/articles | 版本歷史 + 批次操作 + Markdown 預覽/工具列/封面圖片/搜尋過濾/字數統計 | ✅ ENHANCED v2 |
-| 部落管理 | /admin/tribes | 部落 CRUD + 地理資訊 | ✅ |
-| 族語管理 | /admin/vocabulary | 詞彙 CRUD + 分類/發音/例句 | ✅ |
-| 活動管理 | /admin/events | 活動 CRUD + 日期/地點 | ✅ |
-| 媒體管理 | /admin/media | 媒體 CRUD + 類型/URL | ✅ |
-| 會員管理 | /admin/users | 用戶列表 + 角色權限管理 | ✅ |
-| 留言管理 | /admin/comments | 留言審核 + 刪除 | ✅ |
-| 審核管理 | /admin/approval | 審核隊列 + 核准/退回 + 統計 | ✅ |
-| Feature Flags | /admin/feature-flags | 功能開關管理 + 範圍設定 | ✅ |
-| AI 工具 | /admin/ai-tools | AI 功能管理 + 測試面板 | ✅ |
-| 系統監控 | /admin/monitoring | CPU/記憶體/服務健康/系統日誌 | ✅ |
+| Dashboard | /admin | 即時時鐘 + 系統健康列 + Sparkline + 操作日誌面板 + 審核進度條 + 內容分佈圖 | ✅ **v2** |
+| 文章管理 | /admin/articles | 版本歷史 + 批次操作 + Markdown 預覽/工具列 | ✅ |
+| 部落管理 | /admin/tribes | CRUD + 地理資訊 | ✅ |
+| 族語管理 | /admin/vocabulary | CRUD + 分類/發音/例句 | ✅ |
+| 活動管理 | /admin/events | CRUD + 日期/地點 | ✅ |
+| 媒體管理 | /admin/media | CRUD + 類型/URL | ✅ |
+| 會員管理 | /admin/users | 用戶列表 + 角色管理 | ✅ |
+| 留言管理 | /admin/comments | 審核 + 刪除 | ✅ |
+| 審核管理 | /admin/approval | 審核隊列 + 核准/退回 | ✅ |
+| Feature Flags | /admin/feature-flags | 功能開關 + 範圍設定 | ✅ |
+| AI 工具 | /admin/ai-tools | AI 管理 + 測試面板 | ✅ |
+| 系統監控 | /admin/monitoring | CPU/記憶體/服務健康 | ✅ |
 | 操作日誌 | /admin/audit-logs | 管理員操作記錄 | ✅ |
-| 資料匯出 | /admin/exports | CSV 匯出 (用戶/文章/詞彙/活動/部落) | ✅ |
+| 資料匯出 | /admin/exports | CSV 匯出 | ✅ |
 | 系統設定 | /admin/settings | 全站/安全/內容/通知設定 | ✅ |
 
-#### 共用元件 (Upgraded in v4.7)
-| Component | Path | Description | v4.7 Changes |
-|-----------|------|-------------|--------------|
-| Header | components/layout/Header.tsx | **全面升級**: 智慧搜尋 (⌘K 快捷鍵+快速前往+overlay) + 使用者下拉選單(角色標籤+頭像) + 通知徽章(即時計數) + 捲動壓縮效果 + 活躍路由底線指示器 + 響應式漢堡選單 | ✅ **NEW v4.7** |
-| Footer | components/layout/Footer.tsx | **全面升級**: CTA 橫幅 + 5 欄佈局 + 每日一句族語(互動切換) + 平台統計數字帶 + 社群圖標連結 | ✅ **NEW v4.7** |
-| AuthProvider | lib/auth-context.tsx | 認證狀態 Context | — |
-| ThemeProvider | lib/theme-context.tsx | 暗色模式 Context | — |
-| ToastProvider | lib/toast-context.tsx | Toast 通知 Context | — |
-| Skeleton | components/ui/Skeleton.tsx | 載入骨架組件 | — |
-| Modal | components/ui/Modal.tsx | 通用 Modal | — |
+#### 共用元件
+| Component | Description | Version |
+|-----------|-------------|---------|
+| Header | ⌘K搜尋overlay + 使用者下拉選單 + 通知徽章 + 捲動壓縮 + 路由指示器 | v4.7 |
+| Footer | CTA橫幅 + 5欄佈局 + 每日族語 + 平台統計 | v4.7 |
+| AuthProvider | JWT 認證狀態 Context | v4.0 |
+| ThemeProvider | 暗色模式 Context | v4.0 |
+| ToastProvider | Toast 通知 Context | v4.0 |
 
-### v4.7 New Features (Phase 9)
-- 🏠 **首頁升級 v2** — IntersectionObserver 動畫計數器 + SVG 波浪分隔線 + 互動卡片(hover translate/scale) + 漸層光球裝飾 + 文章日期顯示 + 活動類型色彩標籤
-- 🎪 **活動頁面升級** — 倒計時天數計算 + 多色類型標籤系統 + 搜尋過濾 + 已結束灰化效果 + 報名人數即時更新
-- 💬 **社群討論頁升級** — 多板塊系統(一般/族語/文化/活動) + 帖子詳情展開 + 回覆/按讚互動 + 發文字數統計 + 板塊描述
-- 🏘️ **部落詳情頁升級** — 追蹤/取消追蹤 + 粉絲數統計 + 3 圖標分享(Facebook/Twitter/LINE) + 文化標籤(歷史/遷移/祭典) + Google Maps iframe 嵌入 + 相關文章推薦
-- 📊 **管理儀表板升級 v2** — 即時時鐘 + 一鍵資料更新 + 系統健康狀態列(API/路由/DB/內容數) + Sparkline 迷你圖表 + 操作日誌面板 + 審核三色進度條 + 內容分佈長條圖(漸層) + 3 欄下方區(最新文章/熱門文章/操作日誌) + Skeleton 載入動畫 + 版本資訊 footer
-- 🔍 **Header 全面升級** — 搜尋 overlay (⌘K 快捷鍵+快速前往連結) + 使用者下拉選單(角色標籤+頭像初始字母) + 通知徽章(API 即時取得未讀數) + 捲動壓縮效果(h-16→h-14) + 活躍路由底線指示器 + 鍵盤快捷鍵(ESC 關閉)
-- 🦶 **Footer 全面升級** — CTA 橫幅(族語測驗邀請) + 5 欄佈局(品牌/探索/學習/帳號/族語) + 每日一句族語(互動切換：Mareka tu!) + 平台統計數字帶 + 技術堆疊顯示
+### v4.8 New Features (Phase 10)
+- 🏺 **文化景點頁升級 v2** — Hero 動畫(統計pills) + Leaflet 地圖(圖例/導航popup/使用者位置) + 📍附近景點排序(Haversine 距離計算) + 距離標示(km) + 詳情側欄(資訊網格/導航/Google Maps/部落頁面) + 多排序(名稱/類型/部落) + 搜尋(含標籤) + Skeleton 載入 + 底部4格探索導航
+- 📖 **族語學習頁升級 v3** — Hero(每日一詞卡片+快速統計) + 🃏全新閃卡模式(3D翻轉動畫/全部vs未學/隨機/進度條/發音/標記學會) + 圓形SVG進度環 + 分類進度條(9類/百分比/完成慶祝) + 對話場景5組(角色頭像/語音播放) + 排行榜美化
+- 🔍 **搜尋頁升級 v2** — 深色Hero + 🕐搜尋歷史(localStorage/清除全部) + 🔥熱門關鍵字(9組卑南族相關) + 搜尋耗時(秒) + 日曆組件(活動月/日) + 快速探索4格導航 + Skeleton載入 + 結果卡片升級(箭頭/hover效果)
+- 👤 **個人資料頁升級 v2** — Hero(漸層頭像/角色標籤/會員天數/註冊日期) + 統計列(4格動畫) + 密碼強度視覺化(4段彩條) + 確認密碼即時比對 + 空狀態美化(大icon+CTA連結) + 報名狀態icon(✅⏳❌) + 收藏日期顯示
+- 📰 **關於頁面升級 v2** — 動態統計卡 + 發展時間線 + 團隊介紹 + 技術架構圖 + FAQ + 訪客留言
+- 🎬 **媒體庫升級 v2** — Hero + 瀑布流網格 + 類型Badge + 排序 + 詳情Modal + Lightbox + Skeleton
+
+### v4.7 Features (Phase 9)
+- 🏠 首頁v2 — 動畫計數器 + 波浪分隔線 + 互動卡片
+- 🎪 活動v2 — 倒計時 + 多色標籤 + 搜尋過濾
+- 💬 社群v2 — 多板塊 + 回覆/按讚 + 字數統計
+- 🏘️ 部落詳情v2 — 追蹤/分享/地圖/相關文章
+- 📊 Dashboard v2 — 健康狀態/Sparkline/操作日誌
+- 🔍 Header v2 — ⌘K搜尋/通知/捲動壓縮
+- 🦶 Footer v2 — CTA/族語/統計
 
 ### v4.6 Features (Phase 8)
-- 🗄️ 完成所有 DB 遷移 — 5 張新表 (learning_records/learned_words/user_badges/approval_items/audit_logs)
-- 📖 文章詳情頁 v2 — 上下篇導航 + 作者卡片 + 閱讀剩餘時間 + TOC active tracking + breadcrumb + skeleton
-- 📄 文章列表頁升級 — 伺服器端分頁 + 搜尋 + 分類篩選 + 封面圖/作者頭像
-- 🔌 新增 API 端點 — `GET /meta/navigation/:id` + `GET /meta/author/:id`
-- 🗺️ Sitemap.xml — 動態 sitemap (靜態頁面 + 已發布文章)，每小時 revalidate
-- 🤖 robots.txt — 自動產生 + 404 文化風格頁面
+- 🗄️ DB 遷移 5 新表 + 文章v2 + Sitemap + robots.txt + 404
 
 ### v4.5 Features (Phase 7)
-- 🗄️ DB 遷移 — 6 張新表遷入 PostgreSQL
-- 📝 文章版本歷史 — 自動保存版本、查看/還原
-- 🔄 批次操作 — 批次發布/草稿/刪除
+- 🗄️ DB 遷移 6 新表 + 文章版本歷史 + 批次操作
 
 ### v4.4 Features (Phase 6)
-- 🏠 首頁升級 — 文化景點展示區、排行榜
-- 👤 個人資料升級 — 7 分頁
-- 📝 文章編輯器升級 — Markdown 工具列
-- 🔒 API Rate Limiting — 全域 120 + Auth 10 req/min
-- 🔄 JWT Refresh + SEO Meta Tags
-
-### v4.3-v4.1 Features (Phase 3-5)
-- 文化景點 + 活動報名 + 審核管理 + CSV 匯出 + 學習進度
-- Feature Flags + AI 工具 + 監控 + 設定 + 搜尋升級
-- 暗色模式 + 部落地圖 + 族語測驗 + 每日一詞
+- 首頁/Profile/Dashboard/編輯器升級 + Rate Limiting + JWT Refresh + SEO
 
 ## Data Architecture
 - **Database**: PostgreSQL 17.6 on Supabase (ap-southeast-1)
 - **ORM**: Drizzle ORM v0.39
 - **Tables (22)**: users, tribes, articles, vocabulary, events, media, comments, likes, bookmarks, tribe_follows, notifications, discussions, discussion_replies, discussion_likes, cultural_sites, event_registrations, article_versions, learning_records, learned_words, user_badges, approval_items, audit_logs
-- **In-Memory**: feature_flags only (configuration data, not persistence-critical)
+- **In-Memory**: feature_flags only
 
 ## Seed Data
 | Table | Count | Description |
 |-------|-------|-------------|
-| tribes | 8 | 卑南八社 (南王、知本、建和、利嘉、初鹿、龍過脈、下賓朗、寶桑) |
+| tribes | 8 | 卑南八社 |
 | users | 3 | admin, editor, user |
-| articles | 14 | 文化、工藝、語言、信仰、音樂、歷史 |
-| vocabulary | 14 | 問候、親屬、自然、數字、文化、日常 |
-| events | 5 | 祭典、活動、工作坊、展覽 |
+| articles | 14 | 文化、工藝、語言等 |
+| vocabulary | 14 | 問候、親屬、自然等 |
+| events | 5 | 祭典、活動 |
 | media | 5 | 照片、影片、音檔 |
-| discussions | 4 | 綜合/族語/文化/活動討論 (DB) |
-| cultural_sites | 8 | 集會所、祭祀場、遺址、工藝坊等 (DB) |
-| approval_items | 4 | 預設審核項目 (DB) |
-| audit_logs | 2 | 系統操作記錄 (DB) |
+| discussions | 4 | 多板塊討論 |
+| cultural_sites | 8 | 文化景點 |
 
 ## Test Accounts
 | Role | Email | Password |
@@ -166,52 +155,13 @@ pinuyumayan/
 | Editor | editor@pinuyumayan.tw | editor123 |
 | User | user@pinuyumayan.tw | user123 |
 
-## API Endpoints Quick Reference
-```
-# Auth
-POST /api/auth/register, /login, /refresh, /change-password, /forgot-password, /reset-password
-GET  /api/auth/me     PUT /api/auth/me
-
-# Content
-GET  /api/tribes            GET /api/tribes/:id
-GET  /api/articles          GET /api/articles/:slug
-GET  /api/articles/meta/navigation/:id   GET /api/articles/meta/author/:id
-POST /api/articles          PUT /api/articles/:id   DELETE /api/articles/:id
-GET  /api/language/vocabulary   GET /api/language/daily
-GET  /api/events            GET /api/media
-GET  /api/search?q=         GET /api/cultural-sites   GET /api/cultural-sites/nearby
-
-# Social
-GET/POST /api/discussions   POST /api/discussions/:id/replies   POST /api/discussions/:id/like
-POST /api/comments/article/:id   POST /api/bookmarks/:articleId   POST /api/follows/:tribeId
-
-# Learning
-GET  /api/learning/progress   GET /api/learning/leaderboard
-POST /api/learning/quiz-result   POST /api/learning/mark-learned
-
-# Registrations
-POST/DELETE /api/registrations/events/:id   GET /api/registrations/my
-
-# Workflows (Versioning)
-GET /api/workflows/articles/:id/versions   POST /api/workflows/versions/:id/restore
-
-# Batch (Admin)
-POST /api/articles/batch/publish   POST /api/articles/batch/delete
-
-# Admin
-GET /api/admin/stats, /dashboard, /users, /comments, /audit-logs
-GET /api/approval/queue   GET /api/exports/:type
-
-# Rate Limit: 120 req/min global, 10 req/min auth endpoints
-```
-
 ## Development
 ```bash
 npm install
 cd apps/api && npx nest start --watch    # API (port 3001)
 cd apps/web && npx next dev              # Frontend (port 3000)
 
-# PM2 (Production-like)
+# PM2
 pm2 start ecosystem.config.cjs
 
 # Database
@@ -226,13 +176,14 @@ npx drizzle-kit generate && npx drizzle-kit push && npm run db:seed
 
 ## Progress
 - **Phase 1-3** ✅ 核心功能 + 密碼管理 + CMS + 日誌 + Dashboard
-- **Phase 4** ✅ Feature Flags + AI 工具 + 監控 + 設定 + 討論 + 搜尋升級
-- **Phase 5** ✅ 文化景點 + 活動報名 + 審核管理 + CSV 匯出 + 學習進度追蹤
+- **Phase 4** ✅ Feature Flags + AI 工具 + 監控 + 設定 + 討論 + 搜尋
+- **Phase 5** ✅ 文化景點 + 活動報名 + 審核管理 + CSV 匯出 + 學習進度
 - **Phase 6** ✅ 首頁/Profile/Dashboard/編輯器升級 + Rate Limiting + JWT Refresh + SEO
-- **Phase 7** ✅ DB 遷移 (6 新表) + 文章版本歷史 + 批次操作 + Workflows
-- **Phase 8** ✅ 完成所有 DB 遷移 (5 新表) + 文章 v2 + Sitemap + robots.txt + 404
-- **Phase 9** ✅ 前端 UX 大升級 — 首頁 v2(動畫計數器) + 活動 v2(倒計時) + 社群 v2(多板塊) + 部落詳情 v2(追蹤/分享/地圖) + Dashboard v2(健康狀態/Sparkline/操作日誌) + Header v2(⌘K 搜尋/使用者選單/通知) + Footer v2(CTA/族語/統計)
-- **Overall**: ~80% of planned system (37 routes, 19 API modules, 22 DB tables)
+- **Phase 7** ✅ DB 遷移 (6 新表) + 文章版本歷史 + 批次操作
+- **Phase 8** ✅ DB 遷移 (5 新表) + 文章 v2 + Sitemap + robots.txt + 404
+- **Phase 9** ✅ 前端 UX 大升級 — 首頁v2 + 活動v2 + 社群v2 + 部落詳情v2 + Dashboard v2 + Header v2 + Footer v2
+- **Phase 10** ✅ 頁面深度升級 — 文化景點v2(地圖/附近/距離) + 族語v3(閃卡/進度環) + 搜尋v2(歷史/熱門) + 個人檔案v2(Hero/統計) + 關於v2 + 媒體v2
+- **Overall**: ~85% of planned system (37 routes, 19 API modules, 22 DB tables)
 
 ## Planned (Not Yet Implemented)
 - OAuth 社群登入 (Google/Facebook/LINE)
@@ -244,4 +195,4 @@ npx drizzle-kit generate && npx drizzle-kit push && npm run db:seed
 - PWA 離線支援
 
 ## Last Updated
-2026-04-02 v4.7
+2026-04-02 v4.8

@@ -1,7 +1,7 @@
 import { Injectable, Inject, NotFoundException, BadRequestException } from '@nestjs/common';
 import { eq, sql, desc, count, and, gte, ilike, or } from 'drizzle-orm';
 import { DRIZZLE } from '../database/database.module';
-import { users, comments, articles, tribes, vocabulary, events, media, bookmarks, likes, tribeFollows, notifications, auditLogs } from '../database/schema';
+import { users, comments, articles, tribes, vocabulary, events, media, bookmarks, likes, tribeFollows, notifications, auditLogs, featureFlags, triggers, agents, agentLogs, revenueRecords, mapMarkers, loginHistory, discussions, culturalSites } from '../database/schema';
 import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import type * as schema from '../database/schema';
 @Injectable()
@@ -145,14 +145,222 @@ export class AdminService {
     } catch { /* non-critical */ }
   }
 
-  async getAuditLogs(page = 1, limit = 50) {
+  async getAuditLogs(page = 1, limit = 50, action?: string, userId?: number) {
     const offset = (page - 1) * limit;
-    const [{ total }] = await this.db.select({ total: sql<number>`count(*)` }).from(auditLogs);
-    const logs = await this.db.select().from(auditLogs)
+    const conditions: any[] = [];
+    if (action) conditions.push(eq(auditLogs.action, action));
+    if (userId) conditions.push(eq(auditLogs.userId, userId));
+    const where = conditions.length > 0 ? and(...conditions) : undefined;
+    const [{ total }] = await this.db.select({ total: sql<number>`count(*)` }).from(auditLogs).where(where);
+    const logs = await this.db.select({ id: auditLogs.id, userId: auditLogs.userId, action: auditLogs.action, target: auditLogs.target, detail: auditLogs.detail, createdAt: auditLogs.createdAt, userName: users.name })
+      .from(auditLogs).leftJoin(users, eq(auditLogs.userId, users.id)).where(where)
       .orderBy(desc(auditLogs.createdAt)).limit(limit).offset(offset);
+    // Unique actions for filter
+    const actions = await this.db.selectDistinct({ action: auditLogs.action }).from(auditLogs);
     return {
       logs: logs.map(l => ({ ...l, timestamp: l.createdAt.toISOString() })),
+      actions: actions.map(a => a.action),
       pagination: { page, limit, total: Number(total), totalPages: Math.ceil(Number(total) / limit) },
+    };
+  }
+
+  // ═══════════════════════════════════════════
+  //  Feature Flags (Phase 10 — DB-persisted)
+  // ═══════════════════════════════════════════
+  async getFeatureFlags() {
+    const flags = await this.db.select().from(featureFlags).orderBy(desc(featureFlags.updatedAt));
+    return { flags };
+  }
+  async toggleFeatureFlag(id: number) {
+    const [f] = await this.db.select().from(featureFlags).where(eq(featureFlags.id, id));
+    if (!f) throw new NotFoundException();
+    await this.db.update(featureFlags).set({ enabled: !f.enabled, updatedAt: new Date() }).where(eq(featureFlags.id, id));
+    const [updated] = await this.db.select().from(featureFlags).where(eq(featureFlags.id, id));
+    return { flag: updated };
+  }
+  async createFeatureFlag(data: any) {
+    const [f] = await this.db.insert(featureFlags).values(data).returning();
+    return { flag: f };
+  }
+  async deleteFeatureFlag(id: number) {
+    await this.db.delete(featureFlags).where(eq(featureFlags.id, id));
+    return { success: true };
+  }
+
+  // ═══════════════════════════════════════════
+  //  Triggers (Phase 10)
+  // ═══════════════════════════════════════════
+  async getTriggers() {
+    const rows = await this.db.select().from(triggers).orderBy(desc(triggers.updatedAt));
+    return { triggers: rows };
+  }
+  async createTrigger(data: any, userId: number) {
+    const [t] = await this.db.insert(triggers).values({ ...data, createdBy: userId }).returning();
+    return { trigger: t };
+  }
+  async updateTrigger(id: number, data: any) {
+    await this.db.update(triggers).set({ ...data, updatedAt: new Date() }).where(eq(triggers.id, id));
+    const [t] = await this.db.select().from(triggers).where(eq(triggers.id, id));
+    return { trigger: t };
+  }
+  async deleteTrigger(id: number) {
+    await this.db.delete(triggers).where(eq(triggers.id, id));
+    return { success: true };
+  }
+
+  // ═══════════════════════════════════════════
+  //  AI Agents (Phase 10)
+  // ═══════════════════════════════════════════
+  async getAgents() {
+    const rows = await this.db.select().from(agents).orderBy(desc(agents.updatedAt));
+    return { agents: rows };
+  }
+  async getAgentLogs(agentId: number, page = 1) {
+    const limit = 20; const offset = (page - 1) * limit;
+    const [{ total }] = await this.db.select({ total: sql<number>`count(*)` }).from(agentLogs).where(eq(agentLogs.agentId, agentId));
+    const rows = await this.db.select().from(agentLogs).where(eq(agentLogs.agentId, agentId)).orderBy(desc(agentLogs.createdAt)).limit(limit).offset(offset);
+    return { logs: rows, pagination: { page, limit, total: Number(total), totalPages: Math.ceil(Number(total) / limit) } };
+  }
+  async updateAgent(id: number, data: any) {
+    await this.db.update(agents).set({ ...data, updatedAt: new Date() }).where(eq(agents.id, id));
+    const [a] = await this.db.select().from(agents).where(eq(agents.id, id));
+    return { agent: a };
+  }
+  async createAgent(data: any, userId: number) {
+    const [a] = await this.db.insert(agents).values({ ...data, createdBy: userId }).returning();
+    return { agent: a };
+  }
+  async deleteAgent(id: number) {
+    await this.db.delete(agents).where(eq(agents.id, id));
+    return { success: true };
+  }
+
+  // ═══════════════════════════════════════════
+  //  Revenue Records (Phase 10)
+  // ═══════════════════════════════════════════
+  async getRevenue(page = 1) {
+    const limit = 20; const offset = (page - 1) * limit;
+    const [{ total }] = await this.db.select({ total: sql<number>`count(*)` }).from(revenueRecords);
+    const rows = await this.db.select().from(revenueRecords).orderBy(desc(revenueRecords.createdAt)).limit(limit).offset(offset);
+    // Summary
+    const all = await this.db.select({ type: revenueRecords.type, amount: revenueRecords.amount, status: revenueRecords.status }).from(revenueRecords);
+    const totalAmount = all.filter(r => r.status === 'completed').reduce((s, r) => s + r.amount, 0);
+    const byType: Record<string, number> = {};
+    all.filter(r => r.status === 'completed').forEach(r => { byType[r.type] = (byType[r.type] || 0) + r.amount; });
+    return { records: rows, summary: { totalAmount, byType, count: all.length }, pagination: { page, limit, total: Number(total), totalPages: Math.ceil(Number(total) / limit) } };
+  }
+  async createRevenue(data: any, userId: number) {
+    const [r] = await this.db.insert(revenueRecords).values({ ...data, createdBy: userId }).returning();
+    return { record: r };
+  }
+  async deleteRevenue(id: number) {
+    await this.db.delete(revenueRecords).where(eq(revenueRecords.id, id));
+    return { success: true };
+  }
+
+  // ═══════════════════════════════════════════
+  //  Map Markers (Phase 10)
+  // ═══════════════════════════════════════════
+  async getMapMarkers() {
+    const rows = await this.db.select().from(mapMarkers).orderBy(desc(mapMarkers.updatedAt));
+    return { markers: rows };
+  }
+  async createMapMarker(data: any, userId: number) {
+    const [m] = await this.db.insert(mapMarkers).values({ ...data, createdBy: userId }).returning();
+    return { marker: m };
+  }
+  async updateMapMarker(id: number, data: any) {
+    await this.db.update(mapMarkers).set({ ...data, updatedAt: new Date() }).where(eq(mapMarkers.id, id));
+    const [m] = await this.db.select().from(mapMarkers).where(eq(mapMarkers.id, id));
+    return { marker: m };
+  }
+  async deleteMapMarker(id: number) {
+    await this.db.delete(mapMarkers).where(eq(mapMarkers.id, id));
+    return { success: true };
+  }
+
+  // ═══════════════════════════════════════════
+  //  Login History (Phase 10)
+  // ═══════════════════════════════════════════
+  async getLoginHistory(page = 1, userId?: number) {
+    const limit = 30; const offset = (page - 1) * limit;
+    const where = userId ? eq(loginHistory.userId, userId) : undefined;
+    const [{ total }] = await this.db.select({ total: sql<number>`count(*)` }).from(loginHistory).where(where);
+    const rows = await this.db.select({ id: loginHistory.id, userId: loginHistory.userId, ip: loginHistory.ip, userAgent: loginHistory.userAgent, success: loginHistory.success, createdAt: loginHistory.createdAt, userName: users.name })
+      .from(loginHistory).leftJoin(users, eq(loginHistory.userId, users.id)).where(where).orderBy(desc(loginHistory.createdAt)).limit(limit).offset(offset);
+    return { logs: rows, pagination: { page, limit, total: Number(total), totalPages: Math.ceil(Number(total) / limit) } };
+  }
+  async recordLogin(userId: number, ip: string, userAgent: string, success: boolean) {
+    await this.db.insert(loginHistory).values({ userId, ip, userAgent, success });
+  }
+
+  // ═══════════════════════════════════════════
+  //  Discussions management (Phase 10 — admin upgrade)
+  // ═══════════════════════════════════════════
+  async getDiscussionsAdmin(page = 1) {
+    const limit = 30; const offset = (page - 1) * limit;
+    const [{ total }] = await this.db.select({ total: sql<number>`count(*)` }).from(discussions);
+    const rows = await this.db.select().from(discussions).orderBy(desc(discussions.createdAt)).limit(limit).offset(offset);
+    return { discussions: rows, pagination: { page, limit, total: Number(total), totalPages: Math.ceil(Number(total) / limit) } };
+  }
+  async deleteDiscussion(id: number) {
+    await this.db.delete(discussions).where(eq(discussions.id, id));
+    return { success: true };
+  }
+
+  // ═══════════════════════════════════════════
+  //  Cultural Sites management (Phase 10 — admin upgrade)
+  // ═══════════════════════════════════════════
+  async getCulturalSitesAdmin() {
+    const rows = await this.db.select().from(culturalSites).orderBy(desc(culturalSites.createdAt));
+    return { sites: rows };
+  }
+  async createCulturalSite(data: any) {
+    const [s] = await this.db.insert(culturalSites).values(data).returning();
+    return { site: s };
+  }
+  async updateCulturalSite(id: number, data: any) {
+    await this.db.update(culturalSites).set(data).where(eq(culturalSites.id, id));
+    const [s] = await this.db.select().from(culturalSites).where(eq(culturalSites.id, id));
+    return { site: s };
+  }
+  async deleteCulturalSite(id: number) {
+    await this.db.delete(culturalSites).where(eq(culturalSites.id, id));
+    return { success: true };
+  }
+
+  // ═══════════════════════════════════════════
+  //  User detail + ban/unban (Phase 10)
+  // ═══════════════════════════════════════════
+  async getUserDetail(id: number) {
+    const [user] = await this.db.select().from(users).where(eq(users.id, id));
+    if (!user) throw new NotFoundException();
+    const [{ articleCount }] = await this.db.select({ articleCount: sql<number>`count(*)` }).from(articles).where(eq(articles.authorId, id));
+    const [{ commentCount }] = await this.db.select({ commentCount: sql<number>`count(*)` }).from(comments).where(eq(comments.userId, id));
+    const logins = await this.db.select().from(loginHistory).where(eq(loginHistory.userId, id)).orderBy(desc(loginHistory.createdAt)).limit(5);
+    return { user: { ...user, password: undefined }, stats: { articles: Number(articleCount), comments: Number(commentCount) }, recentLogins: logins };
+  }
+
+  // ═══════════════════════════════════════════
+  //  System monitoring real data (Phase 10)
+  // ═══════════════════════════════════════════
+  async getSystemMetrics() {
+    const sevenDaysAgo = new Date(Date.now() - 7 * 86400000);
+    const todayStart = new Date(); todayStart.setHours(0,0,0,0);
+    const [[usersToday],[articlesToday],[commentsToday],[loginsToday],[auditToday]] = await Promise.all([
+      this.db.select({c: sql<number>`count(*)`}).from(users).where(gte(users.createdAt, todayStart)),
+      this.db.select({c: sql<number>`count(*)`}).from(articles).where(gte(articles.createdAt, todayStart)),
+      this.db.select({c: sql<number>`count(*)`}).from(comments).where(gte(comments.createdAt, todayStart)),
+      this.db.select({c: sql<number>`count(*)`}).from(loginHistory).where(gte(loginHistory.createdAt, todayStart)),
+      this.db.select({c: sql<number>`count(*)`}).from(auditLogs).where(gte(auditLogs.createdAt, todayStart)),
+    ]);
+    const stats = await this.getStats();
+    return {
+      stats,
+      today: { users: Number(usersToday.c), articles: Number(articlesToday.c), comments: Number(commentsToday.c), logins: Number(loginsToday.c), auditActions: Number(auditToday.c) },
+      dbTables: 29,
+      uptime: process.uptime(),
+      memoryUsage: process.memoryUsage(),
     };
   }
 }

@@ -1,19 +1,18 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import Link from "next/link";
 import { api } from "@/lib/api";
 
 interface CulturalSite {
   id: number; name: string; type: string; description: string;
   lat: number; lng: number; tribeId?: number; tribeName?: string;
-  images: string[]; tags: string[]; distance?: number;
+  images: string[]; tags: string[];
 }
 
 const TYPE_ICONS: Record<string, string> = {
   "集會所": "🏛️", "祭祀場": "⛩️", "會所": "🏠", "獵場": "🌲",
   "文化區": "🎭", "遺址": "🏺", "工藝": "🧶", "祭典場": "🎪",
 };
-
 const TYPE_COLORS: Record<string, string> = {
   "集會所": "bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300",
   "祭祀場": "bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300",
@@ -24,6 +23,11 @@ const TYPE_COLORS: Record<string, string> = {
   "工藝": "bg-pink-100 dark:bg-pink-900/40 text-pink-700 dark:text-pink-300",
   "祭典場": "bg-orange-100 dark:bg-orange-900/40 text-orange-700 dark:text-orange-300",
 };
+const TYPE_BAR: Record<string, string> = {
+  "集會所": "bg-blue-500", "祭祀場": "bg-red-500", "會所": "bg-green-500",
+  "獵場": "bg-emerald-500", "文化區": "bg-purple-500", "遺址": "bg-amber-500",
+  "工藝": "bg-pink-500", "祭典場": "bg-orange-500",
+};
 
 export default function CulturalSitesPage() {
   const [sites, setSites] = useState<CulturalSite[]>([]);
@@ -32,7 +36,25 @@ export default function CulturalSitesPage() {
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState<CulturalSite | null>(null);
   const [viewMode, setViewMode] = useState<"grid" | "map">("grid");
+  const [searchQ, setSearchQ] = useState("");
+  const [sortBy, setSortBy] = useState<"name" | "type" | "tribe">("name");
+  const [nearbyMode, setNearbyMode] = useState(false);
+  const [userLoc, setUserLoc] = useState<{ lat: number; lng: number } | null>(null);
+  const [showDetail, setShowDetail] = useState(false);
+  const mapRef = useRef<HTMLDivElement>(null);
+  const mapInstanceRef = useRef<any>(null);
+  const markersRef = useRef<any[]>([]);
+  const heroRef = useRef<HTMLDivElement>(null);
+  const [heroVisible, setHeroVisible] = useState(false);
 
+  // Hero animation
+  useEffect(() => {
+    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) setHeroVisible(true); }, { threshold: 0.2 });
+    if (heroRef.current) obs.observe(heroRef.current);
+    return () => obs.disconnect();
+  }, []);
+
+  // Fetch sites
   useEffect(() => {
     const url = filterType === "全部" ? "/api/cultural-sites" : `/api/cultural-sites?type=${filterType}`;
     setLoading(true);
@@ -43,141 +65,417 @@ export default function CulturalSitesPage() {
     }).catch(() => setLoading(false));
   }, [filterType]);
 
+  // Get user location
+  const getUserLocation = () => {
+    if (!navigator.geolocation) return;
+    navigator.geolocation.getCurrentPosition(
+      pos => { setUserLoc({ lat: pos.coords.latitude, lng: pos.coords.longitude }); setNearbyMode(true); },
+      () => { setNearbyMode(false); }
+    );
+  };
+
+  // Distance calculation (Haversine)
+  const calcDist = (lat1: number, lng1: number, lat2: number, lng2: number) => {
+    const R = 6371;
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLng = (lng2 - lng1) * Math.PI / 180;
+    const a = Math.sin(dLat / 2) ** 2 + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLng / 2) ** 2;
+    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  };
+
+  // Filtered & sorted sites
+  const filteredSites = useMemo(() => {
+    let result = sites.filter(s =>
+      !searchQ || s.name.includes(searchQ) || s.description.includes(searchQ) || s.tribeName?.includes(searchQ) || s.tags?.some(t => t.includes(searchQ))
+    );
+    if (nearbyMode && userLoc) {
+      result = result.map(s => ({ ...s, _dist: calcDist(userLoc.lat, userLoc.lng, s.lat, s.lng) }))
+        .sort((a: any, b: any) => a._dist - b._dist);
+    } else if (sortBy === "name") {
+      result.sort((a, b) => a.name.localeCompare(b.name));
+    } else if (sortBy === "type") {
+      result.sort((a, b) => a.type.localeCompare(b.type) || a.name.localeCompare(b.name));
+    } else if (sortBy === "tribe") {
+      result.sort((a, b) => (a.tribeName || "").localeCompare(b.tribeName || "") || a.name.localeCompare(b.name));
+    }
+    return result;
+  }, [sites, searchQ, sortBy, nearbyMode, userLoc]);
+
+  // Stats
+  const stats = useMemo(() => {
+    const tribeSet = new Set(sites.map(s => s.tribeName).filter(Boolean));
+    return { total: sites.length, types: types.length, tribes: tribeSet.size };
+  }, [sites, types]);
+
+  // Leaflet map
+  useEffect(() => {
+    if (viewMode !== "map" || !mapRef.current || typeof window === "undefined") return;
+    if (!document.getElementById("leaflet-css")) {
+      const link = document.createElement("link");
+      link.id = "leaflet-css"; link.rel = "stylesheet";
+      link.href = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";
+      document.head.appendChild(link);
+    }
+    const loadMap = () => {
+      const L = (window as any).L;
+      if (!L || !mapRef.current) return;
+      if (!mapInstanceRef.current) {
+        mapInstanceRef.current = L.map(mapRef.current).setView([22.76, 121.05], 12);
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+          maxZoom: 18,
+        }).addTo(mapInstanceRef.current);
+      }
+      markersRef.current.forEach(m => m.remove());
+      markersRef.current = [];
+      // User location marker
+      if (userLoc) {
+        const userIcon = L.divIcon({ html: '<div style="font-size:20px;text-align:center">📍</div>', className: "user-loc-marker", iconSize: [24, 24], iconAnchor: [12, 24] });
+        const um = L.marker([userLoc.lat, userLoc.lng], { icon: userIcon }).addTo(mapInstanceRef.current).bindPopup("<strong>📍 你的位置</strong>");
+        markersRef.current.push(um);
+      }
+      filteredSites.forEach(site => {
+        const icon = L.divIcon({
+          html: `<div style="font-size:24px;text-align:center;line-height:1;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.3))">${TYPE_ICONS[site.type] || "📍"}</div>`,
+          className: "custom-marker", iconSize: [32, 32], iconAnchor: [16, 32], popupAnchor: [0, -32],
+        });
+        const dist = userLoc ? calcDist(userLoc.lat, userLoc.lng, site.lat, site.lng) : null;
+        const marker = L.marker([site.lat, site.lng], { icon })
+          .addTo(mapInstanceRef.current)
+          .bindPopup(`
+            <div style="min-width:200px;font-family:system-ui">
+              <strong style="font-size:14px">${site.name}</strong><br/>
+              <span style="color:#777;font-size:12px">${site.type}${site.tribeName ? " · " + site.tribeName : ""}</span>
+              ${dist !== null ? `<br/><span style="color:#b45309;font-size:11px;font-weight:600">📏 距離 ${dist.toFixed(1)} km</span>` : ""}
+              <p style="font-size:12px;margin-top:4px;color:#555">${site.description.slice(0, 100)}...</p>
+              <a href="https://www.google.com/maps/dir/?api=1&destination=${site.lat},${site.lng}" target="_blank" rel="noopener"
+                style="display:inline-block;margin-top:6px;background:#b45309;color:white;padding:4px 12px;border-radius:8px;font-size:11px;text-decoration:none">
+                🧭 導航
+              </a>
+            </div>
+          `);
+        marker.on("click", () => { setSelected(site); setShowDetail(true); });
+        markersRef.current.push(marker);
+      });
+      if (filteredSites.length > 0) {
+        const allPts = filteredSites.map(s => [s.lat, s.lng]);
+        if (userLoc) allPts.push([userLoc.lat, userLoc.lng]);
+        const bounds = L.latLngBounds(allPts);
+        mapInstanceRef.current.fitBounds(bounds, { padding: [40, 40] });
+      }
+    };
+    if (!(window as any).L) {
+      const script = document.createElement("script");
+      script.src = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";
+      script.onload = () => setTimeout(loadMap, 100);
+      document.head.appendChild(script);
+    } else { loadMap(); }
+  }, [viewMode, filteredSites, userLoc]);
+
+  // Fly to selected
+  useEffect(() => {
+    if (selected && mapInstanceRef.current && viewMode === "map") {
+      mapInstanceRef.current.flyTo([selected.lat, selected.lng], 15, { duration: 0.8 });
+    }
+  }, [selected, viewMode]);
+
+  const distToSite = (site: CulturalSite) => {
+    if (!userLoc) return null;
+    return calcDist(userLoc.lat, userLoc.lng, site.lat, site.lng);
+  };
+
   return (
-    <div className="max-w-7xl mx-auto px-4 py-12">
-      <div className="flex items-center justify-between mb-8">
-        <div>
-          <h1 className="text-4xl font-bold text-stone-800 dark:text-stone-100">🏺 文化景點</h1>
-          <p className="text-stone-500 dark:text-stone-400 mt-2 text-lg">探索卑南族的文化遺產與重要場域</p>
+    <div className="min-h-screen">
+      {/* Hero Section */}
+      <div ref={heroRef} className="relative bg-gradient-to-br from-amber-900 via-stone-800 to-amber-950 text-white overflow-hidden">
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-10 left-10 text-9xl">🏺</div>
+          <div className="absolute bottom-10 right-10 text-8xl">⛩️</div>
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[12rem] opacity-5">🏛️</div>
         </div>
-        <div className="flex gap-2">
-          <button onClick={() => setViewMode("grid")}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition ${viewMode === "grid" ? "bg-amber-700 text-white" : "bg-white dark:bg-stone-800 border dark:border-stone-700 dark:text-stone-300"}`}>
-            📋 列表
-          </button>
-          <button onClick={() => setViewMode("map")}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition ${viewMode === "map" ? "bg-amber-700 text-white" : "bg-white dark:bg-stone-800 border dark:border-stone-700 dark:text-stone-300"}`}>
-            🗺️ 地圖
-          </button>
+        <div className={`max-w-7xl mx-auto px-4 py-16 md:py-24 relative z-10 transition-all duration-1000 ${heroVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
+          <div className="flex flex-col md:flex-row items-center justify-between gap-8">
+            <div>
+              <h1 className="text-4xl md:text-5xl font-bold mb-4">🏺 文化景點巡禮</h1>
+              <p className="text-amber-200 text-lg md:text-xl max-w-xl">
+                探索卑南族的文化遺產與重要場域 — 從古老集會所到神聖祭祀場，每個地點都承載著祖先的智慧
+              </p>
+            </div>
+            {/* Stats pills */}
+            <div className="flex gap-4">
+              {[
+                { icon: "🏺", value: stats.total, label: "景點" },
+                { icon: "📂", value: stats.types, label: "類型" },
+                { icon: "🏘️", value: stats.tribes, label: "部落" },
+              ].map((s, i) => (
+                <div key={i} className={`text-center bg-white/10 backdrop-blur-sm rounded-2xl px-5 py-4 transition-all duration-700 delay-${i * 200} ${heroVisible ? "opacity-100 scale-100" : "opacity-0 scale-75"}`}>
+                  <p className="text-2xl mb-1">{s.icon}</p>
+                  <p className="text-2xl font-bold">{s.value}</p>
+                  <p className="text-xs text-amber-300">{s.label}</p>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
+        {/* Wave separator */}
+        <svg className="block w-full" viewBox="0 0 1440 60" preserveAspectRatio="none">
+          <path d="M0,40 C360,0 720,60 1080,20 C1260,5 1380,35 1440,30 L1440,60 L0,60 Z" className="fill-stone-50 dark:fill-stone-900" />
+        </svg>
       </div>
 
-      {/* Type filters */}
-      <div className="flex flex-wrap gap-2 mb-8">
-        <button onClick={() => setFilterType("全部")}
-          className={`px-4 py-2 rounded-full text-sm font-medium transition ${filterType === "全部" ? "bg-amber-700 text-white" : "bg-white dark:bg-stone-800 text-stone-600 dark:text-stone-400 hover:bg-amber-50 dark:hover:bg-stone-700 border dark:border-stone-700"}`}>
-          全部
-        </button>
-        {types.map(t => (
-          <button key={t} onClick={() => setFilterType(t)}
-            className={`px-4 py-2 rounded-full text-sm font-medium transition ${filterType === t ? "bg-amber-700 text-white" : "bg-white dark:bg-stone-800 text-stone-600 dark:text-stone-400 hover:bg-amber-50 dark:hover:bg-stone-700 border dark:border-stone-700"}`}>
-            {TYPE_ICONS[t] || "📍"} {t}
-          </button>
-        ))}
-      </div>
+      <div className="max-w-7xl mx-auto px-4 py-8 bg-stone-50 dark:bg-stone-900 min-h-screen">
+        {/* Toolbar */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+          <div className="flex items-center gap-3 flex-wrap">
+            {/* Search */}
+            <div className="relative">
+              <input type="text" value={searchQ} onChange={e => setSearchQ(e.target.value)}
+                placeholder="搜尋景點名稱、部落..."
+                className="pl-9 pr-4 py-2.5 rounded-xl border dark:border-stone-700 dark:bg-stone-800 dark:text-stone-100 text-sm w-48 focus:w-64 transition-all focus:ring-2 focus:ring-amber-300 outline-none" />
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400 text-sm">🔍</span>
+            </div>
+            {/* Sort */}
+            <select value={sortBy} onChange={e => { setSortBy(e.target.value as any); setNearbyMode(false); }}
+              className="px-3 py-2.5 rounded-xl border dark:border-stone-700 dark:bg-stone-800 dark:text-stone-200 text-sm outline-none cursor-pointer">
+              <option value="name">名稱排序</option>
+              <option value="type">類型排序</option>
+              <option value="tribe">部落排序</option>
+            </select>
+            {/* Nearby */}
+            <button onClick={getUserLocation}
+              className={`px-4 py-2.5 rounded-xl text-sm font-medium transition flex items-center gap-1.5 ${nearbyMode ? "bg-amber-700 text-white" : "bg-white dark:bg-stone-800 border dark:border-stone-700 text-stone-600 dark:text-stone-400 hover:bg-amber-50"}`}>
+              📍 {nearbyMode ? "附近優先" : "附近的景點"}
+            </button>
+          </div>
+          {/* View toggle */}
+          <div className="flex bg-stone-100 dark:bg-stone-800 rounded-xl p-1">
+            <button onClick={() => setViewMode("grid")}
+              className={`px-5 py-2 rounded-lg text-sm font-medium transition ${viewMode === "grid" ? "bg-white dark:bg-stone-700 shadow-sm text-stone-800 dark:text-stone-200" : "text-stone-500"}`}>
+              📋 列表
+            </button>
+            <button onClick={() => setViewMode("map")}
+              className={`px-5 py-2 rounded-lg text-sm font-medium transition ${viewMode === "map" ? "bg-white dark:bg-stone-700 shadow-sm text-stone-800 dark:text-stone-200" : "text-stone-500"}`}>
+              🗺️ 地圖
+            </button>
+          </div>
+        </div>
 
-      {/* Map view */}
-      {viewMode === "map" && (
-        <div className="bg-white dark:bg-stone-800 rounded-xl border dark:border-stone-700 p-6 mb-8">
-          <div className="relative bg-gradient-to-b from-green-100 to-blue-100 dark:from-green-900/30 dark:to-blue-900/30 rounded-xl h-[500px] overflow-hidden">
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="text-center">
-                <p className="text-6xl mb-4">🗺️</p>
-                <p className="text-stone-600 dark:text-stone-400 font-medium">卑南族文化景點分佈</p>
-                <p className="text-stone-400 text-sm mt-1">台東縣區域</p>
+        {/* Type filters */}
+        <div className="flex flex-wrap gap-2 mb-8">
+          <button onClick={() => setFilterType("全部")}
+            className={`px-4 py-2 rounded-full text-sm font-medium transition ${filterType === "全部" ? "bg-amber-700 text-white shadow-sm" : "bg-white dark:bg-stone-800 text-stone-600 dark:text-stone-400 hover:bg-amber-50 dark:hover:bg-stone-700 border dark:border-stone-700"}`}>
+            全部 ({sites.length})
+          </button>
+          {types.map(t => (
+            <button key={t} onClick={() => setFilterType(t)}
+              className={`px-4 py-2 rounded-full text-sm font-medium transition flex items-center gap-1 ${filterType === t ? "bg-amber-700 text-white shadow-sm" : "bg-white dark:bg-stone-800 text-stone-600 dark:text-stone-400 hover:bg-amber-50 dark:hover:bg-stone-700 border dark:border-stone-700"}`}>
+              {TYPE_ICONS[t] || "📍"} {t} ({sites.filter(s => s.type === t).length})
+            </button>
+          ))}
+        </div>
+
+        {/* Map view */}
+        {viewMode === "map" && (
+          <div className="grid lg:grid-cols-3 gap-6 mb-8">
+            <div className="lg:col-span-2">
+              <div ref={mapRef} className="rounded-2xl overflow-hidden border dark:border-stone-700 shadow-md" style={{ height: "580px", zIndex: 1 }} />
+              {/* Map legend */}
+              <div className="flex flex-wrap gap-2 mt-3">
+                {types.map(t => (
+                  <span key={t} className="text-xs flex items-center gap-1 bg-white dark:bg-stone-800 px-2 py-1 rounded-full border dark:border-stone-700">
+                    {TYPE_ICONS[t]} {t}
+                  </span>
+                ))}
               </div>
             </div>
-            {/* Map markers */}
-            {sites.map(site => {
-              const x = ((site.lng - 120.95) / 0.25) * 100;
-              const y = (1 - (site.lat - 22.65) / 0.2) * 100;
-              return (
-                <button key={site.id} onClick={() => setSelected(site)}
-                  className="absolute transform -translate-x-1/2 -translate-y-1/2 group z-10"
-                  style={{ left: `${Math.max(5, Math.min(95, x))}%`, top: `${Math.max(5, Math.min(95, y))}%` }}>
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center text-lg shadow-lg transition-transform group-hover:scale-125 ${selected?.id === site.id ? "ring-4 ring-amber-400 scale-125" : ""} bg-white dark:bg-stone-700`}>
-                    {TYPE_ICONS[site.type] || "📍"}
-                  </div>
-                  <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap text-xs font-medium bg-white dark:bg-stone-800 px-2 py-0.5 rounded shadow opacity-0 group-hover:opacity-100 transition dark:text-stone-200">
-                    {site.name}
-                  </div>
-                </button>
-              );
-            })}
-          </div>
 
-          {/* Selected site info */}
-          {selected && (
-            <div className="mt-4 bg-amber-50 dark:bg-amber-900/20 rounded-xl p-6 border border-amber-200 dark:border-amber-800">
-              <div className="flex items-start justify-between">
-                <div>
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="text-2xl">{TYPE_ICONS[selected.type] || "📍"}</span>
-                    <h3 className="text-xl font-bold dark:text-stone-100">{selected.name}</h3>
-                    <span className={`text-xs px-2 py-1 rounded-full font-medium ${TYPE_COLORS[selected.type] || "bg-stone-100 text-stone-600"}`}>{selected.type}</span>
+            {/* Sidebar */}
+            <div className="bg-white dark:bg-stone-800 rounded-2xl border dark:border-stone-700 overflow-hidden flex flex-col shadow-md" style={{ maxHeight: "580px" }}>
+              {showDetail && selected ? (
+                <div className="flex-1 overflow-y-auto">
+                  <div className="p-4 border-b dark:border-stone-700 flex items-center justify-between bg-gradient-to-r from-stone-50 to-amber-50/50 dark:from-stone-800 dark:to-stone-800">
+                    <h3 className="font-bold dark:text-stone-100 flex items-center gap-2">
+                      <span className="text-xl">{TYPE_ICONS[selected.type] || "📍"}</span> 景點詳情
+                    </h3>
+                    <button onClick={() => { setShowDetail(false); setSelected(null); }} className="text-stone-400 hover:text-stone-600 text-sm px-2 py-1 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-700">✕</button>
                   </div>
-                  <p className="text-stone-600 dark:text-stone-400">{selected.description}</p>
-                  <div className="flex items-center gap-4 mt-3 text-sm text-stone-500 dark:text-stone-400">
-                    {selected.tribeName && <span>🏘️ {selected.tribeName}</span>}
-                    <span>📍 {selected.lat.toFixed(4)}, {selected.lng.toFixed(4)}</span>
-                  </div>
-                  {selected.tags.length > 0 && (
-                    <div className="flex gap-1 mt-3">
-                      {selected.tags.map(tag => (
-                        <span key={tag} className="text-xs bg-stone-100 dark:bg-stone-700 text-stone-500 dark:text-stone-400 px-2 py-1 rounded-full">#{tag}</span>
-                      ))}
+                  <div className="p-5 space-y-4">
+                    <div>
+                      <h4 className="font-bold text-xl dark:text-stone-100">{selected.name}</h4>
+                      <span className={`inline-block text-xs px-2.5 py-1 rounded-full mt-1 ${TYPE_COLORS[selected.type] || "bg-stone-100 text-stone-600"}`}>{selected.type}</span>
                     </div>
-                  )}
-                </div>
-                <button onClick={() => setSelected(null)} className="text-stone-400 hover:text-stone-600 text-xl">✕</button>
-              </div>
-            </div>
-          )}
-        </div>
-      )}
+                    <p className="text-stone-600 dark:text-stone-300 text-sm leading-relaxed">{selected.description}</p>
+                    
+                    {/* Info grid */}
+                    <div className="grid grid-cols-2 gap-3">
+                      {selected.tribeName && (
+                        <div className="bg-stone-50 dark:bg-stone-700/50 rounded-xl p-3">
+                          <p className="text-xs text-stone-400 mb-1">所屬部落</p>
+                          <p className="text-sm font-medium dark:text-stone-200">🏘️ {selected.tribeName}</p>
+                        </div>
+                      )}
+                      <div className="bg-stone-50 dark:bg-stone-700/50 rounded-xl p-3">
+                        <p className="text-xs text-stone-400 mb-1">座標</p>
+                        <p className="text-sm font-medium dark:text-stone-200">{selected.lat.toFixed(4)}°N</p>
+                      </div>
+                      {userLoc && (
+                        <div className="bg-amber-50 dark:bg-amber-900/20 rounded-xl p-3 col-span-2">
+                          <p className="text-xs text-stone-400 mb-1">距離你</p>
+                          <p className="text-sm font-bold text-amber-700 dark:text-amber-400">📏 {distToSite(selected)?.toFixed(1)} 公里</p>
+                        </div>
+                      )}
+                    </div>
 
-      {/* Grid view */}
-      {viewMode === "grid" && (
-        loading ? (
-          <div className="text-center py-20 text-stone-400">載入中...</div>
-        ) : sites.length === 0 ? (
-          <div className="text-center py-20 text-stone-400">
-            <p className="text-4xl mb-4">🏺</p>
-            <p>暫無此類型的文化景點</p>
-          </div>
-        ) : (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {sites.map(site => (
-              <div key={site.id} onClick={() => { setSelected(site); setViewMode("map"); }}
-                className="bg-white dark:bg-stone-800 rounded-xl shadow-sm border border-stone-100 dark:border-stone-700 p-6 hover:shadow-md transition cursor-pointer group">
-                <div className="flex items-center gap-2 mb-3">
-                  <span className="text-2xl group-hover:scale-110 transition-transform">{TYPE_ICONS[site.type] || "📍"}</span>
-                  <span className={`text-xs px-2 py-1 rounded-full font-medium ${TYPE_COLORS[site.type] || "bg-stone-100 text-stone-600"}`}>{site.type}</span>
-                </div>
-                <h2 className="text-lg font-bold text-stone-800 dark:text-stone-100 mb-2 group-hover:text-amber-700 dark:group-hover:text-amber-400 transition">{site.name}</h2>
-                <p className="text-stone-500 dark:text-stone-400 text-sm line-clamp-3 mb-4">{site.description}</p>
-                <div className="border-t dark:border-stone-700 pt-3 space-y-1 text-sm text-stone-500 dark:text-stone-400">
-                  {site.tribeName && <p>🏘️ {site.tribeName}</p>}
-                  <p>📍 {site.lat.toFixed(4)}°N, {site.lng.toFixed(4)}°E</p>
-                </div>
-                {site.tags.length > 0 && (
-                  <div className="flex flex-wrap gap-1 mt-3">
-                    {site.tags.map(tag => (
-                      <span key={tag} className="text-xs bg-stone-100 dark:bg-stone-700 text-stone-500 dark:text-stone-400 px-2 py-1 rounded-full">#{tag}</span>
-                    ))}
+                    {selected.tags?.length > 0 && (
+                      <div className="flex flex-wrap gap-1.5">
+                        {selected.tags.map(tag => (
+                          <span key={tag} className="text-xs bg-stone-100 dark:bg-stone-700 text-stone-500 dark:text-stone-400 px-2.5 py-1 rounded-full">#{tag}</span>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Action buttons */}
+                    <div className="space-y-2">
+                      <a href={`https://www.google.com/maps/dir/?api=1&destination=${selected.lat},${selected.lng}`}
+                        target="_blank" rel="noopener noreferrer"
+                        className="block w-full text-center bg-amber-700 text-white py-2.5 rounded-xl text-sm font-medium hover:bg-amber-800 transition">
+                        🧭 Google Maps 導航
+                      </a>
+                      <a href={`https://www.google.com/maps/@${selected.lat},${selected.lng},17z`}
+                        target="_blank" rel="noopener noreferrer"
+                        className="block w-full text-center bg-stone-100 dark:bg-stone-700 text-stone-700 dark:text-stone-200 py-2.5 rounded-xl text-sm font-medium hover:bg-stone-200 dark:hover:bg-stone-600 transition">
+                        🌍 在 Google Maps 查看
+                      </a>
+                      {selected.tribeId && (
+                        <Link href={`/tribes/${selected.tribeId}`}
+                          className="block w-full text-center bg-stone-100 dark:bg-stone-700 text-stone-700 dark:text-stone-200 py-2.5 rounded-xl text-sm font-medium hover:bg-stone-200 dark:hover:bg-stone-600 transition">
+                          🏘️ 前往部落頁面
+                        </Link>
+                      )}
+                    </div>
                   </div>
-                )}
-              </div>
+                </div>
+              ) : (
+                <div className="flex-1 overflow-y-auto">
+                  <div className="p-4 border-b dark:border-stone-700 bg-gradient-to-r from-stone-50 to-amber-50/50 dark:from-stone-800 dark:to-stone-800">
+                    <h3 className="font-bold dark:text-stone-100 text-sm">📍 景點列表 ({filteredSites.length})</h3>
+                  </div>
+                  <div className="divide-y dark:divide-stone-700">
+                    {filteredSites.map(site => {
+                      const dist = distToSite(site);
+                      return (
+                        <button key={site.id} onClick={() => { setSelected(site); setShowDetail(true); }}
+                          className="w-full text-left p-4 hover:bg-stone-50 dark:hover:bg-stone-700/50 transition group">
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className="text-lg group-hover:scale-110 transition-transform">{TYPE_ICONS[site.type] || "📍"}</span>
+                            <span className="font-bold text-sm dark:text-stone-100 truncate flex-1">{site.name}</span>
+                            {dist !== null && <span className="text-xs text-amber-600 dark:text-amber-400 font-medium shrink-0">{dist.toFixed(1)}km</span>}
+                          </div>
+                          <p className="text-xs text-stone-400 line-clamp-1 pl-7">{site.description}</p>
+                          <div className="flex items-center gap-2 mt-1 pl-7">
+                            <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${TYPE_COLORS[site.type] || "bg-stone-100 text-stone-500"}`}>{site.type}</span>
+                            {site.tribeName && <span className="text-[10px] text-stone-400">{site.tribeName}</span>}
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Grid view */}
+        {viewMode === "grid" && (
+          loading ? (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[...Array(6)].map((_, i) => (
+                <div key={i} className="bg-white dark:bg-stone-800 rounded-2xl border dark:border-stone-700 overflow-hidden animate-pulse">
+                  <div className="h-2 bg-stone-200 dark:bg-stone-700" />
+                  <div className="p-6 space-y-3">
+                    <div className="flex items-center gap-2">
+                      <div className="w-10 h-10 bg-stone-200 dark:bg-stone-700 rounded-xl" />
+                      <div className="w-16 h-5 bg-stone-200 dark:bg-stone-700 rounded-full" />
+                    </div>
+                    <div className="h-5 bg-stone-200 dark:bg-stone-700 rounded w-3/4" />
+                    <div className="h-4 bg-stone-100 dark:bg-stone-700 rounded w-full" />
+                    <div className="h-4 bg-stone-100 dark:bg-stone-700 rounded w-2/3" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : filteredSites.length === 0 ? (
+            <div className="text-center py-20 bg-white dark:bg-stone-800 rounded-2xl border dark:border-stone-700">
+              <p className="text-5xl mb-4">🏺</p>
+              <p className="text-stone-500 dark:text-stone-400 text-lg">{searchQ ? `找不到「${searchQ}」的景點` : "暫無此類型的文化景點"}</p>
+              <button onClick={() => { setSearchQ(""); setFilterType("全部"); }}
+                className="mt-4 text-amber-700 dark:text-amber-400 text-sm hover:underline">清除篩選 →</button>
+            </div>
+          ) : (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredSites.map((site, idx) => {
+                const dist = distToSite(site);
+                return (
+                  <div key={site.id}
+                    className="bg-white dark:bg-stone-800 rounded-2xl shadow-sm border border-stone-100 dark:border-stone-700 overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all group"
+                    style={{ animationDelay: `${idx * 50}ms` }}>
+                    {/* Color bar */}
+                    <div className={`h-1.5 ${TYPE_BAR[site.type] || "bg-stone-400"}`} />
+                    <div className="p-6">
+                      <div className="flex items-center gap-2 mb-3">
+                        <span className="text-3xl group-hover:scale-110 transition-transform">{TYPE_ICONS[site.type] || "📍"}</span>
+                        <span className={`text-xs px-2 py-1 rounded-full font-medium ${TYPE_COLORS[site.type] || "bg-stone-100 text-stone-600"}`}>{site.type}</span>
+                        {dist !== null && (
+                          <span className="text-xs text-amber-600 dark:text-amber-400 font-medium ml-auto">📏 {dist.toFixed(1)}km</span>
+                        )}
+                      </div>
+                      <h2 className="text-lg font-bold text-stone-800 dark:text-stone-100 mb-2 group-hover:text-amber-700 dark:group-hover:text-amber-400 transition">{site.name}</h2>
+                      <p className="text-stone-500 dark:text-stone-400 text-sm line-clamp-3 mb-4 leading-relaxed">{site.description}</p>
+                      <div className="border-t dark:border-stone-700 pt-3 flex items-center justify-between text-sm text-stone-500 dark:text-stone-400">
+                        <div>
+                          {site.tribeName && <p className="text-xs flex items-center gap-1">🏘️ {site.tribeName}</p>}
+                          <p className="text-xs flex items-center gap-1 mt-0.5">📍 {site.lat.toFixed(4)}°N, {site.lng.toFixed(4)}°E</p>
+                        </div>
+                        <button onClick={() => { setSelected(site); setViewMode("map"); setShowDetail(true); }}
+                          className="text-xs bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-300 px-3 py-1.5 rounded-lg hover:bg-amber-100 dark:hover:bg-amber-900/40 transition font-medium">
+                          🗺️ 地圖
+                        </button>
+                      </div>
+                      {site.tags?.length > 0 && (
+                        <div className="flex flex-wrap gap-1 mt-3">
+                          {site.tags.map(tag => (
+                            <span key={tag} className="text-xs bg-stone-100 dark:bg-stone-700 text-stone-500 dark:text-stone-400 px-2 py-1 rounded-full">#{tag}</span>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )
+        )}
+
+        {/* Bottom navigation */}
+        <div className="mt-16 bg-white dark:bg-stone-800 rounded-2xl border dark:border-stone-700 p-8">
+          <h3 className="text-lg font-bold text-stone-800 dark:text-stone-100 text-center mb-6">🌿 探索更多卑南族文化</h3>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {[
+              { icon: "🗺️", label: "部落地圖", href: "/tribes/map", desc: "互動式地圖總覽" },
+              { icon: "🏘️", label: "部落列表", href: "/tribes", desc: "認識各部落特色" },
+              { icon: "🎉", label: "活動祭典", href: "/events", desc: "傳統祭儀與活動" },
+              { icon: "📖", label: "族語學習", href: "/language", desc: "學習卑南族語言" },
+            ].map(link => (
+              <Link key={link.href} href={link.href}
+                className="text-center p-4 rounded-xl bg-stone-50 dark:bg-stone-700/50 hover:bg-amber-50 dark:hover:bg-stone-700 transition group">
+                <p className="text-3xl mb-2 group-hover:scale-110 transition-transform">{link.icon}</p>
+                <p className="font-medium dark:text-stone-200 text-sm">{link.label}</p>
+                <p className="text-xs text-stone-400 mt-1">{link.desc}</p>
+              </Link>
             ))}
           </div>
-        )
-      )}
-
-      {/* Links */}
-      <div className="mt-12 flex justify-center gap-4">
-        <Link href="/tribes/map" className="text-amber-700 dark:text-amber-400 hover:underline text-sm">🗺️ 部落地圖</Link>
-        <Link href="/tribes" className="text-amber-700 dark:text-amber-400 hover:underline text-sm">🏘️ 部落列表</Link>
-        <Link href="/events" className="text-amber-700 dark:text-amber-400 hover:underline text-sm">🎉 活動祭典</Link>
+        </div>
       </div>
     </div>
   );
