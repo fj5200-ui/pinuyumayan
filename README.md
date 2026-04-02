@@ -1,4 +1,4 @@
-# Pinuyumayan 卑南族入口網 v4.8
+# Pinuyumayan 卑南族入口網 v4.9
 
 ## Project Overview
 - **Name**: Pinuyumayan (卑南族入口網)
@@ -65,15 +65,15 @@ pinuyumayan/
 | 族語學習 | /language | **升級 v3**: Hero+每日一詞 + 🃏閃卡模式(翻轉動畫/ALL/未學/隨機) + 圓形進度環SVG + 分類進度條 + 對話場景(5組) + 排行榜 | ✅ **ENHANCED v3** |
 | 族語測驗 | /language/quiz | 四選一測驗、連續答對、雙向模式 | ✅ |
 | 活動祭典 | /events | 倒計時天數 + 多色標籤 + 搜尋過濾 + 已結束灰化 + 報名人數 | ✅ **v2** |
-| 文化景點 | /cultural-sites | **升級 v2**: Hero動畫+統計 + Leaflet地圖(圖例/導航popup) + 📍附近排序(Haversine) + 距離標示 + 詳情側欄(導航/查看/部落連結) + Skeleton載入 + 底部探索導航 | ✅ **ENHANCED v2** |
-| 媒體庫 | /media | **升級 v2**: Hero + 瀑布流網格 + 類型icon/Badge + 排序(最新/最舊/標題) + 詳情Modal(內嵌播放器) + Lightbox + Skeleton載入 | ✅ **ENHANCED v2** |
+| 文化景點 | /cultural-sites | **升級 v2**: Hero動畫+統計 + Leaflet地圖(圖例/導航popup) + 📍附近排序(Haversine) + 距離標示(km) + 詳情側欄 + Skeleton載入 | ✅ **ENHANCED v2** |
+| 媒體庫 | /media | **升級 v2**: Hero + 瀑布流網格 + 類型Badge + 排序 + 詳情Modal + Lightbox + Skeleton | ✅ **ENHANCED v2** |
 | 社群討論 | /community | 多板塊系統 + 回覆展開 + 按讚互動 + 發文表單驗證 + 字數統計 | ✅ **v2** |
-| 搜尋 | /search | **升級 v2**: Hero深色主題 + 🕐搜尋歷史(localStorage) + 🔥熱門關鍵字(9組) + 搜尋耗時顯示 + 日曆組件(活動結果) + 快速探索導航 + Skeleton載入 | ✅ **ENHANCED v2** |
-| 關於我們 | /about | **升級 v2**: 動態統計卡 + 時間線歷史 + 團隊介紹 + 技術架構圖 + 常見問題FAQ + 訪客留言板 | ✅ **ENHANCED v2** |
+| 搜尋 | /search | **升級 v2**: Hero深色主題 + 🕐搜尋歷史(localStorage) + 🔥熱門關鍵字(9組) + 搜尋耗時 + 日曆組件 + Skeleton | ✅ **ENHANCED v2** |
+| 關於我們 | /about | **升級 v2**: 動態統計卡 + 時間線歷史 + 團隊介紹 + 技術架構圖 + FAQ + 訪客留言 | ✅ **ENHANCED v2** |
 | 登入 | /login | JWT 登入 + 測試帳號提示 | ✅ |
 | 註冊 | /register | 帳號註冊 + 密碼確認 | ✅ |
 | 忘記密碼 | /forgot-password | 發送重設連結 | ✅ |
-| 個人資料 | /profile | **升級 v2**: Hero(漸層頭像+角色標籤+會員天數) + 統計列(4格) + 7分頁 + 密碼強度條 + 空狀態美化(icon+CTA) | ✅ **ENHANCED v2** |
+| 個人資料 | /profile | **升級 v2**: Hero(漸層頭像+角色標籤+會員天數) + 統計列(4格) + 7分頁 + 密碼強度條 + 空狀態美化 | ✅ **ENHANCED v2** |
 | 通知 | /notifications | 通知列表、已讀/刪除 | ✅ |
 
 #### 管理後台 (15 頁)
@@ -98,28 +98,53 @@ pinuyumayan/
 #### 共用元件
 | Component | Description | Version |
 |-----------|-------------|---------|
-| Header | ⌘K搜尋overlay + 使用者下拉選單 + 通知徽章 + 捲動壓縮 + 路由指示器 | v4.7 |
-| Footer | CTA橫幅 + 5欄佈局 + 每日族語 + 平台統計 | v4.7 |
+| Header | Glassmorphism 導覽列 + ⌘K搜尋overlay + 使用者下拉選單 + 通知徽章 + 捲動壓縮 + 路由指示器 + 漸層品牌Logo + 暗色模式切換 | **v4.9 glass** |
+| Footer | Glassmorphism 頁尾 + CTA漸層橫幅 + 5欄佈局 + 每日族語 + 平台統計Ribbon + 社群連結 | **v4.9 glass** |
 | AuthProvider | JWT 認證狀態 Context | v4.0 |
 | ThemeProvider | 暗色模式 Context | v4.0 |
 | ToastProvider | Toast 通知 Context | v4.0 |
 
-### v4.8 New Features (Phase 10)
-- 🏺 **文化景點頁升級 v2** — Hero 動畫(統計pills) + Leaflet 地圖(圖例/導航popup/使用者位置) + 📍附近景點排序(Haversine 距離計算) + 距離標示(km) + 詳情側欄(資訊網格/導航/Google Maps/部落頁面) + 多排序(名稱/類型/部落) + 搜尋(含標籤) + Skeleton 載入 + 底部4格探索導航
-- 📖 **族語學習頁升級 v3** — Hero(每日一詞卡片+快速統計) + 🃏全新閃卡模式(3D翻轉動畫/全部vs未學/隨機/進度條/發音/標記學會) + 圓形SVG進度環 + 分類進度條(9類/百分比/完成慶祝) + 對話場景5組(角色頭像/語音播放) + 排行榜美化
-- 🔍 **搜尋頁升級 v2** — 深色Hero + 🕐搜尋歷史(localStorage/清除全部) + 🔥熱門關鍵字(9組卑南族相關) + 搜尋耗時(秒) + 日曆組件(活動月/日) + 快速探索4格導航 + Skeleton載入 + 結果卡片升級(箭頭/hover效果)
-- 👤 **個人資料頁升級 v2** — Hero(漸層頭像/角色標籤/會員天數/註冊日期) + 統計列(4格動畫) + 密碼強度視覺化(4段彩條) + 確認密碼即時比對 + 空狀態美化(大icon+CTA連結) + 報名狀態icon(✅⏳❌) + 收藏日期顯示
-- 📰 **關於頁面升級 v2** — 動態統計卡 + 發展時間線 + 團隊介紹 + 技術架構圖 + FAQ + 訪客留言
-- 🎬 **媒體庫升級 v2** — Hero + 瀑布流網格 + 類型Badge + 排序 + 詳情Modal + Lightbox + Skeleton
+### Design System — v4.9 Glassmorphism
+| Token | Value | Usage |
+|-------|-------|-------|
+| --red | #b91c1c | 主色:重要按鈕/Admin標示 |
+| --red-light | #ef4444 | 次色:hover/漸層 |
+| --yellow | #f59e0b | 強調色:hover/連結 |
+| --yellow-light | #facc15 | 漸層/裝飾 |
+| --green | #15803d | 成功色:active路由/CTA |
+| --green-light | #22c55e | 漸層/進度 |
+| --bg-1 | #fff7ed | 暖橙底色 |
+| --bg-2 | #fefce8 | 暖黃底色 |
+| --bg-3 | #f0fdf4 | 暖綠底色 |
+| --gradient-brand | linear-gradient(135deg, red→yellow→green) | 品牌漸層 |
+| --white-glass | rgba(255,255,255,0.72) | 毛玻璃背景 |
+| --glass-border | rgba(255,255,255,0.35) | 毛玻璃邊框 |
+| --shadow-soft | 0 10px 30px rgba(0,0,0,0.08) | 柔和陰影 |
+| --shadow-medium | 0 18px 40px rgba(0,0,0,0.12) | 中等陰影 |
+| --radius-xl/lg/md | 28px / 22px / 16px | 圓角token |
+
+CSS Classes: `.glass`, `.glass-card`, `.btn-brand`, `.btn-glass`, `.icon-brand`, `.navbar-glass`, `.hero-gradient`, `.cta-gradient`, `.feature-glass`, `.section-heading`
+
+### v4.9 New Features (Phase 10 CSS)
+- 🎨 **全站設計系統** — Red/Yellow/Green 配色 + CSS Custom Properties + 漸層品牌token
+- 🧊 **Glassmorphism 毛玻璃設計** — backdrop-filter blur + 半透明白底 + 玻璃邊框 + 深色模式對應
+- 🔝 **Header v3 (glassmorphism)** — `.navbar-glass` sticky 毛玻璃 + 品牌漸層Logo + 桌面/手機自適應 + ⌘K搜尋overlay + 使用者頭像(漸層初始字母) + 通知bounce + active路由底線 + 捲動壓縮(68→56px)
+- 🦶 **Footer v3 (glassmorphism)** — CTA漸層橫幅(註冊+測驗) + 毛玻璃容器 + 5欄佈局(品牌/探索/學習/帳號) + 社群icon + 每日族語toggle + 統計Ribbon(8部落/6+文章/15+詞彙/6+活動/6+景點) + 版權
+- 🌈 **Body 背景** — 三色放射漸層(紅/黃/綠 radial-gradient) + fixed attachment
+- 🎴 **Glass Card** — 彩虹頂部條 + hover上浮(-6px) + shadow升級 + 深色模式
+- 🟢 **Button 系統** — `.btn-brand`(漸層+白字+hover升浮) + `.btn-glass`(毛玻璃+hover亮化)
+- 🌊 **動畫** — slide-in / fade-in / pulse-slow / float + Tailwind utility classes
+
+### v4.8 Features (Phase 10 Pages)
+- 🏺 **文化景點頁升級 v2** — Hero + Leaflet地圖 + 附近排序(Haversine) + 詳情側欄 + Skeleton
+- 📖 **族語學習頁升級 v3** — Hero+每日一詞 + 閃卡3D翻轉 + 圓形SVG進度環 + 分類進度條
+- 🔍 **搜尋頁升級 v2** — 深色Hero + 搜尋歷史 + 熱門關鍵字 + 搜尋耗時 + 日曆
+- 👤 **個人資料頁升級 v2** — Hero + 統計列 + 密碼強度條 + 空狀態美化
+- 📰 **關於頁面升級 v2** — 動態統計 + 時間線 + 團隊 + 架構圖 + FAQ
+- 🎬 **媒體庫升級 v2** — Hero + 瀑布流 + Badge + 排序 + Modal + Lightbox
 
 ### v4.7 Features (Phase 9)
-- 🏠 首頁v2 — 動畫計數器 + 波浪分隔線 + 互動卡片
-- 🎪 活動v2 — 倒計時 + 多色標籤 + 搜尋過濾
-- 💬 社群v2 — 多板塊 + 回覆/按讚 + 字數統計
-- 🏘️ 部落詳情v2 — 追蹤/分享/地圖/相關文章
-- 📊 Dashboard v2 — 健康狀態/Sparkline/操作日誌
-- 🔍 Header v2 — ⌘K搜尋/通知/捲動壓縮
-- 🦶 Footer v2 — CTA/族語/統計
+- 🏠 首頁v2 + 🎪 活動v2 + 💬 社群v2 + 🏘️ 部落詳情v2 + 📊 Dashboard v2 + Header v2 + Footer v2
 
 ### v4.6 Features (Phase 8)
 - 🗄️ DB 遷移 5 新表 + 文章v2 + Sitemap + robots.txt + 404
@@ -182,8 +207,8 @@ npx drizzle-kit generate && npx drizzle-kit push && npm run db:seed
 - **Phase 7** ✅ DB 遷移 (6 新表) + 文章版本歷史 + 批次操作
 - **Phase 8** ✅ DB 遷移 (5 新表) + 文章 v2 + Sitemap + robots.txt + 404
 - **Phase 9** ✅ 前端 UX 大升級 — 首頁v2 + 活動v2 + 社群v2 + 部落詳情v2 + Dashboard v2 + Header v2 + Footer v2
-- **Phase 10** ✅ 頁面深度升級 — 文化景點v2(地圖/附近/距離) + 族語v3(閃卡/進度環) + 搜尋v2(歷史/熱門) + 個人檔案v2(Hero/統計) + 關於v2 + 媒體v2
-- **Overall**: ~85% of planned system (37 routes, 19 API modules, 22 DB tables)
+- **Phase 10** ✅ 頁面深度升級 + CSS 設計系統 + Glassmorphism — 文化景點v2 + 族語v3 + 搜尋v2 + 個人檔案v2 + 關於v2 + 媒體v2 + Header v3(glass) + Footer v3(glass) + 全站Design System
+- **Overall**: ~87% of planned system (37 routes, 19 API modules, 22 DB tables)
 
 ## Planned (Not Yet Implemented)
 - OAuth 社群登入 (Google/Facebook/LINE)
@@ -195,4 +220,4 @@ npx drizzle-kit generate && npx drizzle-kit push && npm run db:seed
 - PWA 離線支援
 
 ## Last Updated
-2026-04-02 v4.8
+2026-04-02 v4.9

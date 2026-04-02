@@ -20,7 +20,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
         <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
       </head>
-      <body className="font-sans bg-stone-50 dark:bg-stone-900 text-stone-800 dark:text-stone-100 min-h-screen flex flex-col transition-colors" style={{ fontFamily: "'Noto Sans TC', sans-serif" }}>
+      <body className="font-sans min-h-screen flex flex-col transition-colors" style={{ fontFamily: "'Noto Sans TC', 'Microsoft JhengHei', sans-serif" }}>
         <Providers>
           <Header />
           <main className="flex-1">{children}</main>
