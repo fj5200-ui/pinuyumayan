@@ -7,14 +7,14 @@ import { useTheme } from "@/lib/theme-context";
 import { api } from "@/lib/api";
 
 const NAV = [
-  { href: "/", label: "首頁", icon: "🏠" },
-  { href: "/tribes", label: "部落", icon: "🏘️" },
-  { href: "/articles", label: "文化誌", icon: "📝" },
-  { href: "/language", label: "族語", icon: "📖" },
-  { href: "/events", label: "活動", icon: "🎉" },
-  { href: "/cultural-sites", label: "景點", icon: "🏺" },
-  { href: "/community", label: "社群", icon: "💬" },
-  { href: "/media", label: "媒體", icon: "🎬" },
+  { href: "/", label: "首頁" },
+  { href: "/tribes", label: "部落" },
+  { href: "/articles", label: "文化誌" },
+  { href: "/language", label: "族語" },
+  { href: "/events", label: "活動" },
+  { href: "/cultural-sites", label: "景點" },
+  { href: "/community", label: "社群" },
+  { href: "/media", label: "媒體" },
 ];
 
 export default function Header() {
@@ -32,9 +32,9 @@ export default function Header() {
   const userMenuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const handle = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", handle, { passive: true });
-    return () => window.removeEventListener("scroll", handle);
+    const h = () => setScrolled(window.scrollY > 10);
+    window.addEventListener("scroll", h, { passive: true });
+    return () => window.removeEventListener("scroll", h);
   }, []);
 
   useEffect(() => {
@@ -45,11 +45,11 @@ export default function Header() {
   }, [user, pathname]);
 
   useEffect(() => {
-    const handle = (e: MouseEvent) => {
+    const h = (e: MouseEvent) => {
       if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) setUserMenuOpen(false);
     };
-    document.addEventListener("mousedown", handle);
-    return () => document.removeEventListener("mousedown", handle);
+    document.addEventListener("mousedown", h);
+    return () => document.removeEventListener("mousedown", h);
   }, []);
 
   useEffect(() => { setMenuOpen(false); setSearchOpen(false); setUserMenuOpen(false); }, [pathname]);
@@ -57,71 +57,68 @@ export default function Header() {
 
   const handleSearch = useCallback((e: React.FormEvent) => {
     e.preventDefault();
-    if (searchQ.trim()) {
-      router.push(`/search?q=${encodeURIComponent(searchQ.trim())}`);
-      setSearchOpen(false);
-      setSearchQ("");
-    }
+    if (searchQ.trim()) { router.push(`/search?q=${encodeURIComponent(searchQ.trim())}`); setSearchOpen(false); setSearchQ(""); }
   }, [searchQ, router]);
 
   useEffect(() => {
-    const handle = (e: KeyboardEvent) => {
+    const h = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === "k") { e.preventDefault(); setSearchOpen(v => !v); }
       if (e.key === "Escape") { setSearchOpen(false); setUserMenuOpen(false); }
     };
-    document.addEventListener("keydown", handle);
-    return () => document.removeEventListener("keydown", handle);
+    document.addEventListener("keydown", h);
+    return () => document.removeEventListener("keydown", h);
   }, []);
 
   const isActive = (href: string) => href === "/" ? pathname === "/" : pathname.startsWith(href);
 
   return (
     <>
-      <header className={`navbar-glass transition-all duration-300 ${scrolled ? "shadow-lg" : ""}`}>
-        <div className="max-w-7xl mx-auto px-4 md:px-6">
-          <div className={`flex items-center justify-between transition-all ${scrolled ? "h-14" : "h-[68px]"}`}>
+      {/* Top color bar */}
+      <div className="color-bar" />
+
+      <header className={`navbar-solid ${scrolled ? "scrolled" : ""}`}>
+        <div className="max-w-[1180px] w-[92%] mx-auto">
+          <div className={`flex items-center justify-between transition-all ${scrolled ? "h-[60px]" : "h-[72px]"}`}>
+
             {/* Logo */}
-            <Link href="/" className="flex items-center gap-2 font-black text-xl tracking-wide shrink-0 group">
-              <span className="text-2xl group-hover:rotate-12 transition-transform duration-300">🌾</span>
-              <span className="hidden sm:inline bg-gradient-to-r from-[var(--red)] via-[var(--yellow)] to-[var(--green)] bg-clip-text text-transparent">Pinuyumayan</span>
-              <span className="sm:hidden text-[var(--red)] font-black">卑南族</span>
+            <Link href="/" className="flex items-center gap-2 shrink-0">
+              <span className="font-black text-xl tracking-wider" style={{ color: "var(--black)" }}>
+                <span className="dark:text-gray-100">Pinuyumayan</span>
+              </span>
             </Link>
 
             {/* Desktop Nav */}
             <nav className="hidden lg:flex items-center gap-1">
               {NAV.map(n => (
                 <Link key={n.href} href={n.href}
-                  className={`relative px-3 py-2 rounded-full text-sm font-bold transition-all ${
+                  className={`px-3 py-1.5 text-sm font-bold transition-all border-b-2 ${
                     isActive(n.href)
-                      ? "text-[var(--green)] bg-[rgba(34,197,94,0.12)]"
-                      : "text-[var(--text-main)] dark:text-stone-300 hover:bg-[rgba(245,158,11,0.12)] hover:text-[var(--green)]"
+                      ? "border-[var(--red)] text-[var(--red)]"
+                      : "border-transparent text-[var(--text-main)] dark:text-gray-300 hover:border-[var(--red)] hover:text-[var(--red)]"
                   }`}>
-                  <span className="mr-1">{n.icon}</span>{n.label}
-                  {isActive(n.href) && (
-                    <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-5 h-[3px] rounded-full" style={{ background: "var(--gradient-brand)" }} />
-                  )}
+                  {n.label}
                 </Link>
               ))}
             </nav>
 
-            {/* Desktop right actions */}
-            <div className="hidden lg:flex items-center gap-1.5">
+            {/* Desktop right */}
+            <div className="hidden lg:flex items-center gap-2">
               <button onClick={() => setSearchOpen(true)}
-                className="p-2 rounded-full hover:bg-[rgba(245,158,11,0.1)] transition text-[var(--text-soft)] hover:text-[var(--yellow)] flex items-center gap-1"
+                className="px-2.5 py-1.5 text-sm text-[var(--text-soft)] hover:text-[var(--red)] transition flex items-center gap-1"
                 title="搜尋 (⌘K)">
-                🔍 <span className="text-xs bg-stone-100 dark:bg-stone-700 px-1.5 py-0.5 rounded hidden xl:inline text-stone-400">⌘K</span>
+                🔍 <span className="text-xs border border-[var(--border)] px-1.5 py-0.5 rounded text-[var(--text-light)] hidden xl:inline">⌘K</span>
               </button>
 
-              <button onClick={toggle} className="p-2 rounded-full hover:bg-[rgba(245,158,11,0.1)] transition text-[var(--text-soft)]" title="切換主題">
+              <button onClick={toggle} className="px-2 py-1.5 text-sm text-[var(--text-soft)] hover:text-[var(--yellow)] transition" title="切換主題">
                 {dark ? "☀️" : "🌙"}
               </button>
 
               {user ? (
                 <>
-                  <Link href="/notifications" className="p-2 rounded-full hover:bg-[rgba(245,158,11,0.1)] transition relative text-[var(--text-soft)]">
+                  <Link href="/notifications" className="px-2 py-1.5 relative text-[var(--text-soft)] hover:text-[var(--red)] transition">
                     🔔
                     {notifCount > 0 && (
-                      <span className="absolute -top-0.5 -right-0.5 text-white text-xs min-w-[18px] h-[18px] rounded-full flex items-center justify-center font-bold px-1 animate-bounce" style={{ background: "var(--red)" }}>
+                      <span className="absolute -top-0.5 -right-0.5 text-white text-[10px] min-w-[16px] h-[16px] rounded-full flex items-center justify-center font-black px-0.5" style={{ background: "var(--red)" }}>
                         {notifCount > 9 ? "9+" : notifCount}
                       </span>
                     )}
@@ -129,42 +126,42 @@ export default function Header() {
 
                   <div className="relative" ref={userMenuRef}>
                     <button onClick={() => setUserMenuOpen(!userMenuOpen)}
-                      className="flex items-center gap-2 px-3 py-1.5 rounded-full hover:bg-[rgba(245,158,11,0.1)] transition text-sm font-bold text-[var(--text-main)] dark:text-stone-200">
-                      <span className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-black text-white" style={{ background: "var(--gradient-brand)" }}>
+                      className="flex items-center gap-1.5 px-2 py-1.5 text-sm font-bold text-[var(--text-main)] dark:text-gray-200 hover:text-[var(--red)] transition">
+                      <span className="w-6 h-6 rounded-sm flex items-center justify-center text-[10px] font-black text-white" style={{ background: "var(--red)", borderRadius: "var(--radius-sm)" }}>
                         {user.name?.charAt(0)?.toUpperCase()}
                       </span>
-                      <span className="max-w-[80px] truncate hidden xl:inline">{user.name}</span>
-                      <span className={`text-xs transition-transform ${userMenuOpen ? "rotate-180" : ""}`}>▾</span>
+                      <span className="max-w-[72px] truncate hidden xl:inline">{user.name}</span>
+                      <span className={`text-[10px] transition-transform ${userMenuOpen ? "rotate-180" : ""}`}>▾</span>
                     </button>
 
                     {userMenuOpen && (
-                      <div className="absolute right-0 top-full mt-2 w-56 glass overflow-hidden animate-fade-in z-50" style={{ borderRadius: "var(--radius-lg)" }}>
-                        <div className="p-3 border-b border-white/20 dark:border-stone-700">
-                          <p className="font-bold text-sm">{user.name}</p>
+                      <div className="absolute right-0 top-full mt-2 w-52 bg-white dark:bg-[#1a1a1a] border border-[var(--border)] dark:border-[#333] rounded-[var(--radius-md)] overflow-hidden shadow-lg animate-fade-in z-50">
+                        <div className="p-3 border-b border-[var(--border)] dark:border-[#333]">
+                          <p className="font-bold text-sm dark:text-gray-100">{user.name}</p>
                           <p className="text-xs text-[var(--text-soft)] truncate">{user.email}</p>
-                          <span className={`inline-block mt-1 text-xs px-2 py-0.5 rounded-full font-bold ${user.role === "admin" ? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300" : user.role === "editor" ? "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300" : "bg-stone-100 text-stone-600 dark:bg-stone-700 dark:text-stone-400"}`}>
+                          <span className={`inline-block mt-1 text-[10px] px-2 py-0.5 rounded font-black ${user.role === "admin" ? "tag-red" : user.role === "editor" ? "tag-yellow" : "tag-green"}`} style={{ fontSize: "10px" }}>
                             {user.role}
                           </span>
                         </div>
                         <div className="py-1">
-                          <Link href="/profile" className="flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-[rgba(245,158,11,0.1)] transition">
-                            <span>👤</span> 個人檔案
-                          </Link>
-                          <Link href="/notifications" className="flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-[rgba(245,158,11,0.1)] transition">
-                            <span>🔔</span> 通知 {notifCount > 0 && <span className="ml-auto text-xs px-1.5 py-0.5 rounded-full font-bold" style={{ background: "rgba(185,28,28,0.1)", color: "var(--red)" }}>{notifCount}</span>}
-                          </Link>
-                          <Link href="/profile" className="flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-[rgba(245,158,11,0.1)] transition">
-                            <span>📚</span> 我的書籤
-                          </Link>
+                          {[
+                            { href: "/profile", label: "個人檔案", icon: "👤" },
+                            { href: "/notifications", label: "通知", icon: "🔔", badge: notifCount },
+                          ].map(l => (
+                            <Link key={l.href} href={l.href} className="flex items-center gap-2 px-4 py-2 text-sm hover:bg-gray-50 dark:hover:bg-[#222] transition">
+                              <span>{l.icon}</span> {l.label}
+                              {l.badge ? <span className="ml-auto text-[10px] px-1.5 py-0.5 rounded font-black" style={{ background: "rgba(153,27,27,0.1)", color: "var(--red)" }}>{l.badge}</span> : null}
+                            </Link>
+                          ))}
                           {isAdmin && (
-                            <Link href="/admin" className="flex items-center gap-3 px-4 py-2.5 text-sm font-bold hover:bg-[rgba(185,28,28,0.1)] transition" style={{ color: "var(--red)" }}>
+                            <Link href="/admin" className="flex items-center gap-2 px-4 py-2 text-sm font-bold hover:bg-gray-50 dark:hover:bg-[#222] transition" style={{ color: "var(--red)" }}>
                               <span>⚙️</span> 管理後台
                             </Link>
                           )}
                         </div>
-                        <div className="border-t border-white/20 dark:border-stone-700 py-1">
+                        <div className="border-t border-[var(--border)] dark:border-[#333] py-1">
                           <button onClick={() => { logout(); setUserMenuOpen(false); window.location.href = "/"; }}
-                            className="flex items-center gap-3 px-4 py-2.5 text-sm text-[var(--text-soft)] hover:text-[var(--red)] hover:bg-[rgba(185,28,28,0.06)] transition w-full text-left">
+                            className="flex items-center gap-2 px-4 py-2 text-sm text-[var(--text-soft)] hover:text-[var(--red)] transition w-full text-left">
                             <span>🚪</span> 登出
                           </button>
                         </div>
@@ -174,8 +171,8 @@ export default function Header() {
                 </>
               ) : (
                 <div className="flex items-center gap-2">
-                  <Link href="/login" className="text-sm font-bold text-[var(--text-soft)] hover:text-[var(--green)] transition px-3 py-1.5">登入</Link>
-                  <Link href="/register" className="btn-brand text-sm !min-h-[36px] !px-5 !rounded-full">註冊</Link>
+                  <Link href="/login" className="text-sm font-bold text-[var(--text-soft)] hover:text-[var(--red)] transition px-2 py-1">登入</Link>
+                  <Link href="/register" className="btn-brand text-sm !min-h-[34px] !px-4" style={{ borderRadius: "var(--radius-sm)" }}>註冊</Link>
                 </div>
               )}
             </div>
@@ -187,50 +184,49 @@ export default function Header() {
               {user && (
                 <Link href="/notifications" className="p-2 relative text-[var(--text-soft)]">
                   🔔
-                  {notifCount > 0 && <span className="absolute -top-0.5 -right-0.5 text-white text-xs w-4 h-4 rounded-full flex items-center justify-center font-bold" style={{ background: "var(--red)" }}>{notifCount > 9 ? "9+" : notifCount}</span>}
+                  {notifCount > 0 && <span className="absolute -top-0.5 -right-0.5 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-black" style={{ background: "var(--red)" }}>{notifCount > 9 ? "9+" : notifCount}</span>}
                 </Link>
               )}
-              <button onClick={() => setMenuOpen(!menuOpen)} className="p-2 text-[var(--text-main)] dark:text-stone-200">
-                <span className="text-2xl font-bold">{menuOpen ? "✕" : "☰"}</span>
+              <button onClick={() => setMenuOpen(!menuOpen)} className="p-2 text-[var(--text-main)] dark:text-gray-200">
+                <span className="text-xl font-black">{menuOpen ? "✕" : "☰"}</span>
               </button>
             </div>
           </div>
 
           {/* Mobile Nav */}
           {menuOpen && (
-            <div className="lg:hidden pb-4 border-t border-white/20 dark:border-stone-700 mt-1 pt-3 animate-fade-in space-y-1">
+            <div className="lg:hidden pb-4 border-t border-[var(--border)] dark:border-[#333] mt-1 pt-3 animate-fade-in space-y-0.5">
               {NAV.map(n => (
                 <Link key={n.href} href={n.href} onClick={() => setMenuOpen(false)}
-                  className={`flex items-center gap-3 px-4 py-2.5 rounded-2xl text-sm font-bold transition ${isActive(n.href) ? "bg-[rgba(34,197,94,0.12)] text-[var(--green)]" : "text-[var(--text-main)] dark:text-stone-300 hover:bg-[rgba(245,158,11,0.1)]"}`}>
-                  <span className="text-lg">{n.icon}</span> {n.label}
+                  className={`flex items-center px-4 py-2.5 text-sm font-bold transition rounded-[var(--radius-sm)] ${
+                    isActive(n.href)
+                      ? "bg-[rgba(153,27,27,0.06)] text-[var(--red)] border-l-4 border-[var(--red)]"
+                      : "text-[var(--text-main)] dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#222]"
+                  }`}>
+                  {n.label}
                 </Link>
               ))}
-              <div className="border-t border-white/20 dark:border-stone-700 mt-3 pt-3 space-y-1">
+              <div className="border-t border-[var(--border)] dark:border-[#333] mt-3 pt-3 space-y-0.5">
                 {user ? (
                   <>
                     <div className="px-4 py-2 flex items-center gap-2 text-sm">
-                      <span className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-black text-white" style={{ background: "var(--gradient-brand)" }}>
+                      <span className="w-6 h-6 flex items-center justify-center text-[10px] font-black text-white rounded-sm" style={{ background: "var(--red)" }}>
                         {user.name?.charAt(0)?.toUpperCase()}
                       </span>
-                      <div>
-                        <span className="font-bold">{user.name}</span>
-                        <span className="ml-2 text-xs px-1.5 py-0.5 rounded-full" style={{ background: "rgba(245,158,11,0.12)", color: "var(--yellow)" }}>{user.role}</span>
-                      </div>
+                      <span className="font-bold dark:text-gray-100">{user.name}</span>
+                      <span className="tag-red ml-1" style={{ fontSize: "10px" }}>{user.role}</span>
                     </div>
-                    <Link href="/profile" onClick={() => setMenuOpen(false)} className="flex items-center gap-3 px-4 py-2 text-sm hover:bg-[rgba(245,158,11,0.1)] rounded-xl transition">👤 個人檔案</Link>
-                    <Link href="/notifications" onClick={() => setMenuOpen(false)} className="flex items-center gap-3 px-4 py-2 text-sm hover:bg-[rgba(245,158,11,0.1)] rounded-xl transition">
-                      🔔 通知 {notifCount > 0 && <span className="text-xs px-1.5 py-0.5 rounded-full ml-1 text-white" style={{ background: "var(--red)" }}>{notifCount}</span>}
-                    </Link>
-                    {isAdmin && <Link href="/admin" onClick={() => setMenuOpen(false)} className="flex items-center gap-3 px-4 py-2 text-sm font-bold hover:bg-[rgba(185,28,28,0.08)] rounded-xl transition" style={{ color: "var(--red)" }}>⚙️ 管理後台</Link>}
+                    <Link href="/profile" onClick={() => setMenuOpen(false)} className="flex items-center gap-2 px-4 py-2 text-sm hover:bg-gray-50 dark:hover:bg-[#222] rounded-[var(--radius-sm)] transition">👤 個人檔案</Link>
+                    {isAdmin && <Link href="/admin" onClick={() => setMenuOpen(false)} className="flex items-center gap-2 px-4 py-2 text-sm font-bold hover:bg-gray-50 dark:hover:bg-[#222] rounded-[var(--radius-sm)] transition" style={{ color: "var(--red)" }}>⚙️ 管理後台</Link>}
                     <button onClick={() => { logout(); setMenuOpen(false); window.location.href = "/"; }}
-                      className="flex items-center gap-3 px-4 py-2 text-sm text-[var(--text-soft)] hover:text-[var(--red)] hover:bg-[rgba(185,28,28,0.06)] rounded-xl transition w-full text-left">
+                      className="flex items-center gap-2 px-4 py-2 text-sm text-[var(--text-soft)] hover:text-[var(--red)] transition w-full text-left rounded-[var(--radius-sm)]">
                       🚪 登出
                     </button>
                   </>
                 ) : (
-                  <div className="flex gap-3 px-4">
-                    <Link href="/login" onClick={() => setMenuOpen(false)} className="flex-1 text-center btn-glass !min-h-[40px] text-sm">登入</Link>
-                    <Link href="/register" onClick={() => setMenuOpen(false)} className="flex-1 text-center btn-brand !min-h-[40px] text-sm">註冊</Link>
+                  <div className="flex gap-2 px-4">
+                    <Link href="/login" onClick={() => setMenuOpen(false)} className="flex-1 text-center btn-glass !min-h-[38px] text-sm">登入</Link>
+                    <Link href="/register" onClick={() => setMenuOpen(false)} className="flex-1 text-center btn-brand !min-h-[38px] text-sm">註冊</Link>
                   </div>
                 )}
               </div>
@@ -241,28 +237,28 @@ export default function Header() {
 
       {/* Search overlay */}
       {searchOpen && (
-        <div className="fixed inset-0 z-[60] bg-black/40 backdrop-blur-sm flex items-start justify-center pt-[15vh] px-4 animate-fade-in" onClick={(e) => { if (e.target === e.currentTarget) setSearchOpen(false); }}>
-          <div className="glass w-full max-w-lg overflow-hidden" style={{ borderRadius: "var(--radius-xl)" }}>
-            <form onSubmit={handleSearch} className="flex items-center gap-3 p-4 border-b border-white/20 dark:border-stone-700">
-              <span className="text-xl">🔍</span>
+        <div className="fixed inset-0 z-[60] bg-black/40 flex items-start justify-center pt-[18vh] px-4 animate-fade-in" onClick={(e) => { if (e.target === e.currentTarget) setSearchOpen(false); }}>
+          <div className="bg-white dark:bg-[#1a1a1a] border border-[var(--border)] dark:border-[#333] w-full max-w-lg overflow-hidden shadow-xl" style={{ borderRadius: "var(--radius-md)" }}>
+            <form onSubmit={handleSearch} className="flex items-center gap-3 p-4 border-b border-[var(--border)] dark:border-[#333]">
+              <span className="text-lg">🔍</span>
               <input ref={searchRef} type="text" value={searchQ} onChange={e => setSearchQ(e.target.value)}
                 placeholder="搜尋文章、部落、詞彙..."
-                className="flex-1 bg-transparent outline-none text-lg placeholder:text-[var(--text-soft)]" />
-              <kbd className="hidden sm:inline text-xs bg-stone-100 dark:bg-stone-700 text-stone-500 dark:text-stone-400 px-2 py-1 rounded-lg">ESC</kbd>
+                className="flex-1 bg-transparent outline-none text-base placeholder:text-[var(--text-light)] dark:text-gray-100" />
+              <kbd className="hidden sm:inline text-[10px] border border-[var(--border)] dark:border-[#444] text-[var(--text-light)] px-1.5 py-0.5 rounded font-mono">ESC</kbd>
             </form>
-            <div className="p-4 space-y-1">
-              <p className="text-xs text-[var(--text-soft)] mb-2 font-bold">快速前往</p>
+            <div className="p-4 space-y-0.5">
+              <p className="text-[11px] text-[var(--text-light)] mb-2 font-bold uppercase tracking-wider">快速前往</p>
               {[
-                { href: "/tribes", label: "🏘️ 部落巡禮" },
-                { href: "/articles", label: "📝 文化誌" },
-                { href: "/language", label: "📖 族語學習" },
-                { href: "/language/quiz", label: "🎯 族語測驗" },
-                { href: "/events", label: "🎉 活動祭典" },
-                { href: "/cultural-sites", label: "🏺 文化景點" },
+                { href: "/tribes", label: "部落巡禮" },
+                { href: "/articles", label: "文化誌" },
+                { href: "/language", label: "族語學習" },
+                { href: "/language/quiz", label: "族語測驗" },
+                { href: "/events", label: "活動祭典" },
+                { href: "/cultural-sites", label: "文化景點" },
               ].map(q => (
                 <Link key={q.href} href={q.href} onClick={() => setSearchOpen(false)}
-                  className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-[rgba(245,158,11,0.1)] text-sm font-medium transition">
-                  {q.label}
+                  className="flex items-center px-3 py-2 rounded-[var(--radius-sm)] hover:bg-gray-50 dark:hover:bg-[#222] text-sm font-medium transition">
+                  {q.label} <span className="ml-auto text-[var(--text-light)]">→</span>
                 </Link>
               ))}
             </div>

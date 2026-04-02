@@ -3,35 +3,37 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme inline {
-  --color-background: #fafaf9;
-  --color-foreground: #1c1917;
+  --color-background: #f5f5f0;
+  --color-foreground: #111111;
   --font-sans: 'Noto Sans TC', 'Microsoft JhengHei', sans-serif;
 }
 
-/* ===== Design System — Red / Yellow / Green Glassmorphism ===== */
+/* ===== Design System — Cultural Solid (穩重文化感) ===== */
 :root {
-  --red: #b91c1c;
-  --red-light: #ef4444;
-  --yellow: #f59e0b;
-  --yellow-light: #facc15;
-  --green: #15803d;
-  --green-light: #22c55e;
-
-  --bg-1: #fff7ed;
-  --bg-2: #fefce8;
-  --bg-3: #f0fdf4;
+  --red: #991b1b;
+  --red-hover: #7f1d1d;
+  --yellow: #d97706;
+  --green: #166534;
+  --black: #111111;
+  --cream: #f5f5f0;
+  --white: #ffffff;
 
   --text-main: #1f2937;
-  --text-soft: #4b5563;
-  --white-glass: rgba(255, 255, 255, 0.72);
-  --glass-border: rgba(255, 255, 255, 0.35);
-  --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.08);
-  --shadow-medium: 0 18px 40px rgba(0, 0, 0, 0.12);
-  --radius-xl: 28px;
-  --radius-lg: 22px;
-  --radius-md: 16px;
+  --text-soft: #6b7280;
+  --text-light: #9ca3af;
 
-  --gradient-brand: linear-gradient(135deg, var(--red), var(--yellow), var(--green));
+  --border: #e5e7eb;
+  --border-dark: #d1d5db;
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+
+  --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 6px 18px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.10);
+
+  --color-bar: linear-gradient(to right, var(--red), var(--yellow), var(--green));
 }
 
 /* ===== Base ===== */
@@ -39,227 +41,293 @@ html { scroll-behavior: smooth; }
 
 body {
   font-family: var(--font-sans);
+  background: var(--cream);
   color: var(--text-main);
   line-height: 1.7;
-  background:
-    radial-gradient(circle at top left, rgba(239, 68, 68, 0.12), transparent 30%),
-    radial-gradient(circle at top right, rgba(250, 204, 21, 0.14), transparent 30%),
-    radial-gradient(circle at bottom center, rgba(34, 197, 94, 0.12), transparent 30%),
-    linear-gradient(135deg, var(--bg-1), var(--bg-2), var(--bg-3));
-  background-attachment: fixed;
 }
 
 .dark body, :where(.dark) body {
-  background: #1c1917;
-  color: #e7e5e4;
+  background: #111111;
+  color: #e5e7eb;
 }
 
 img { max-width: 100%; display: block; }
 
-/* ===== Glass Utility ===== */
+/* ===== Color Bar (三色文化條) ===== */
+.color-bar {
+  height: 4px;
+  background: var(--color-bar);
+}
+.color-bar-6 {
+  height: 6px;
+  background: var(--color-bar);
+}
+
+/* ===== Solid Navbar ===== */
+.navbar-solid {
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  background: var(--white);
+  border-bottom: 2px solid var(--black);
+  transition: all 0.25s ease;
+}
+.dark .navbar-solid {
+  background: #1a1a1a;
+  border-color: #444;
+}
+.navbar-solid.scrolled {
+  box-shadow: var(--shadow-md);
+}
+
+/* ===== Card System (白底 + 細邊框 + 頂部色條) ===== */
+.card-solid {
+  position: relative;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 22px;
+  box-shadow: var(--shadow-sm);
+  transition: 0.25s ease;
+  overflow: hidden;
+}
+.card-solid:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}
+.dark .card-solid {
+  background: #1a1a1a;
+  border-color: #333;
+}
+
+/* Top color bar on cards */
+.card-solid::before {
+  content: "";
+  display: block;
+  height: 4px;
+  margin: -22px -22px 16px;
+  background: var(--color-bar);
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+}
+
+/* Glass utility — kept for backward compat but mapped to solid */
 .glass {
-  background: rgba(255, 255, 255, 0.55);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border: 1px solid var(--glass-border);
-  box-shadow: var(--shadow-soft);
-  border-radius: var(--radius-xl);
+  background: var(--white);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  border-radius: var(--radius-md);
 }
 .dark .glass {
-  background: rgba(28, 25, 23, 0.65);
-  border-color: rgba(87, 83, 78, 0.4);
+  background: #1a1a1a;
+  border-color: #333;
 }
-
 .glass-card {
   position: relative;
-  padding: 28px;
-  border-radius: var(--radius-xl);
+  padding: 22px;
+  border-radius: var(--radius-md);
   overflow: hidden;
-  background: rgba(255, 255, 255, 0.58);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border: 1px solid rgba(255, 255, 255, 0.36);
-  box-shadow: var(--shadow-soft);
-  transition: 0.35s ease;
+  background: var(--white);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  transition: 0.25s ease;
 }
 .glass-card:hover {
-  transform: translateY(-6px);
-  box-shadow: var(--shadow-medium);
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
 }
 .dark .glass-card {
-  background: rgba(28, 25, 23, 0.6);
-  border-color: rgba(87, 83, 78, 0.3);
+  background: #1a1a1a;
+  border-color: #333;
 }
-
-/* Rainbow top bar on cards */
 .glass-card::before {
   content: "";
-  position: absolute;
-  inset: 0 0 auto 0;
-  height: 5px;
-  background: var(--gradient-brand);
-  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  display: block;
+  height: 4px;
+  margin: -22px -22px 16px;
+  background: var(--color-bar);
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
 }
 
-/* ===== Buttons ===== */
+/* ===== Buttons (實色塊) ===== */
 .btn-brand {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 48px;
-  padding: 0 24px;
+  min-height: 44px;
+  padding: 0 22px;
   border: none;
-  border-radius: 18px;
+  border-radius: var(--radius-sm);
   font-weight: 800;
   color: white;
   cursor: pointer;
-  transition: 0.3s ease;
-  box-shadow: var(--shadow-soft);
-  background: var(--gradient-brand);
+  transition: 0.25s ease;
+  background: var(--red);
 }
 .btn-brand:hover {
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-medium);
+  background: var(--red-hover);
 }
 
 .btn-glass {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 48px;
-  padding: 0 24px;
-  border-radius: 18px;
+  min-height: 44px;
+  padding: 0 22px;
+  border-radius: var(--radius-sm);
   font-weight: 800;
   cursor: pointer;
-  transition: 0.3s ease;
-  color: var(--text-main);
-  background: rgba(255, 255, 255, 0.62);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  box-shadow: var(--shadow-soft);
+  transition: 0.25s ease;
+  color: var(--black);
+  background: transparent;
+  border: 2px solid var(--black);
 }
 .btn-glass:hover {
-  transform: translateY(-3px);
-  background: rgba(255, 255, 255, 0.8);
+  background: var(--black);
+  color: white;
 }
 .dark .btn-glass {
-  color: #e7e5e4;
-  background: rgba(87, 83, 78, 0.4);
-  border-color: rgba(87, 83, 78, 0.5);
+  color: #e5e7eb;
+  border-color: #666;
+}
+.dark .btn-glass:hover {
+  background: #444;
+  border-color: #444;
 }
 
-/* ===== Icon box ===== */
-.icon-brand {
-  width: 56px;
-  height: 56px;
-  display: grid;
-  place-items: center;
-  border-radius: 18px;
-  color: white;
-  font-size: 1.2rem;
-  font-weight: 900;
-  box-shadow: var(--shadow-soft);
-  background: var(--gradient-brand);
-}
-
-/* ===== Glassmorphism Navbar ===== */
-.navbar-glass {
-  position: sticky;
-  top: 0;
-  z-index: 999;
-  background: rgba(255, 255, 255, 0.58);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.42);
-  box-shadow: var(--shadow-soft);
-  transition: all 0.3s ease;
-}
-.dark .navbar-glass {
-  background: rgba(28, 25, 23, 0.78);
-  border-color: rgba(87, 83, 78, 0.3);
-}
-
-/* ===== Hero Gradient Background ===== */
-.hero-gradient {
-  background:
-    linear-gradient(rgba(0,0,0,0.15), rgba(0,0,0,0.2)),
-    linear-gradient(135deg, rgba(185, 28, 28, 0.78), rgba(245, 158, 11, 0.68), rgba(21, 128, 61, 0.74));
-}
-
-/* ===== Section Headings ===== */
+/* ===== Section Heading (左側紅色邊條) ===== */
 .section-heading {
-  text-align: center;
-  margin-bottom: 42px;
+  margin-bottom: 36px;
 }
 .section-heading h2 {
-  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  font-size: clamp(1.6rem, 3.5vw, 2rem);
   font-weight: 900;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
+  border-left: 6px solid var(--red);
+  padding-left: 12px;
 }
 .section-heading p {
-  max-width: 680px;
-  margin: 0 auto;
+  max-width: 640px;
   color: var(--text-soft);
+  padding-left: 18px;
 }
 
-/* ===== CTA Box ===== */
-.cta-gradient {
-  text-align: center;
-  padding: 56px 24px;
-  border-radius: 36px;
-  background:
-    linear-gradient(rgba(255,255,255,0.08), rgba(255,255,255,0.08)),
-    linear-gradient(135deg, rgba(185,28,28,0.95), rgba(245,158,11,0.92), rgba(21,128,61,0.95));
+/* ===== Hero ===== */
+.hero-section {
+  padding: 70px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+/* ===== Banner (黑底強視覺) ===== */
+.banner-dark {
+  background: var(--black);
   color: white;
-  box-shadow: var(--shadow-medium);
+  padding: 56px 24px;
+  text-align: center;
+  border-radius: var(--radius-md);
+}
+.banner-dark p { color: rgba(255, 255, 255, 0.7); }
+.dark .banner-dark {
+  background: #222;
 }
 
-/* ===== Feature banner ===== */
+/* CTA — backward compat alias */
+.cta-gradient {
+  background: var(--black);
+  color: white;
+  padding: 48px 24px;
+  text-align: center;
+  border-radius: var(--radius-md);
+}
+.cta-gradient p { color: rgba(255, 255, 255, 0.7); }
+
+/* ===== Feature Box ===== */
 .feature-glass {
-  padding: 30px;
-  border-radius: 34px;
-  background: rgba(255, 255, 255, 0.52);
-  backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.34);
-  box-shadow: var(--shadow-medium);
+  padding: 24px;
+  border-radius: var(--radius-md);
+  background: var(--white);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
 }
 .dark .feature-glass {
-  background: rgba(28, 25, 23, 0.55);
-  border-color: rgba(87, 83, 78, 0.3);
+  background: #1a1a1a;
+  border-color: #333;
 }
 
-/* ===== Animations ===== */
+/* ===== Icon Box ===== */
+.icon-brand {
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-sm);
+  color: white;
+  font-size: 1.1rem;
+  font-weight: 900;
+  background: var(--red);
+}
+
+/* ===== Tag / Badge ===== */
+.tag-red {
+  display: inline-block;
+  padding: 2px 10px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  border-radius: var(--radius-sm);
+  background: rgba(153, 27, 27, 0.1);
+  color: var(--red);
+}
+.tag-yellow {
+  display: inline-block;
+  padding: 2px 10px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  border-radius: var(--radius-sm);
+  background: rgba(217, 119, 6, 0.1);
+  color: var(--yellow);
+}
+.tag-green {
+  display: inline-block;
+  padding: 2px 10px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  border-radius: var(--radius-sm);
+  background: rgba(22, 101, 52, 0.1);
+  color: var(--green);
+}
+
+/* ===== Animations (穩重微動) ===== */
 @keyframes slide-in { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-@keyframes fade-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes pulse-slow { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
-@keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+@keyframes fade-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes pulse-slow { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
 
 .animate-slide-in { animation: slide-in 0.3s ease-out; }
-.animate-fade-in { animation: fade-in 0.4s ease-out; }
+.animate-fade-in { animation: fade-in 0.35s ease-out; }
 .animate-pulse-slow { animation: pulse-slow 2s ease-in-out infinite; }
-.animate-float { animation: float 3s ease-in-out infinite; }
 
 /* ===== Prose (article content) ===== */
 .prose { line-height: 1.8; }
 .prose p { margin-bottom: 1rem; }
-.prose h2 { font-size: 1.5rem; font-weight: 700; margin: 2rem 0 1rem; }
+.prose h2 { font-size: 1.5rem; font-weight: 700; margin: 2rem 0 1rem; border-left: 4px solid var(--red); padding-left: 10px; }
 .prose h3 { font-size: 1.25rem; font-weight: 600; margin: 1.5rem 0 0.75rem; }
 .prose ul, .prose ol { margin: 1rem 0; padding-left: 1.5rem; }
 .prose li { margin-bottom: 0.5rem; }
-.prose blockquote { border-left: 4px solid #d97706; padding-left: 1rem; font-style: italic; color: #78716c; margin: 1.5rem 0; }
+.prose blockquote { border-left: 4px solid var(--yellow); padding-left: 1rem; font-style: italic; color: #6b7280; margin: 1.5rem 0; }
 
 /* ===== Scrollbar ===== */
-::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #a8a29e; border-radius: 999px; }
-.dark ::-webkit-scrollbar-thumb { background: #57534e; }
+::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 999px; }
+.dark ::-webkit-scrollbar-thumb { background: #444; }
 
-/* ===== Line clamp utility ===== */
+/* ===== Line clamp ===== */
 .line-clamp-1 { display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
 .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .line-clamp-3 { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 
-/* ===== Responsive ===== */
+/* ===== RWD ===== */
 @media (max-width: 768px) {
-  .glass-card { padding: 20px; }
+  .card-solid { padding: 16px; }
+  .card-solid::before { margin: -16px -16px 12px; }
+  .glass-card { padding: 16px; }
+  .glass-card::before { margin: -16px -16px 12px; }
 }
