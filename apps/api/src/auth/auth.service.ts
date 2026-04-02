@@ -67,6 +67,15 @@ export class AuthService {
     return { success: true, message: '密碼已更新' };
   }
 
+  async refreshToken(userId: number) {
+    const [user] = await this.db.select({
+      id: users.id, email: users.email, role: users.role,
+    }).from(users).where(eq(users.id, userId)).limit(1);
+    if (!user) throw new UnauthorizedException('用戶不存在');
+    const token = this.jwt.sign({ id: user.id, email: user.email, role: user.role });
+    return { token, expiresIn: '7d' };
+  }
+
   async resetPasswordRequest(email: string) {
     const [user] = await this.db.select({ id: users.id, email: users.email }).from(users).where(eq(users.email, email)).limit(1);
     if (!user) return { success: true, message: '如果此信箱已註冊，將收到重設密碼連結' };

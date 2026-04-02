@@ -3,6 +3,7 @@ import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { RegisterDto, LoginDto, UpdateProfileDto } from './auth.dto';
 import { JwtAuthGuard } from '../common/jwt-auth.guard';
+import { AuthRateLimitGuard } from '../common/rate-limit.guard';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -10,15 +11,25 @@ export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Post('register')
+  @UseGuards(AuthRateLimitGuard)
   @ApiOperation({ summary: '註冊新帳號' })
   async register(@Body() dto: RegisterDto) {
     return this.authService.register(dto.email, dto.password, dto.name, dto.tribeId);
   }
 
   @Post('login')
+  @UseGuards(AuthRateLimitGuard)
   @ApiOperation({ summary: '登入' })
   async login(@Body() dto: LoginDto) {
     return this.authService.login(dto.email, dto.password);
+  }
+
+  @Post('refresh')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: '刷新 JWT Token' })
+  async refreshToken(@Req() req: any) {
+    return this.authService.refreshToken(req.user.id);
   }
 
   @Get('me')
@@ -48,12 +59,14 @@ export class AuthController {
   }
 
   @Post('forgot-password')
+  @UseGuards(AuthRateLimitGuard)
   @ApiOperation({ summary: '忘記密碼 — 發送重設連結' })
   async forgotPassword(@Body() body: { email: string }) {
     return this.authService.resetPasswordRequest(body.email);
   }
 
   @Post('reset-password')
+  @UseGuards(AuthRateLimitGuard)
   @ApiOperation({ summary: '重設密碼' })
   async resetPassword(@Body() body: { token: string; newPassword: string }) {
     return this.authService.resetPassword(body.token, body.newPassword);

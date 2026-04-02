@@ -2,12 +2,16 @@ import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
+import { RateLimitGuard } from './common/rate-limit.guard';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   // Global prefix
   app.setGlobalPrefix('api');
+
+  // Global rate limiting: 120 requests per minute per IP
+  app.useGlobalGuards(new RateLimitGuard(60_000, 120));
 
   // CORS - allow multiple origins
   const allowedOrigins = (process.env.CORS_ORIGIN || 'http://localhost:3000')
