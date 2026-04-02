@@ -33,13 +33,13 @@ export default function AdminDiscussions() {
   return (
     <div>
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-6">
-        <div><h1 className="text-2xl font-bold dark:text-gray-100">💬 討論管理</h1><p className="text-sm text-[var(--text-soft)]">共 {pagination.total} 篇討論</p></div>
+        <div><h1 className="text-2xl font-bold dark:text-gray-100">討論管理</h1><p className="text-sm text-[var(--text-soft)]">共 {pagination.total} 篇討論</p></div>
         <input value={search} onChange={e => setSearch(e.target.value)} placeholder="搜尋討論..." className="px-3 py-2 border rounded-lg text-sm dark:border-[#444] dark:bg-[#222] dark:text-gray-100 w-56" />
       </div>
 
       {loading ? <div className="text-center py-10 text-[var(--text-light)]">載入中...</div> : filtered.length === 0 ? (
         <div className="text-center py-16 text-[var(--text-light)]">
-          <p className="text-4xl mb-2">💬</p>
+          <p className="text-4xl mb-2"></p>
           <p className="font-bold">尚無討論</p>
           <p className="text-sm mt-1">社群中的討論將顯示在這裡</p>
         </div>
@@ -51,19 +51,19 @@ export default function AdminDiscussions() {
                 <div className="flex-1 min-w-0 mr-4">
                   <div className="flex items-center gap-2 mb-1">
                     {d.board && <span className="text-xs px-2 py-0.5 bg-[rgba(153,27,27,0.06)] dark:bg-[#222]/20 text-[var(--red)] dark:text-[var(--yellow)] rounded-full font-bold">{d.board}</span>}
-                    {d.pinned && <span className="text-xs px-1.5 py-0.5 bg-red-100 dark:bg-red-900/20 text-red-600 rounded-full">📌 置頂</span>}
+                    {d.pinned && <span className="text-xs px-1.5 py-0.5 bg-red-100 dark:bg-red-900/20 text-red-600 rounded-full">置頂</span>}
                   </div>
                   <h3 className="font-bold dark:text-gray-100 mb-1">{d.title}</h3>
                   <p className="text-sm text-[var(--text-soft)] dark:text-[var(--text-light)] line-clamp-2">{d.content}</p>
                   <div className="flex items-center gap-4 mt-2 text-xs text-[var(--text-light)]">
-                    <span>👤 {d.authorName || d.author?.name || "匿名"}</span>
-                    <span>💬 {d.replyCount || d._count?.replies || 0} 回覆</span>
-                    <span>❤️ {d.likeCount || d._count?.likes || 0} 讚</span>
-                    <span>📅 {d.createdAt ? new Date(d.createdAt).toLocaleDateString("zh-TW") : ""}</span>
+                    <span>{d.authorName || d.author?.name || "匿名"}</span>
+                    <span>{d.replyCount || d._count?.replies || 0} 回覆</span>
+                    <span>{d.likeCount || d._count?.likes || 0} 讚</span>
+                    <span>{d.createdAt ? new Date(d.createdAt).toLocaleDateString("zh-TW") : ""}</span>
                   </div>
                 </div>
                 <button onClick={() => del(d.id)} className="text-red-500 text-xs hover:underline whitespace-nowrap px-3 py-1.5 rounded-lg border border-red-200 dark:border-red-800 hover:bg-red-50 dark:hover:bg-red-900/20 transition">
-                  🗑️ 刪除
+                  刪除
                 </button>
               </div>
             </div>

@@ -14,7 +14,7 @@ const typeColors: Record<string, string> = {
   "其他": "bg-gray-100 dark:bg-[#222] text-[var(--text-main)] dark:text-[var(--text-light)]",
 };
 const typeIcons: Record<string, string> = {
-  "祭典": "🔥", "活動": "🎊", "工作坊": "🛠️", "展覽": "🖼️", "其他": "📌",
+  "祭典": "", "活動": "🎊", "工作坊": "", "展覽": "", "其他": "",
 };
 
 function getEventStatus(startDate: string, endDate?: string): { label: string; color: string; icon: string } {
@@ -24,10 +24,10 @@ function getEventStatus(startDate: string, endDate?: string): { label: string; c
   if (now < start) {
     const days = Math.ceil((start.getTime() - now.getTime()) / 86400000);
     if (days <= 7) return { label: `${days} 天後開始`, color: "bg-[rgba(153,27,27,0.06)] dark:bg-[#222]/50 text-[var(--red)] dark:text-[var(--yellow)]", icon: "⏳" };
-    return { label: "即將舉辦", color: "bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300", icon: "📅" };
+    return { label: "即將舉辦", color: "bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300", icon: "" };
   }
-  if (now >= start && now <= end) return { label: "進行中", color: "bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-300", icon: "🟢" };
-  return { label: "已結束", color: "bg-gray-100 dark:bg-[#222] text-[var(--text-soft)] dark:text-[var(--text-light)]", icon: "✅" };
+  if (now >= start && now <= end) return { label: "進行中", color: "bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-300", icon: "" };
+  return { label: "已結束", color: "bg-gray-100 dark:bg-[#222] text-[var(--text-soft)] dark:text-[var(--text-light)]", icon: "" };
 }
 
 function CountdownTimer({ startDate }: { startDate: string }) {
@@ -44,7 +44,7 @@ function CountdownTimer({ startDate }: { startDate: string }) {
   if (days > 30) return null;
   return (
     <div className="flex items-center gap-1.5 text-xs text-[var(--red)] dark:text-[var(--yellow)] bg-white dark:bg-[#222]/20 px-2.5 py-1 rounded-lg">
-      <span>⏰</span>
+      <span></span>
       <span className="font-mono font-medium">
         {days > 0 && `${days}天 `}{hours}小時後開始
       </span>
@@ -126,12 +126,12 @@ export default function EventsPage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-4xl font-bold text-[var(--text-main)] dark:text-gray-100">🎉 活動祭典</h1>
+          <h1 className="text-4xl font-bold text-[var(--text-main)] dark:text-gray-100">活動祭典</h1>
           <p className="text-[var(--text-soft)] dark:text-[var(--text-light)] mt-2 text-lg">卑南族的文化活動、祭典與工作坊</p>
         </div>
         {user && (
           <Link href="/profile" className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-[#1a1a1a] border dark:border-[#333] rounded-[var(--radius-md)] text-sm text-[var(--red)] dark:text-[var(--yellow)] hover:bg-[var(--cream)] dark:hover:bg-[#333] transition">
-            📋 我的報名
+            我的報名
           </Link>
         )}
       </div>
@@ -139,10 +139,10 @@ export default function EventsPage() {
       {/* Stats bar */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
         {[
-          { label: "全部活動", count: events.length, icon: "📊" },
-          { label: "即將/進行中", count: events.filter(e => { const s = getEventStatus(e.startDate, e.endDate); return s.label !== "已結束"; }).length, icon: "🟢" },
-          { label: "已報名", count: Object.values(registrations).filter(Boolean).length, icon: "✅" },
-          { label: "總報名人次", count: Object.values(regCounts).reduce((a, b) => a + b, 0), icon: "👥" },
+          { label: "全部活動", count: events.length, icon: "" },
+          { label: "即將/進行中", count: events.filter(e => { const s = getEventStatus(e.startDate, e.endDate); return s.label !== "已結束"; }).length, icon: "" },
+          { label: "已報名", count: Object.values(registrations).filter(Boolean).length, icon: "" },
+          { label: "總報名人次", count: Object.values(regCounts).reduce((a, b) => a + b, 0), icon: "" },
         ].map(s => (
           <div key={s.label} className="bg-white dark:bg-[#1a1a1a] rounded-[var(--radius-md)] p-3 border dark:border-[#333] text-center">
             <span className="text-lg">{s.icon}</span>
@@ -182,7 +182,7 @@ export default function EventsPage() {
 
       {loading ? <GridSkeleton count={6} /> : filteredEvents.length === 0 ? (
         <div className="text-center py-20 text-[var(--text-light)]">
-          <div className="text-5xl mb-4">📭</div>
+          <div className="text-5xl mb-4"></div>
           <p>沒有符合條件的活動</p>
           <button onClick={() => { setTypeFilter("全部"); setStatusFilter("全部"); }} className="mt-4 text-[var(--red)] dark:text-[var(--yellow)] underline text-sm">清除篩選</button>
         </div>
@@ -204,7 +204,7 @@ export default function EventsPage() {
                       {status.icon} {status.label}
                     </span>
                     {regCounts[e.id] > 0 && (
-                      <span className="text-xs text-[var(--text-light)] ml-auto">👥 {regCounts[e.id]}</span>
+                      <span className="text-xs text-[var(--text-light)] ml-auto">{regCounts[e.id]}</span>
                     )}
                   </div>
 
@@ -214,16 +214,16 @@ export default function EventsPage() {
                   <CountdownTimer startDate={e.startDate} />
 
                   <div className="border-t dark:border-[#333] pt-3 mt-3 space-y-1 text-sm text-[var(--text-soft)] dark:text-[var(--text-light)]">
-                    <p>📅 {e.startDate}{e.endDate && e.endDate !== e.startDate ? ` ~ ${e.endDate}` : ""}</p>
-                    {e.location && <p>📍 {e.location}</p>}
-                    {e.tribeName && <p>🏘️ {e.tribeName}</p>}
+                    <p>{e.startDate}{e.endDate && e.endDate !== e.startDate ? ` ~ ${e.endDate}` : ""}</p>
+                    {e.location && <p>{e.location}</p>}
+                    {e.tribeName && <p>{e.tribeName}</p>}
                   </div>
 
                   <div className="mt-4 flex gap-2">
-                    <button onClick={() => setSelectedEvent(e)}
-                      className="flex-1 py-2.5 rounded-lg text-sm font-medium border dark:border-[#444] hover:bg-[var(--cream)] dark:hover:bg-[#333] transition">
-                      📖 詳情
-                    </button>
+                    <Link href={`/events/${e.id}`}
+                      className="flex-1 py-2.5 rounded-lg text-sm font-medium border dark:border-[#444] hover:bg-[var(--cream)] dark:hover:bg-[#333] transition text-center">
+                      詳情
+                    </Link>
                     <button onClick={() => handleRegister(e.id)} disabled={registering === e.id || status.label === "已結束"}
                       className={`flex-1 py-2.5 rounded-lg text-sm font-medium transition ${
                         status.label === "已結束" ? "bg-gray-100 dark:bg-[#222] text-[var(--text-light)] cursor-not-allowed" :
@@ -264,7 +264,7 @@ export default function EventsPage() {
 
               <div className="space-y-3 mb-6">
                 <div className="flex items-start gap-3 p-3 bg-[var(--cream)] dark:bg-[#222]/50 rounded-[var(--radius-md)]">
-                  <span className="text-lg">📅</span>
+                  <span className="text-lg"></span>
                   <div>
                     <p className="font-medium text-[var(--text-main)] dark:text-gray-200 text-sm">活動日期</p>
                     <p className="text-[var(--text-soft)] dark:text-[var(--text-light)] text-sm">{selectedEvent.startDate}{selectedEvent.endDate && selectedEvent.endDate !== selectedEvent.startDate ? ` ~ ${selectedEvent.endDate}` : ""}</p>
@@ -272,7 +272,7 @@ export default function EventsPage() {
                 </div>
                 {selectedEvent.location && (
                   <div className="flex items-start gap-3 p-3 bg-[var(--cream)] dark:bg-[#222]/50 rounded-[var(--radius-md)]">
-                    <span className="text-lg">📍</span>
+                    <span className="text-lg"></span>
                     <div>
                       <p className="font-medium text-[var(--text-main)] dark:text-gray-200 text-sm">活動地點</p>
                       <p className="text-[var(--text-soft)] dark:text-[var(--text-light)] text-sm">{selectedEvent.location}</p>
@@ -280,7 +280,7 @@ export default function EventsPage() {
                   </div>
                 )}
                 <div className="flex items-start gap-3 p-3 bg-[var(--cream)] dark:bg-[#222]/50 rounded-[var(--radius-md)]">
-                  <span className="text-lg">👥</span>
+                  <span className="text-lg"></span>
                   <div>
                     <p className="font-medium text-[var(--text-main)] dark:text-gray-200 text-sm">報名人數</p>
                     <p className="text-[var(--text-soft)] dark:text-[var(--text-light)] text-sm">{regCounts[selectedEvent.id] || 0} 人已報名</p>
@@ -304,7 +304,7 @@ export default function EventsPage() {
                     : "bg-[var(--red)] text-white hover:bg-[var(--red)]"
                 } disabled:opacity-50`}>
                 {getEventStatus(selectedEvent.startDate, selectedEvent.endDate).label === "已結束" ? "活動已結束" :
-                  registering === selectedEvent.id ? "處理中..." : registrations[selectedEvent.id] ? "❌ 取消報名" : "✅ 立即報名"}
+                  registering === selectedEvent.id ? "處理中..." : registrations[selectedEvent.id] ? "取消報名" : "立即報名"}
               </button>
             </div>
           </div>

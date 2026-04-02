@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { api } from "@/lib/api";
 import { GridSkeleton } from "@/components/ui/Skeleton";
 
-const typeIcon: Record<string, string> = { photo: "📷", video: "🎬", audio: "🎵" };
+const typeIcon: Record<string, string> = { photo: "", video: "", audio: "" };
 const typeLabel: Record<string, string> = { photo: "照片", video: "影片", audio: "音檔" };
 const typeColors: Record<string, string> = {
   photo: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300",
@@ -41,7 +41,7 @@ export default function MediaPage() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <div>
-          <h1 className="text-4xl font-bold text-[var(--text-main)] dark:text-gray-100">🎬 媒體庫</h1>
+          <h1 className="text-4xl font-bold text-[var(--text-main)] dark:text-gray-100">媒體庫</h1>
           <p className="text-[var(--text-soft)] dark:text-[var(--text-light)] mt-2 text-lg">珍貴的卑南族文化影像與多媒體資料</p>
         </div>
         <div className="flex items-center gap-3">
@@ -50,15 +50,15 @@ export default function MediaPage() {
             <input type="text" value={searchQ} onChange={e => setSearchQ(e.target.value)}
               placeholder="搜尋媒體..."
               className="pl-9 pr-4 py-2 rounded-[var(--radius-md)] border dark:border-[#333] dark:bg-[#1a1a1a] dark:text-gray-100 text-sm w-48 focus:w-64 transition-all focus:ring-2 focus:ring-red-300 dark:focus:ring-red-700 outline-none" />
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-light)] text-sm">🔍</span>
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-light)] text-sm"></span>
           </div>
           {/* View mode */}
           <div className="flex bg-gray-100 dark:bg-[#1a1a1a] rounded-lg p-0.5">
             <button onClick={() => setViewMode("grid")} className={`px-3 py-1.5 rounded-md text-xs font-medium transition ${viewMode === "grid" ? "bg-white dark:bg-[#222] shadow-sm text-[var(--text-main)] dark:text-gray-200" : "text-[var(--text-soft)]"}`}>
-              📋 網格
+              網格
             </button>
             <button onClick={() => setViewMode("list")} className={`px-3 py-1.5 rounded-md text-xs font-medium transition ${viewMode === "list" ? "bg-white dark:bg-[#222] shadow-sm text-[var(--text-main)] dark:text-gray-200" : "text-[var(--text-soft)]"}`}>
-              📄 列表
+              列表
             </button>
           </div>
         </div>
@@ -66,7 +66,7 @@ export default function MediaPage() {
 
       {/* Type filters with counts */}
       <div className="flex gap-2 mb-8">
-        {([["all", "全部", null], ["photo", "📷 照片", "photo"], ["video", "🎬 影片", "video"], ["audio", "🎵 音檔", "audio"]] as [string, string, string | null][]).map(([k, l]) => (
+        {([["all", "全部", null], ["photo", "照片", "photo"], ["video", "影片", "video"], ["audio", "音檔", "audio"]] as [string, string, string | null][]).map(([k, l]) => (
           <button key={k} onClick={() => setFilter(k)}
             className={`px-4 py-2 rounded-full text-sm font-medium transition flex items-center gap-1.5 ${filter === k ? "bg-[var(--red)] text-white shadow-sm" : "bg-white dark:bg-[#1a1a1a] border dark:border-[#333] text-[var(--text-soft)] dark:text-[var(--text-light)] hover:bg-[var(--cream)] dark:hover:bg-[#333]"}`}>
             {l}
@@ -79,7 +79,7 @@ export default function MediaPage() {
 
       {loading ? <GridSkeleton count={6} /> : filtered.length === 0 ? (
         <div className="text-center py-20">
-          <p className="text-5xl mb-4">🎬</p>
+          <p className="text-5xl mb-4"></p>
           <p className="text-[var(--text-light)] text-lg">{searchQ ? `找不到「${searchQ}」的相關媒體` : "此類型暫無媒體"}</p>
         </div>
       ) : viewMode === "grid" ? (
@@ -95,7 +95,7 @@ export default function MediaPage() {
                     onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
                 ) : null}
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <span className="text-6xl opacity-60 group-hover:scale-110 transition-transform">{typeIcon[m.type] || "📁"}</span>
+                  <span className="text-6xl opacity-60 group-hover:scale-110 transition-transform">{typeIcon[m.type] || ""}</span>
                 </div>
                 {/* Play button overlay for video/audio */}
                 {(m.type === "video" || m.type === "audio") && (
@@ -116,8 +116,8 @@ export default function MediaPage() {
                 <h2 className="font-bold text-lg dark:text-gray-100 group-hover:text-[var(--red)] dark:group-hover:text-[var(--yellow)] transition truncate">{m.title}</h2>
                 {m.description && <p className="text-[var(--text-soft)] dark:text-[var(--text-light)] text-sm mt-2 line-clamp-2">{m.description}</p>}
                 <div className="flex items-center justify-between mt-3 text-xs text-[var(--text-light)]">
-                  <span>📅 {new Date(m.createdAt).toLocaleDateString("zh-TW")}</span>
-                  {m.tribeName && <span>🏘️ {m.tribeName}</span>}
+                  <span>{new Date(m.createdAt).toLocaleDateString("zh-TW")}</span>
+                  {m.tribeName && <span>{m.tribeName}</span>}
                 </div>
               </div>
             </div>
@@ -130,7 +130,7 @@ export default function MediaPage() {
             <div key={m.id} onClick={() => setSelected(m)}
               className="bg-white dark:bg-[#1a1a1a] rounded-[var(--radius-md)] border dark:border-[#333] p-4 flex items-center gap-4 hover:shadow-md transition cursor-pointer group">
               <div className="w-16 h-16 rounded-[var(--radius-md)] bg-gray-100 dark:bg-[#222] flex items-center justify-center text-2xl shrink-0 group-hover:scale-105 transition-transform">
-                {typeIcon[m.type] || "📁"}
+                {typeIcon[m.type] || ""}
               </div>
               <div className="flex-1 min-w-0">
                 <h3 className="font-bold dark:text-gray-100 group-hover:text-[var(--red)] dark:group-hover:text-[var(--yellow)] transition truncate">{m.title}</h3>
@@ -184,7 +184,7 @@ export default function MediaPage() {
               {/* Audio */}
               {selected.type === "audio" && selected.url && (
                 <div className="mb-4 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-[var(--radius-md)] p-8 text-center">
-                  <p className="text-6xl mb-4">🎵</p>
+                  <p className="text-6xl mb-4"></p>
                   <p className="font-bold text-lg dark:text-gray-100 mb-4">{selected.title}</p>
                   <audio controls className="w-full max-w-md mx-auto" src={selected.url}>
                     <track kind="captions" />
@@ -195,7 +195,7 @@ export default function MediaPage() {
               {/* No URL fallback */}
               {!selected.url && (
                 <div className="bg-[var(--cream)] dark:bg-[#222]/50 rounded-[var(--radius-md)] p-12 text-center mb-4">
-                  <p className="text-6xl mb-4">{typeIcon[selected.type] || "📁"}</p>
+                  <p className="text-6xl mb-4">{typeIcon[selected.type] || ""}</p>
                   <p className="text-[var(--text-light)]">此媒體目前無可播放的檔案連結</p>
                 </div>
               )}
@@ -203,7 +203,7 @@ export default function MediaPage() {
               {/* Description */}
               {selected.description && (
                 <div className="bg-[var(--cream)] dark:bg-[#222]/50 rounded-[var(--radius-md)] p-4 mb-4">
-                  <h3 className="font-medium text-[var(--text-main)] dark:text-gray-200 mb-2 text-sm">📝 說明</h3>
+                  <h3 className="font-medium text-[var(--text-main)] dark:text-gray-200 mb-2 text-sm">說明</h3>
                   <p className="text-[var(--text-soft)] dark:text-[var(--text-light)] leading-relaxed">{selected.description}</p>
                 </div>
               )}
@@ -221,14 +221,14 @@ export default function MediaPage() {
                 {selected.tribeName && (
                   <div className="bg-[var(--cream)] dark:bg-[#222]/50 rounded-lg p-3">
                     <p className="text-[var(--text-light)] text-xs mb-1">所屬部落</p>
-                    <p className="font-medium dark:text-gray-200">🏘️ {selected.tribeName}</p>
+                    <p className="font-medium dark:text-gray-200">{selected.tribeName}</p>
                   </div>
                 )}
                 {selected.url && (
                   <div className="bg-[var(--cream)] dark:bg-[#222]/50 rounded-lg p-3">
                     <p className="text-[var(--text-light)] text-xs mb-1">來源</p>
                     <a href={selected.url} target="_blank" rel="noopener noreferrer" className="text-[var(--red)] dark:text-[var(--yellow)] hover:underline text-xs truncate block">
-                      🔗 開啟原始連結
+                      開啟原始連結
                     </a>
                   </div>
                 )}

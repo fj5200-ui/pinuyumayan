@@ -42,8 +42,8 @@ export default function TribesMapPage() {
         <div style="min-width:160px">
           <strong style="font-size:14px">${t.name}</strong>
           ${t.traditionalName ? `<br><span style="color:#b45309;font-size:12px">${t.traditionalName}</span>` : ""}
-          ${t.population ? `<br><span style="font-size:11px;color:#666">👥 約 ${t.population.toLocaleString()} 人</span>` : ""}
-          ${t.region ? `<br><span style="font-size:11px;color:#666">📍 ${t.region}</span>` : ""}
+          ${t.population ? `<br><span style="font-size:11px;color:#666">約 ${t.population.toLocaleString()} 人</span>` : ""}
+          ${t.region ? `<br><span style="font-size:11px;color:#666">${t.region}</span>` : ""}
           <br><a href="/tribes/${t.id}" style="color:#b45309;font-size:12px">查看詳情 →</a>
         </div>
       `);
@@ -74,7 +74,7 @@ export default function TribesMapPage() {
 
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-3xl font-bold text-[var(--text-main)] dark:text-gray-100">🗺️ 部落地圖</h1>
+          <h1 className="text-3xl font-bold text-[var(--text-main)] dark:text-gray-100">部落地圖</h1>
           <p className="text-[var(--text-soft)] dark:text-[var(--text-light)] mt-1">卑南族八社的地理位置</p>
         </div>
         <Link href="/tribes" className="text-[var(--red)] dark:text-[var(--yellow)] hover:text-[var(--red)] text-sm">← 返回列表</Link>
@@ -84,7 +84,7 @@ export default function TribesMapPage() {
         {/* Map */}
         <div className="md:col-span-2">
           <div id="map-container" className="w-full h-[500px] rounded-[var(--radius-md)] overflow-hidden border dark:border-[#333] bg-gray-100 dark:bg-[#1a1a1a]">
-            {!mapReady && <div className="flex items-center justify-center h-full text-[var(--text-light)]">🗺️ 載入地圖中...</div>}
+            {!mapReady && <div className="flex items-center justify-center h-full text-[var(--text-light)]">載入地圖中...</div>}
           </div>
         </div>
 
@@ -96,8 +96,8 @@ export default function TribesMapPage() {
               <h3 className="font-bold dark:text-gray-100 text-sm">{t.name}</h3>
               {t.traditionalName && <p className="text-xs text-[var(--yellow)] dark:text-[var(--yellow)]">{t.traditionalName}</p>}
               <div className="flex items-center gap-2 mt-1 text-xs text-[var(--text-light)]">
-                {t.population && <span>👥 {t.population.toLocaleString()}</span>}
-                {t.region && <span>📍 {t.region}</span>}
+                {t.population && <span>{t.population.toLocaleString()}</span>}
+                {t.region && <span>{t.region}</span>}
               </div>
             </button>
           ))}

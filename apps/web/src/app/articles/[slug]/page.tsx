@@ -172,7 +172,7 @@ export default function ArticleDetail() {
 
   if (!article) return (
     <div className="max-w-4xl mx-auto px-4 py-20 text-center">
-      <div className="text-6xl mb-4">📭</div>
+      <div className="text-6xl mb-4"></div>
       <h1 className="text-2xl font-bold dark:text-gray-100">找不到此文章</h1>
       <p className="text-[var(--text-light)] mt-2 mb-6">文章可能已被移除或尚未發佈</p>
       <Link href="/articles" className="inline-block px-6 py-3 bg-[var(--red)] text-white rounded-[var(--radius-md)] font-medium hover:bg-[var(--red)] transition">&larr; 返回文章列表</Link>
@@ -230,7 +230,7 @@ export default function ArticleDetail() {
                 <span className="text-xs bg-[rgba(153,27,27,0.06)] dark:bg-[#222]/50 text-[var(--red)] dark:text-[var(--yellow)] px-2.5 py-1 rounded-full font-medium">{article.category}</span>
                 <span className="text-xs text-[var(--text-light)]">{wordCount.toLocaleString()} 字</span>
                 <span className="text-xs text-[var(--text-light)]">&middot; 約 {readingTime} 分鐘閱讀</span>
-                <span className="text-xs text-[var(--text-light)]">&middot; 👁️ {article.views} 次瀏覽</span>
+                <span className="text-xs text-[var(--text-light)]">&middot; {article.views} 次瀏覽</span>
               </div>
               <h1 className="text-3xl font-bold text-[var(--text-main)] dark:text-gray-100 mt-3 mb-4 leading-tight">{article.title}</h1>
 
@@ -285,16 +285,16 @@ export default function ArticleDetail() {
               {/* Actions */}
               <div className="mt-6 pt-6 border-t dark:border-[#333] flex flex-wrap items-center gap-3">
                 <button onClick={toggleLike} className={`flex items-center gap-2 px-4 py-2 rounded-[var(--radius-md)] border transition text-sm ${liked ? "bg-red-50 dark:bg-red-900/30 border-red-200 dark:border-red-800 text-red-600" : "border-[var(--border)] dark:border-[#444] hover:bg-[var(--cream)] dark:hover:bg-[#333]"}`}>
-                  {liked ? "❤️" : "🤍"} {likeCount > 0 && likeCount}
+                  {liked ? "" : ""} {likeCount > 0 && likeCount}
                 </button>
                 <button onClick={toggleBookmark} className={`flex items-center gap-2 px-4 py-2 rounded-[var(--radius-md)] border transition text-sm ${bookmarked ? "bg-white dark:bg-[#222]/30 border-amber-200 text-[var(--red)]" : "border-[var(--border)] dark:border-[#444] hover:bg-[var(--cream)] dark:hover:bg-[#333]"}`}>
-                  {bookmarked ? "🔖 已收藏" : "📑 收藏"}
+                  {bookmarked ? "已收藏" : "收藏"}
                 </button>
                 <div className="flex items-center gap-1 ml-auto">
                   <span className="text-xs text-[var(--text-light)] mr-2">分享：</span>
-                  <button onClick={() => share("line")} className="p-2 rounded-lg hover:bg-green-50 dark:hover:bg-green-900/20 transition" title="LINE">💚</button>
-                  <button onClick={() => share("fb")} className="p-2 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 transition" title="Facebook">💙</button>
-                  <button onClick={() => share("copy")} className="p-2 rounded-lg hover:bg-[var(--cream)] dark:hover:bg-[#333] transition" title="複製連結">🔗</button>
+                  <button onClick={() => share("line")} className="p-2 rounded-lg hover:bg-green-50 dark:hover:bg-green-900/20 transition" title="LINE"></button>
+                  <button onClick={() => share("fb")} className="p-2 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 transition" title="Facebook"></button>
+                  <button onClick={() => share("copy")} className="p-2 rounded-lg hover:bg-[var(--cream)] dark:hover:bg-[#333] transition" title="複製連結"></button>
                 </div>
               </div>
             </article>
@@ -328,7 +328,7 @@ export default function ArticleDetail() {
             {/* Author bio card (if available) */}
             {authorProfile && authorProfile.bio && (
               <div className="mt-6 bg-white dark:bg-[#1a1a1a] rounded-[var(--radius-md)] shadow-sm p-6 border dark:border-[#333]">
-                <h2 className="text-lg font-bold mb-3 dark:text-gray-100">✍️ 關於作者</h2>
+                <h2 className="text-lg font-bold mb-3 dark:text-gray-100">關於作者</h2>
                 <div className="flex items-start gap-4">
                   <div className="w-14 h-14 bg-gradient-to-br from-[rgba(217,119,6,0.1)] to-[var(--yellow)] dark:from-[var(--red)] dark:to-orange-800 rounded-full flex items-center justify-center text-white font-bold text-xl shadow-sm flex-shrink-0 overflow-hidden">
                     {authorProfile.avatarUrl ? (
@@ -339,8 +339,8 @@ export default function ArticleDetail() {
                     <h3 className="font-bold text-[var(--text-main)] dark:text-gray-100">{authorProfile.name}</h3>
                     <p className="text-sm text-[var(--text-soft)] dark:text-[var(--text-light)] mt-1 leading-relaxed">{authorProfile.bio}</p>
                     <div className="flex gap-4 mt-3 text-xs text-[var(--text-light)]">
-                      <span>📝 {authorProfile.articleCount} 篇文章</span>
-                      <span>👁️ {authorProfile.totalViews?.toLocaleString()} 次總閱覽</span>
+                      <span>{authorProfile.articleCount} 篇文章</span>
+                      <span>{authorProfile.totalViews?.toLocaleString()} 次總閱覽</span>
                     </div>
                   </div>
                 </div>
@@ -350,7 +350,7 @@ export default function ArticleDetail() {
             {/* Related Articles */}
             {related.length > 0 && (
               <div className="mt-6 bg-white dark:bg-[#1a1a1a] rounded-[var(--radius-md)] shadow-sm p-6 border dark:border-[#333]">
-                <h2 className="text-xl font-bold mb-4 dark:text-gray-100">📚 相關文章</h2>
+                <h2 className="text-xl font-bold mb-4 dark:text-gray-100">相關文章</h2>
                 <div className="grid md:grid-cols-3 gap-4">
                   {related.slice(0, 3).map((r: any) => (
                     <Link key={r.id} href={`/articles/${r.slug}`} className="group p-4 bg-[var(--cream)] dark:bg-[#222]/50 rounded-[var(--radius-md)] hover:bg-gray-100 dark:hover:bg-[#333] transition">
@@ -358,7 +358,7 @@ export default function ArticleDetail() {
                       <h3 className="font-medium mt-2 dark:text-gray-200 line-clamp-2 text-sm group-hover:text-[var(--red)] dark:group-hover:text-[var(--yellow)] transition">{r.title}</h3>
                       {r.excerpt && <p className="text-xs text-[var(--text-light)] mt-1 line-clamp-2">{r.excerpt}</p>}
                       <div className="flex items-center gap-2 mt-2 text-xs text-[var(--text-light)]">
-                        <span>👁️ {r.views || 0}</span>
+                        <span>{r.views || 0}</span>
                       </div>
                     </Link>
                   ))}
@@ -368,7 +368,7 @@ export default function ArticleDetail() {
 
             {/* Comments */}
             <div className="mt-6 bg-white dark:bg-[#1a1a1a] rounded-[var(--radius-md)] shadow-sm p-6 border dark:border-[#333]">
-              <h2 className="text-xl font-bold mb-4 dark:text-gray-100">💬 留言 ({comments.length})</h2>
+              <h2 className="text-xl font-bold mb-4 dark:text-gray-100">留言 ({comments.length})</h2>
               {user ? (
                 <div className="flex gap-3 mb-6">
                   <input value={newComment} onChange={e => setNewComment(e.target.value)} onKeyDown={e => e.key === "Enter" && submitComment()}
@@ -382,7 +382,7 @@ export default function ArticleDetail() {
                 {comments.map(c => (
                   <div key={c.id} className="p-4 bg-[var(--cream)] dark:bg-[#222]/50 rounded-[var(--radius-md)]">
                     <div className="flex items-center gap-2 mb-2">
-                      <span className="w-8 h-8 bg-[rgba(153,27,27,0.06)] dark:bg-[#222] rounded-full flex items-center justify-center text-sm">👤</span>
+                      <span className="w-8 h-8 bg-[rgba(153,27,27,0.06)] dark:bg-[#222] rounded-full flex items-center justify-center text-sm"></span>
                       <span className="font-medium text-[var(--text-main)] dark:text-gray-200">{c.authorName || c.userName || "匿名"}</span>
                       <span className="text-xs text-[var(--text-light)]">{new Date(c.createdAt).toLocaleDateString("zh-TW")}</span>
                     </div>
@@ -399,7 +399,7 @@ export default function ArticleDetail() {
             <aside className="hidden lg:block w-64 flex-shrink-0">
               <div className="sticky top-20">
                 <div className="bg-white dark:bg-[#1a1a1a] rounded-[var(--radius-md)] shadow-sm p-4 border dark:border-[#333]">
-                  <h3 className="text-sm font-bold mb-3 dark:text-gray-200">📖 文章目錄</h3>
+                  <h3 className="text-sm font-bold mb-3 dark:text-gray-200">文章目錄</h3>
                   <nav className="space-y-1.5">
                     {headings.map((h, i) => (
                       <button key={i} onClick={() => scrollToHeading(h.id)}
@@ -414,7 +414,7 @@ export default function ArticleDetail() {
 
                 {/* Article stats mini card */}
                 <div className="mt-4 bg-white dark:bg-[#1a1a1a] rounded-[var(--radius-md)] shadow-sm p-4 border dark:border-[#333]">
-                  <h3 className="text-sm font-bold mb-2 dark:text-gray-200">📊 文章資訊</h3>
+                  <h3 className="text-sm font-bold mb-2 dark:text-gray-200">文章資訊</h3>
                   <div className="space-y-1.5 text-xs text-[var(--text-soft)] dark:text-[var(--text-light)]">
                     <div className="flex justify-between"><span>字數</span><span className="font-medium text-[var(--text-main)] dark:text-gray-200">{wordCount.toLocaleString()}</span></div>
                     <div className="flex justify-between"><span>閱讀時間</span><span className="font-medium text-[var(--text-main)] dark:text-gray-200">~{readingTime} 分鐘</span></div>
@@ -428,11 +428,11 @@ export default function ArticleDetail() {
                 <div className="mt-4 bg-white dark:bg-[#1a1a1a] rounded-[var(--radius-md)] shadow-sm p-4 border dark:border-[#333] space-y-2">
                   <button onClick={toggleBookmark}
                     className={`w-full text-left text-xs px-3 py-2 rounded-lg transition ${bookmarked ? "bg-white dark:bg-[#222]/30 text-[var(--red)]" : "hover:bg-[var(--cream)] dark:hover:bg-[#333] text-[var(--text-soft)] dark:text-[var(--text-light)]"}`}>
-                    {bookmarked ? "🔖 已收藏" : "📑 加入收藏"}
+                    {bookmarked ? "已收藏" : "加入收藏"}
                   </button>
                   <button onClick={() => share("copy")}
                     className="w-full text-left text-xs px-3 py-2 rounded-lg hover:bg-[var(--cream)] dark:hover:bg-[#333] text-[var(--text-soft)] dark:text-[var(--text-light)] transition">
-                    🔗 複製連結
+                    複製連結
                   </button>
                 </div>
               </div>
@@ -445,7 +445,7 @@ export default function ArticleDetail() {
       {showToc && headings.length > 2 && (
         <div className="lg:hidden fixed inset-0 z-50 bg-black/50" onClick={() => setShowToc(false)}>
           <div className="absolute bottom-0 left-0 right-0 bg-white dark:bg-[#1a1a1a] rounded-t-2xl p-6 max-h-[60vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
-            <h3 className="text-lg font-bold mb-4 dark:text-gray-100">📖 文章目錄</h3>
+            <h3 className="text-lg font-bold mb-4 dark:text-gray-100">文章目錄</h3>
             <nav className="space-y-2">
               {headings.map((h, i) => (
                 <button key={i} onClick={() => scrollToHeading(h.id)}

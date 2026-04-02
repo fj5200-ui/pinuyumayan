@@ -6,7 +6,7 @@ import Modal from "@/components/ui/Modal";
 
 const MARKER_TYPES = ["tribe", "site", "event", "custom"];
 const TYPE_LABELS: Record<string, string> = { tribe: "部落", site: "景點", event: "活動", custom: "自訂" };
-const TYPE_ICONS: Record<string, string> = { tribe: "🏘️", site: "📍", event: "🎉", custom: "⭐" };
+const TYPE_ICONS: Record<string, string> = { tribe: "", site: "", event: "", custom: "" };
 
 export default function AdminMapMarkers() {
   const { toast } = useToast();
@@ -16,7 +16,7 @@ export default function AdminMapMarkers() {
   const [editItem, setEditItem] = useState<any>(null);
   const [filterType, setFilterType] = useState("");
   const [form, setForm] = useState({
-    name: "", type: "site", description: "", latitude: "", longitude: "", icon: "📍", color: "#e74c3c", visible: true
+    name: "", type: "site", description: "", latitude: "", longitude: "", icon: "", color: "#e74c3c", visible: true
   });
 
   const load = () => {
@@ -31,11 +31,11 @@ export default function AdminMapMarkers() {
       setForm({
         name: item.name || "", type: item.type || "site", description: item.description || "",
         latitude: item.latitude?.toString() || "", longitude: item.longitude?.toString() || "",
-        icon: item.icon || "📍", color: item.color || "#e74c3c", visible: item.visible !== false
+        icon: item.icon || "", color: item.color || "#e74c3c", visible: item.visible !== false
       });
     } else {
       setEditItem(null);
-      setForm({ name: "", type: "site", description: "", latitude: "", longitude: "", icon: "📍", color: "#e74c3c", visible: true });
+      setForm({ name: "", type: "site", description: "", latitude: "", longitude: "", icon: "", color: "#e74c3c", visible: true });
     }
     setShowEditor(true);
   };
@@ -63,7 +63,7 @@ export default function AdminMapMarkers() {
   return (
     <div>
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-6">
-        <div><h1 className="text-2xl font-bold dark:text-gray-100">🗺️ 地圖標記管理</h1><p className="text-sm text-[var(--text-soft)]">{markers.length} 個標記</p></div>
+        <div><h1 className="text-2xl font-bold dark:text-gray-100">地圖標記管理</h1><p className="text-sm text-[var(--text-soft)]">{markers.length} 個標記</p></div>
         <button onClick={() => openEditor()} className="bg-[var(--red)] text-white px-4 py-2 rounded-lg hover:bg-[var(--red)] transition text-sm">+ 新增標記</button>
       </div>
 
@@ -82,7 +82,7 @@ export default function AdminMapMarkers() {
 
       {loading ? <div className="text-center py-10 text-[var(--text-light)]">載入中...</div> : filtered.length === 0 ? (
         <div className="text-center py-16 text-[var(--text-light)]">
-          <p className="text-4xl mb-2">🗺️</p>
+          <p className="text-4xl mb-2"></p>
           <p className="font-bold">尚無地圖標記</p>
         </div>
       ) : (

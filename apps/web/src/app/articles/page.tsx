@@ -46,7 +46,7 @@ export default function ArticlesPage() {
   return (
     <div className="max-w-7xl mx-auto px-4 py-12">
       <div className="mb-8">
-        <h1 className="text-4xl font-bold text-[var(--text-main)] dark:text-gray-100">📝 文化誌</h1>
+        <h1 className="text-4xl font-bold text-[var(--text-main)] dark:text-gray-100">文化誌</h1>
         <p className="text-[var(--text-soft)] dark:text-[var(--text-light)] mt-2 text-lg">深入了解卑南族文化的各個面向</p>
       </div>
 
@@ -60,7 +60,7 @@ export default function ArticlesPage() {
             placeholder="搜尋文章標題..."
             className="w-full pl-10 pr-4 py-2.5 rounded-[var(--radius-md)] border dark:border-[#444] dark:bg-[#1a1a1a] dark:text-gray-100 focus:border-red-500 outline-none transition"
           />
-          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-light)]">🔍</span>
+          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-light)]"></span>
         </div>
         <button onClick={handleSearch} className="px-5 py-2.5 bg-[var(--red)] text-white rounded-[var(--radius-md)] font-medium hover:bg-[var(--red)] transition">搜尋</button>
         {search && (
@@ -86,7 +86,7 @@ export default function ArticlesPage() {
 
       {loading ? <GridSkeleton count={6} /> : articles.length === 0 ? (
         <div className="text-center py-20 text-[var(--text-light)]">
-          <div className="text-5xl mb-4">📭</div>
+          <div className="text-5xl mb-4"></div>
           <p>沒有找到符合條件的文章</p>
           {(search || category !== "全部") && (
             <button onClick={() => { setSearch(""); setSearchInput(""); setCategory("全部"); setPage(1); }}
@@ -100,7 +100,7 @@ export default function ArticlesPage() {
               {a.coverImage ? (
                 <div className="h-44 overflow-hidden"><img src={a.coverImage} alt={a.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" /></div>
               ) : (
-                <div className="bg-gradient-to-r from-white to-white dark:from-[#222]/20 dark:to-[#222]/20 h-44 flex items-center justify-center text-5xl">📜</div>
+                <div className="bg-gradient-to-r from-white to-white dark:from-[#222]/20 dark:to-[#222]/20 h-44 flex items-center justify-center text-5xl"></div>
               )}
               <div className="p-5">
                 <div className="flex items-center gap-2 mb-2">
@@ -114,7 +114,7 @@ export default function ArticlesPage() {
                     <span className="w-5 h-5 bg-gradient-to-br from-[rgba(217,119,6,0.1)] to-[var(--yellow)] dark:from-[var(--red)] dark:to-orange-800 rounded-full flex items-center justify-center text-[10px] text-white font-bold">{(a.authorName || '?')[0]}</span>
                     {a.authorName || "佚名"}
                   </span>
-                  <span>👁️ {a.views}</span>
+                  <span>{a.views}</span>
                   <span className="ml-auto">{new Date(a.createdAt).toLocaleDateString("zh-TW")}</span>
                 </div>
               </div>

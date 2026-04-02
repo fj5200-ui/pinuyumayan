@@ -20,12 +20,12 @@ export default function AdminAuditLogs() {
   return (
     <div>
       <div className="mb-6">
-        <h1 className="text-2xl font-bold dark:text-gray-100">📋 操作日誌</h1>
+        <h1 className="text-2xl font-bold dark:text-gray-100">操作日誌</h1>
         <p className="text-sm text-[var(--text-soft)]">管理員操作紀錄 (本次啟動後)</p>
       </div>
       {loading ? <div className="text-center py-10 text-[var(--text-light)]">載入中...</div> : logs.length === 0 ? (
         <div className="bg-white dark:bg-[#1a1a1a] rounded-[var(--radius-md)] border dark:border-[#333] p-12 text-center">
-          <p className="text-4xl mb-4">📋</p>
+          <p className="text-4xl mb-4"></p>
           <p className="text-[var(--text-soft)] dark:text-[var(--text-light)]">目前沒有操作紀錄</p>
           <p className="text-sm text-[var(--text-light)] mt-1">管理操作（新增/編輯/刪除）將自動記錄在此</p>
         </div>

@@ -19,7 +19,7 @@ export default function AdminComments() {
   return (
     <div>
       <div className="mb-6">
-        <h1 className="text-2xl font-bold dark:text-gray-100">💬 留言管理</h1>
+        <h1 className="text-2xl font-bold dark:text-gray-100">留言管理</h1>
         <p className="text-sm text-[var(--text-soft)]">{comments.length} 則留言</p>
       </div>
       {loading ? <div className="text-center py-10 text-[var(--text-light)]">載入中...</div> : comments.length === 0 ? (
@@ -32,9 +32,9 @@ export default function AdminComments() {
                 <div className="flex-1">
                   <p className="text-sm dark:text-gray-200">{c.content}</p>
                   <div className="flex items-center gap-3 mt-2 text-xs text-[var(--text-light)]">
-                    <span>👤 {c.authorName}</span>
+                    <span>{c.authorName}</span>
                     {c.authorRole && <span className="bg-gray-100 dark:bg-[#222] px-2 py-0.5 rounded">{c.authorRole}</span>}
-                    <span>📝 {c.articleTitle}</span>
+                    <span>{c.articleTitle}</span>
                     <span>{new Date(c.createdAt).toLocaleDateString("zh-TW")}</span>
                   </div>
                 </div>

@@ -6,10 +6,10 @@ import { useAuth } from "@/lib/auth-context";
 import { useToast } from "@/lib/toast-context";
 
 const BOARDS = [
-  { id: "general", name: "綜合討論", icon: "💬", desc: "部落大小事、族人交流", color: "from-[var(--yellow)] to-[var(--yellow)]" },
-  { id: "language", name: "族語學習", icon: "📖", desc: "族語學習心得、教學分享", color: "from-teal-400 to-cyan-400" },
-  { id: "culture", name: "文化分享", icon: "🎭", desc: "傳統文化、祭典活動", color: "from-purple-400 to-pink-400" },
-  { id: "events", name: "活動公告", icon: "📢", desc: "部落活動、社區資訊", color: "from-blue-400 to-indigo-400" },
+  { id: "general", name: "綜合討論", icon: "", desc: "部落大小事、族人交流", color: "from-[var(--yellow)] to-[var(--yellow)]" },
+  { id: "language", name: "族語學習", icon: "", desc: "族語學習心得、教學分享", color: "from-teal-400 to-cyan-400" },
+  { id: "culture", name: "文化分享", icon: "", desc: "傳統文化、祭典活動", color: "from-purple-400 to-pink-400" },
+  { id: "events", name: "活動公告", icon: "", desc: "部落活動、社區資訊", color: "from-blue-400 to-indigo-400" },
 ];
 
 interface Post { id: number; board: string; title: string; content: string; authorId?: number; authorName: string; repliesCount?: number; likes: number; createdAt: string; }
@@ -115,7 +115,7 @@ export default function CommunityPage() {
   return (
     <div className="max-w-7xl mx-auto px-4 py-12">
       <div className="mb-8">
-        <h1 className="text-4xl font-bold text-[var(--text-main)] dark:text-gray-100">💬 族人社群</h1>
+        <h1 className="text-4xl font-bold text-[var(--text-main)] dark:text-gray-100">族人社群</h1>
         <p className="text-[var(--text-soft)] dark:text-[var(--text-light)] mt-2 text-lg">分享故事、討論文化、一起學習族語</p>
       </div>
 
@@ -162,7 +162,7 @@ export default function CommunityPage() {
             <hr className="my-3 dark:border-[#333]" />
             {user ? (
               <button onClick={() => { setShowNewPost(true); setSelectedPost(null); }} className="w-full bg-[var(--red)] text-white py-2.5 rounded-lg hover:bg-[var(--red)] transition text-sm font-medium">
-                ✏️ 發新貼文
+                發新貼文
               </button>
             ) : (
               <Link href="/login" className="block text-center w-full bg-gray-100 dark:bg-[#222] py-2.5 rounded-lg text-sm dark:text-[var(--text-light)]">
@@ -192,7 +192,7 @@ export default function CommunityPage() {
           {/* New post form */}
           {showNewPost && (
             <div className="bg-white dark:bg-[#1a1a1a] rounded-[var(--radius-md)] border dark:border-[#333] p-6 mb-4">
-              <h3 className="font-bold dark:text-gray-100 mb-4">✏️ 新貼文 — {currentBoard.name}</h3>
+              <h3 className="font-bold dark:text-gray-100 mb-4">新貼文 — {currentBoard.name}</h3>
               <input value={title} onChange={e => setTitle(e.target.value)} placeholder="標題"
                 className="w-full px-4 py-2.5 border rounded-[var(--radius-md)] dark:border-[#444] dark:bg-[#222] dark:text-gray-100 mb-3 focus:border-red-500 outline-none transition" />
               <textarea value={content} onChange={e => setContent(e.target.value)} placeholder="寫下你的想法..." rows={5}
@@ -218,17 +218,17 @@ export default function CommunityPage() {
                   </span>
                   <span>{timeAgo(selectedPost.createdAt)}</span>
                   <span className="flex items-center gap-1">
-                    <button onClick={() => toggleLike(selectedPost.id)} className="hover:scale-110 transition">❤️</button> {selectedPost.likes}
+                    <button onClick={() => toggleLike(selectedPost.id)} className="hover:scale-110 transition"></button> {selectedPost.likes}
                   </span>
                   {user && (user.role === 'admin' || user.name === selectedPost.authorName) && (
-                    <button onClick={() => deletePost(selectedPost.id)} className="ml-auto text-red-400 hover:text-red-600 text-xs transition">🗑️ 刪除</button>
+                    <button onClick={() => deletePost(selectedPost.id)} className="ml-auto text-red-400 hover:text-red-600 text-xs transition">刪除</button>
                   )}
                 </div>
                 <div className="text-[var(--text-main)] dark:text-[var(--text-light)] whitespace-pre-wrap leading-relaxed mb-6 p-4 bg-[var(--cream)] dark:bg-[#222]/30 rounded-[var(--radius-md)]">{selectedPost.content}</div>
 
                 {/* Replies */}
                 <div className="border-t dark:border-[#333] pt-5">
-                  <h3 className="font-bold dark:text-gray-100 mb-4">💬 回覆 ({selectedPost.replies?.length || 0})</h3>
+                  <h3 className="font-bold dark:text-gray-100 mb-4">回覆 ({selectedPost.replies?.length || 0})</h3>
                   {selectedPost.replies?.length > 0 ? (
                     <div className="space-y-3 mb-5">
                       {selectedPost.replies.map((r: any, i: number) => (
@@ -271,11 +271,11 @@ export default function CommunityPage() {
                   <div className="flex gap-1 bg-white dark:bg-[#1a1a1a] border dark:border-[#333] rounded-lg p-0.5">
                     <button onClick={() => setSort("newest")}
                       className={`px-3 py-1 rounded-md text-xs font-medium transition ${sort === "newest" ? "bg-[var(--red)] text-white" : "text-[var(--text-soft)] hover:bg-[var(--cream)] dark:hover:bg-[#333]"}`}>
-                      🕐 最新
+                      最新
                     </button>
                     <button onClick={() => setSort("popular")}
                       className={`px-3 py-1 rounded-md text-xs font-medium transition ${sort === "popular" ? "bg-[var(--red)] text-white" : "text-[var(--text-soft)] hover:bg-[var(--cream)] dark:hover:bg-[#333]"}`}>
-                      🔥 最熱
+                      最熱
                     </button>
                   </div>
                 </div>
@@ -293,9 +293,9 @@ export default function CommunityPage() {
                 </div>
               ) : sortedPosts.length === 0 ? (
                 <div className="text-center py-20 bg-white dark:bg-[#1a1a1a] rounded-[var(--radius-md)] border dark:border-[#333]">
-                  <p className="text-5xl mb-4">💬</p>
+                  <p className="text-5xl mb-4"></p>
                   <p className="text-[var(--text-soft)] dark:text-[var(--text-light)] text-lg">此討論板暫無貼文</p>
-                  {user && <button onClick={() => setShowNewPost(true)} className="text-[var(--red)] dark:text-[var(--yellow)] text-sm mt-3 hover:underline">✏️ 成為第一個發文者</button>}
+                  {user && <button onClick={() => setShowNewPost(true)} className="text-[var(--red)] dark:text-[var(--yellow)] text-sm mt-3 hover:underline">成為第一個發文者</button>}
                 </div>
               ) : (
                 <div className="space-y-3">
@@ -312,9 +312,9 @@ export default function CommunityPage() {
                           <div className="flex items-center gap-4 mt-3 text-xs text-[var(--text-light)]">
                             <span className="font-medium text-[var(--text-soft)] dark:text-[var(--text-light)]">{p.authorName}</span>
                             <span>{timeAgo(p.createdAt)}</span>
-                            <span className="flex items-center gap-1">💬 {p.repliesCount || 0}</span>
+                            <span className="flex items-center gap-1">{p.repliesCount || 0}</span>
                             <button onClick={(e) => { e.stopPropagation(); toggleLike(p.id); }} className="flex items-center gap-1 hover:text-red-500 transition">
-                              ❤️ {p.likes}
+                              {p.likes}
                             </button>
                           </div>
                         </div>

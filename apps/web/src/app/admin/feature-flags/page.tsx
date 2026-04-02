@@ -50,7 +50,7 @@ export default function FeatureFlagsPage() {
     <div>
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold dark:text-gray-100">🚩 Feature Flags</h1>
+          <h1 className="text-2xl font-bold dark:text-gray-100">Feature Flags</h1>
           <p className="text-sm text-[var(--text-soft)] mt-1">{enabledCount}/{flags.length} 個功能已啟用</p>
         </div>
         <button onClick={() => setShowAdd(!showAdd)} className="bg-[var(--red)] text-white px-4 py-2 rounded-lg hover:bg-[var(--red)] transition text-sm">+ 新增開關</button>

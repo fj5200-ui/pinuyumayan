@@ -6,7 +6,7 @@ import Modal from "@/components/ui/Modal";
 
 const REVENUE_TYPES = ["donation", "grant", "sponsorship", "ad", "merchandise", "other"];
 const TYPE_LABELS: Record<string, string> = { donation: "捐款", grant: "補助", sponsorship: "贊助", ad: "廣告", merchandise: "商品", other: "其他" };
-const TYPE_ICONS: Record<string, string> = { donation: "❤️", grant: "🏛️", sponsorship: "🤝", ad: "📢", merchandise: "🛍️", other: "💰" };
+const TYPE_ICONS: Record<string, string> = { donation: "", grant: "", sponsorship: "", ad: "", merchandise: "🛍️", other: "" };
 const STATUS_STYLES: Record<string, { bg: string; text: string }> = {
   completed: { bg: "bg-green-100 dark:bg-green-900/20", text: "text-green-700 dark:text-green-300" },
   pending: { bg: "bg-yellow-100 dark:bg-yellow-900/20", text: "text-yellow-700 dark:text-yellow-300" },
@@ -72,7 +72,7 @@ export default function AdminRevenue() {
   return (
     <div>
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-6">
-        <div><h1 className="text-2xl font-bold dark:text-gray-100">💰 收入管理</h1><p className="text-sm text-[var(--text-soft)]">{records.length} 筆記錄</p></div>
+        <div><h1 className="text-2xl font-bold dark:text-gray-100">收入管理</h1><p className="text-sm text-[var(--text-soft)]">{records.length} 筆記錄</p></div>
         <button onClick={() => openEditor()} className="bg-[var(--red)] text-white px-4 py-2 rounded-lg hover:bg-[var(--red)] transition text-sm">+ 新增記錄</button>
       </div>
 
@@ -112,7 +112,7 @@ export default function AdminRevenue() {
 
       {loading ? <div className="text-center py-10 text-[var(--text-light)]">載入中...</div> : filtered.length === 0 ? (
         <div className="text-center py-16 text-[var(--text-light)]">
-          <p className="text-4xl mb-2">💰</p>
+          <p className="text-4xl mb-2"></p>
           <p className="font-bold">尚無收入記錄</p>
         </div>
       ) : (

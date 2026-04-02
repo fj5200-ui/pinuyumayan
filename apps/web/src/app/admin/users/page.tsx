@@ -23,7 +23,7 @@ export default function AdminUsers() {
   return (
     <div>
       <div className="mb-6">
-        <h1 className="text-2xl font-bold dark:text-gray-100">👥 會員管理</h1>
+        <h1 className="text-2xl font-bold dark:text-gray-100">會員管理</h1>
         <p className="text-sm text-[var(--text-soft)]">{users.length} 位會員</p>
       </div>
       {loading ? <div className="text-center py-10 text-[var(--text-light)]">載入中...</div> : (

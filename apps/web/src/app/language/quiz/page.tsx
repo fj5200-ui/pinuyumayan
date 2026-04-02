@@ -73,7 +73,7 @@ export default function QuizPage() {
     return (
       <div className="max-w-xl mx-auto px-4 py-20 text-center">
         <div className="bg-white dark:bg-[#1a1a1a] rounded-[var(--radius-md)] shadow-lg p-10 border dark:border-[#333]">
-          <div className="text-6xl mb-4">{pct >= 80 ? "🏆" : pct >= 50 ? "👍" : "💪"}</div>
+          <div className="text-6xl mb-4">{pct >= 80 ? "" : pct >= 50 ? "👍" : ""}</div>
           <h1 className="text-3xl font-bold text-[var(--text-main)] dark:text-gray-100 mb-2">測驗完成！</h1>
           <p className="text-5xl font-bold text-[var(--red)] dark:text-[var(--yellow)] my-6">{score}/{total}</p>
           <p className="text-[var(--text-soft)] dark:text-[var(--text-light)] text-lg">正確率 {pct}%</p>
@@ -91,7 +91,7 @@ export default function QuizPage() {
     <div className="max-w-2xl mx-auto px-4 py-12">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-4xl font-bold text-[var(--text-main)] dark:text-gray-100">🎯 族語測驗</h1>
+          <h1 className="text-4xl font-bold text-[var(--text-main)] dark:text-gray-100">族語測驗</h1>
           <p className="text-[var(--text-soft)] dark:text-[var(--text-light)] mt-1">測試你的卑南語能力</p>
         </div>
         <Link href="/language" className="text-[var(--red)] dark:text-[var(--yellow)] text-sm hover:underline">← 返回</Link>

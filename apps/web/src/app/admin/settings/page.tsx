@@ -28,10 +28,10 @@ const INITIAL_SETTINGS: Setting[] = [
 ];
 
 const GROUPS = [
-  { id: "general", label: "一般設定", icon: "⚙️" },
-  { id: "content", label: "內容設定", icon: "📝" },
-  { id: "security", label: "安全設定", icon: "🔒" },
-  { id: "notifications", label: "通知設定", icon: "🔔" },
+  { id: "general", label: "一般設定", icon: "" },
+  { id: "content", label: "內容設定", icon: "" },
+  { id: "security", label: "安全設定", icon: "" },
+  { id: "notifications", label: "通知設定", icon: "" },
 ];
 
 export default function SettingsPage() {
@@ -66,7 +66,7 @@ export default function SettingsPage() {
     <div>
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold dark:text-gray-100">⚙️ 系統設定</h1>
+          <h1 className="text-2xl font-bold dark:text-gray-100">系統設定</h1>
           <p className="text-sm text-[var(--text-soft)] mt-1">全站功能與安全性設定</p>
         </div>
         <div className="flex gap-2">

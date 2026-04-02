@@ -5,29 +5,29 @@ import { useAuth } from "@/lib/auth-context";
 import { useState } from "react";
 
 const MENU = [
-  { href: "/admin", label: "總覽", icon: "📊" },
+  { href: "/admin", label: "總覽", icon: "" },
   { type: "divider", label: "內容管理" },
-  { href: "/admin/articles", label: "文章管理", icon: "📝" },
-  { href: "/admin/tribes", label: "部落管理", icon: "🏘️" },
-  { href: "/admin/vocabulary", label: "族語管理", icon: "📖" },
-  { href: "/admin/events", label: "活動管理", icon: "🎉" },
-  { href: "/admin/media", label: "媒體管理", icon: "🎬" },
-  { href: "/admin/cultural-sites", label: "景點管理", icon: "🏺" },
-  { href: "/admin/map-markers", label: "地圖標記", icon: "🗺️" },
+  { href: "/admin/articles", label: "文章管理", icon: "" },
+  { href: "/admin/tribes", label: "部落管理", icon: "" },
+  { href: "/admin/vocabulary", label: "族語管理", icon: "" },
+  { href: "/admin/events", label: "活動管理", icon: "" },
+  { href: "/admin/media", label: "媒體管理", icon: "" },
+  { href: "/admin/cultural-sites", label: "景點管理", icon: "" },
+  { href: "/admin/map-markers", label: "地圖標記", icon: "" },
   { type: "divider", label: "社群管理" },
-  { href: "/admin/users", label: "會員管理", icon: "👥" },
-  { href: "/admin/comments", label: "留言管理", icon: "💬" },
-  { href: "/admin/discussions", label: "討論管理", icon: "💬" },
-  { href: "/admin/approval", label: "審核管理", icon: "📋" },
+  { href: "/admin/users", label: "會員管理", icon: "" },
+  { href: "/admin/comments", label: "留言管理", icon: "" },
+  { href: "/admin/discussions", label: "討論管理", icon: "" },
+  { href: "/admin/approval", label: "審核管理", icon: "" },
   { type: "divider", label: "系統工具" },
   { href: "/admin/feature-flags", label: "Feature Flags", icon: "🚩" },
-  { href: "/admin/agents", label: "AI Agent", icon: "🤖" },
-  { href: "/admin/ai-tools", label: "AI 工具", icon: "🧪" },
-  { href: "/admin/revenue", label: "收入管理", icon: "💰" },
+  { href: "/admin/agents", label: "AI Agent", icon: "" },
+  { href: "/admin/ai-tools", label: "AI 工具", icon: "" },
+  { href: "/admin/revenue", label: "收入管理", icon: "" },
   { href: "/admin/monitoring", label: "系統監控", icon: "📡" },
-  { href: "/admin/audit-logs", label: "操作日誌", icon: "📜" },
-  { href: "/admin/exports", label: "資料匯出", icon: "📊" },
-  { href: "/admin/settings", label: "系統設定", icon: "⚙️" },
+  { href: "/admin/audit-logs", label: "操作日誌", icon: "" },
+  { href: "/admin/exports", label: "資料匯出", icon: "" },
+  { href: "/admin/settings", label: "系統設定", icon: "" },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -49,7 +49,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       {/* Sidebar */}
       <aside className={`${sidebarOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0 fixed md:sticky top-16 left-0 z-40 w-64 bg-white dark:bg-[#111] border-r dark:border-[#333] h-[calc(100vh-64px)] overflow-y-auto transition-transform`}>
         <div className="p-4 border-b dark:border-[#333]">
-          <h2 className="font-bold text-lg text-[var(--text-main)] dark:text-gray-100">⚙️ 管理後台</h2>
+          <h2 className="font-bold text-lg text-[var(--text-main)] dark:text-gray-100">管理後台</h2>
           <p className="text-xs text-[var(--text-light)] mt-1">{user.name} ({user.role})</p>
         </div>
         <nav className="p-2">

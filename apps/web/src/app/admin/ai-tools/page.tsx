@@ -5,12 +5,12 @@ import { useToast } from "@/lib/toast-context";
 interface AITool { id: string; name: string; icon: string; description: string; status: "active" | "inactive" | "beta"; lastUsed: string; usage: number; }
 
 const TOOLS: AITool[] = [
-  { id: "1", name: "族語翻譯", icon: "🌐", description: "卑南語⇄中文雙向翻譯，支援句子與詞彙", status: "beta", lastUsed: "2026-03-30", usage: 128 },
-  { id: "2", name: "內容摘要", icon: "📋", description: "自動生成文章摘要與關鍵詞", status: "active", lastUsed: "2026-03-31", usage: 256 },
-  { id: "3", name: "圖片描述", icon: "🖼️", description: "自動為上傳圖片生成 alt text 描述", status: "inactive", lastUsed: "2026-03-20", usage: 45 },
-  { id: "4", name: "內容審核", icon: "🛡️", description: "自動偵測不當內容、垃圾留言", status: "active", lastUsed: "2026-03-31", usage: 512 },
-  { id: "5", name: "推薦引擎", icon: "🎯", description: "個人化內容推薦（文章、詞彙、活動）", status: "beta", lastUsed: "2026-03-28", usage: 89 },
-  { id: "6", name: "語音辨識", icon: "🎤", description: "族語語音轉文字，用於學習評估", status: "inactive", lastUsed: "2026-03-15", usage: 12 },
+  { id: "1", name: "族語翻譯", icon: "", description: "卑南語⇄中文雙向翻譯，支援句子與詞彙", status: "beta", lastUsed: "2026-03-30", usage: 128 },
+  { id: "2", name: "內容摘要", icon: "", description: "自動生成文章摘要與關鍵詞", status: "active", lastUsed: "2026-03-31", usage: 256 },
+  { id: "3", name: "圖片描述", icon: "", description: "自動為上傳圖片生成 alt text 描述", status: "inactive", lastUsed: "2026-03-20", usage: 45 },
+  { id: "4", name: "內容審核", icon: "", description: "自動偵測不當內容、垃圾留言", status: "active", lastUsed: "2026-03-31", usage: 512 },
+  { id: "5", name: "推薦引擎", icon: "", description: "個人化內容推薦（文章、詞彙、活動）", status: "beta", lastUsed: "2026-03-28", usage: 89 },
+  { id: "6", name: "語音辨識", icon: "", description: "族語語音轉文字，用於學習評估", status: "inactive", lastUsed: "2026-03-15", usage: 12 },
 ];
 
 export default function AIToolsPage() {
@@ -36,7 +36,7 @@ export default function AIToolsPage() {
       "1": `翻譯結果：「${testInput}」→ 「uninan na Pinuyumayan」（模擬翻譯）`,
       "2": `摘要：${testInput.slice(0, 50)}...（AI 自動摘要）\n關鍵詞：卑南族、文化、傳承`,
       "3": `圖片描述：一張展示卑南族傳統文化的圖片，包含豐富的色彩和民族元素`,
-      "4": `審核結果：內容安全 ✅ — 未偵測到不當內容\n信心度：98.5%`,
+      "4": `審核結果：內容安全 — 未偵測到不當內容\n信心度：98.5%`,
       "5": `推薦：1. 南王部落歷史 2. 大獵祭傳說 3. 族語問候語`,
       "6": `語音辨識：「${testInput}」→ 辨識完成（模擬結果）`,
     };
@@ -53,7 +53,7 @@ export default function AIToolsPage() {
   return (
     <div>
       <div className="mb-6">
-        <h1 className="text-2xl font-bold dark:text-gray-100">🤖 AI 工具管理</h1>
+        <h1 className="text-2xl font-bold dark:text-gray-100">AI 工具管理</h1>
         <p className="text-sm text-[var(--text-soft)] mt-1">管理與測試 AI 自動化功能</p>
       </div>
 
@@ -143,7 +143,7 @@ export default function AIToolsPage() {
             </>
           ) : (
             <div className="text-center py-16 text-[var(--text-light)]">
-              <p className="text-4xl mb-3">🤖</p>
+              <p className="text-4xl mb-3"></p>
               <p>選擇左側工具進行測試</p>
             </div>
           )}

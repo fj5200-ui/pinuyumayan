@@ -36,12 +36,12 @@ export default function AdminMedia() {
     try { await api.del(`/api/admin/media/${id}`); toast("已刪除", "success"); load(); } catch { toast("刪除失敗", "error"); }
   };
 
-  const typeIcon = (t: string) => t === "video" ? "🎬" : t === "audio" ? "🎵" : "📷";
+  const typeIcon = (t: string) => t === "video" ? "" : t === "audio" ? "" : "";
 
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <div><h1 className="text-2xl font-bold dark:text-gray-100">🎬 媒體管理</h1><p className="text-sm text-[var(--text-soft)]">{items.length} 個媒體</p></div>
+        <div><h1 className="text-2xl font-bold dark:text-gray-100">媒體管理</h1><p className="text-sm text-[var(--text-soft)]">{items.length} 個媒體</p></div>
         <button onClick={() => openEditor()} className="bg-[var(--red)] text-white px-4 py-2 rounded-lg hover:bg-[var(--red)] transition text-sm">+ 新增媒體</button>
       </div>
       {loading ? <div className="text-center py-10 text-[var(--text-light)]">載入中...</div> : (

@@ -11,10 +11,10 @@ interface ApprovalItem {
 }
 
 const TYPE_LABELS: Record<string, { label: string; icon: string; color: string }> = {
-  article: { label: "文章", icon: "📝", color: "bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300" },
-  comment: { label: "留言", icon: "💬", color: "bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300" },
-  media: { label: "媒體", icon: "🖼️", color: "bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300" },
-  event: { label: "活動", icon: "🎉", color: "bg-[rgba(217,119,6,0.1)] dark:bg-orange-900/40 text-[var(--yellow)] dark:text-orange-300" },
+  article: { label: "文章", icon: "", color: "bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300" },
+  comment: { label: "留言", icon: "", color: "bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300" },
+  media: { label: "媒體", icon: "", color: "bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300" },
+  event: { label: "活動", icon: "", color: "bg-[rgba(217,119,6,0.1)] dark:bg-orange-900/40 text-[var(--yellow)] dark:text-orange-300" },
 };
 
 const STATUS_LABELS: Record<string, { label: string; color: string }> = {
@@ -74,7 +74,7 @@ export default function AdminApprovalPage() {
     <div>
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-bold dark:text-gray-100">📋 審核管理</h1>
+          <h1 className="text-2xl font-bold dark:text-gray-100">審核管理</h1>
           <p className="text-[var(--text-soft)] dark:text-[var(--text-light)] mt-1">管理內容審核隊列</p>
         </div>
       </div>
@@ -113,7 +113,7 @@ export default function AdminApprovalPage() {
           <option value="event">活動</option>
         </select>
         <button onClick={loadQueue} className="px-4 py-2 bg-[var(--red)] text-white rounded-lg text-sm hover:bg-[var(--red)] transition">
-          🔄 重新整理
+          重新整理
         </button>
       </div>
 
@@ -121,13 +121,13 @@ export default function AdminApprovalPage() {
       {loading ? <div className="text-center py-10 text-[var(--text-light)]">載入中...</div> :
         items.length === 0 ? (
           <div className="text-center py-16 bg-white dark:bg-[#1a1a1a] rounded-[var(--radius-md)] border dark:border-[#333]">
-            <p className="text-4xl mb-4">✅</p>
+            <p className="text-4xl mb-4"></p>
             <p className="text-[var(--text-soft)]">目前沒有待審項目</p>
           </div>
         ) : (
           <div className="space-y-3">
             {items.map(item => {
-              const typeInfo = TYPE_LABELS[item.type] || { label: item.type, icon: "📄", color: "bg-gray-100 text-[var(--text-soft)]" };
+              const typeInfo = TYPE_LABELS[item.type] || { label: item.type, icon: "", color: "bg-gray-100 text-[var(--text-soft)]" };
               const statusInfo = STATUS_LABELS[item.status] || { label: item.status, color: "bg-gray-100 text-[var(--text-soft)]" };
               const isReviewing = reviewingId === item.id;
 
@@ -142,10 +142,10 @@ export default function AdminApprovalPage() {
                       <h3 className="font-bold dark:text-gray-100 mb-1">{item.title}</h3>
                       <p className="text-[var(--text-soft)] dark:text-[var(--text-light)] text-sm line-clamp-2">{item.content}</p>
                       <div className="flex items-center gap-4 mt-3 text-xs text-[var(--text-light)]">
-                        <span>👤 {item.submittedBy}</span>
-                        <span>📅 {new Date(item.createdAt).toLocaleDateString("zh-TW")}</span>
-                        {item.reviewedBy && <span>✅ 審核: {item.reviewedBy}</span>}
-                        {item.reviewNote && <span>📝 {item.reviewNote}</span>}
+                        <span>{item.submittedBy}</span>
+                        <span>{new Date(item.createdAt).toLocaleDateString("zh-TW")}</span>
+                        {item.reviewedBy && <span>審核: {item.reviewedBy}</span>}
+                        {item.reviewNote && <span>{item.reviewNote}</span>}
                       </div>
                     </div>
 
@@ -160,8 +160,8 @@ export default function AdminApprovalPage() {
                             <input value={reviewNote} onChange={e => setReviewNote(e.target.value)} placeholder="審核備註（選填）"
                               className="px-3 py-1.5 border rounded-lg text-xs dark:bg-[#222] dark:border-[#444] dark:text-gray-200" />
                             <div className="flex gap-1">
-                              <button onClick={() => handleApprove(item.id)} className="flex-1 text-xs px-3 py-1.5 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">✅ 核准</button>
-                              <button onClick={() => handleReject(item.id)} className="flex-1 text-xs px-3 py-1.5 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">❌ 退回</button>
+                              <button onClick={() => handleApprove(item.id)} className="flex-1 text-xs px-3 py-1.5 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">核准</button>
+                              <button onClick={() => handleReject(item.id)} className="flex-1 text-xs px-3 py-1.5 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">退回</button>
                               <button onClick={() => { setReviewingId(null); setReviewNote(""); }} className="text-xs px-2 py-1.5 bg-gray-200 dark:bg-[#222] rounded-lg">取消</button>
                             </div>
                           </div>

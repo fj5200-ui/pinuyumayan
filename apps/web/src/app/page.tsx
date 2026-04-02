@@ -96,13 +96,13 @@ export default function Home() {
                 探索部落 →
               </Link>
               <Link href="/language" className="btn-glass">
-                📖 學習族語
+                學習族語
               </Link>
               <Link href="/tribes/map" className="btn-glass">
-                🗺️ 部落地圖
+                部落地圖
               </Link>
               <Link href="/cultural-sites" className="btn-glass hidden sm:inline-flex">
-                🏺 文化景點
+                文化景點
               </Link>
             </div>
           </div>
@@ -117,7 +117,7 @@ export default function Home() {
         <section style={{ background: "var(--black)", color: "white" }}>
           <div className="w-[min(1180px,92%)] mx-auto py-5 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-4">
-              <div className="icon-brand">📖</div>
+              <div className="icon-brand">語</div>
               <div>
                 <p className="text-sm text-white/60 font-bold">每日一詞</p>
                 <div className="flex items-center gap-3 mt-0.5">
@@ -128,7 +128,7 @@ export default function Home() {
                 </div>
               </div>
             </div>
-            <Link href="/language/quiz" className="btn-brand text-sm">🎯 開始測驗</Link>
+            <Link href="/language/quiz" className="btn-brand text-sm">開始測驗 →</Link>
           </div>
         </section>
       )}
@@ -137,13 +137,13 @@ export default function Home() {
       <section className="bg-white dark:bg-[#1a1a1a] border-b border-[var(--border)] dark:border-[#333]">
         <div className="w-[min(1180px,92%)] mx-auto py-10 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
           {[
-            { n: stats.tribes, l: "卑南八社", icon: "🏘️", suffix: "" },
-            { n: stats.vocab, l: "族語詞彙", icon: "📖", suffix: "+" },
-            { n: stats.articles, l: "文化文章", icon: "📝", suffix: "+" },
-            { n: stats.events, l: "活動祭典", icon: "🎉", suffix: "+" },
+            { n: stats.tribes, l: "卑南八社", color: "var(--red)", suffix: "" },
+            { n: stats.vocab, l: "族語詞彙", color: "var(--yellow)", suffix: "+" },
+            { n: stats.articles, l: "文化文章", color: "var(--green)", suffix: "+" },
+            { n: stats.events, l: "活動祭典", color: "var(--red)", suffix: "+" },
           ].map(s => (
             <div key={s.l} className="group hover:-translate-y-1 transition-transform duration-300">
-              <p className="text-3xl mb-2 group-hover:scale-110 transition-transform">{s.icon}</p>
+              <div className="w-10 h-1 mb-3 rounded-full mx-auto" style={{ background: s.color }} />
               <p className="text-4xl font-black" style={{ color: "var(--red)" }}>
                 <AnimatedNumber target={s.n} />{s.suffix}
               </p>
@@ -172,7 +172,7 @@ export default function Home() {
             <div className="w-[min(1180px,92%)] mx-auto">
               <div className="flex items-center justify-between mb-8">
                 <div className="section-heading" style={{ marginBottom: 0 }}>
-                  <h2>🏘️ 卑南八社</h2>
+                  <h2>卑南八社</h2>
                   <p>認識卑南族各部落的歷史與文化</p>
                 </div>
                 <Link href="/tribes" className="text-sm font-bold hover:text-[var(--red)] transition" style={{ color: "var(--text-soft)" }}>
@@ -182,13 +182,13 @@ export default function Home() {
               <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
                 {tribes.map((t: any) => (
                   <Link key={t.id} href={`/tribes/${t.id}`} className="card-solid group">
-                    <div className="icon-brand mb-4 group-hover:scale-110 transition-transform">🏔️</div>
+                    <div className="w-8 h-1 rounded-full mb-4" style={{ background: "var(--red)" }} />
                     <h3 className="font-bold text-lg group-hover:text-[var(--red)] transition">{t.name}</h3>
                     {t.traditionalName && <p className="text-sm mt-0.5" style={{ color: "var(--yellow)" }}>{t.traditionalName}</p>}
                     <p className="text-sm mt-2 line-clamp-2" style={{ color: "var(--text-soft)" }}>{t.description}</p>
                     {t.population && (
                       <div className="flex items-center gap-1 mt-3 text-xs" style={{ color: "var(--text-light)" }}>
-                        👥 人口約 {t.population?.toLocaleString()} 人
+                        人口約 {t.population?.toLocaleString()} 人
                       </div>
                     )}
                   </Link>
@@ -203,7 +203,7 @@ export default function Home() {
               <div className="w-[min(1180px,92%)] mx-auto">
                 <div className="flex items-center justify-between mb-8">
                   <div className="section-heading" style={{ marginBottom: 0 }}>
-                    <h2>🏺 文化景點</h2>
+                    <h2>文化景點</h2>
                     <p>探訪卑南族重要的文化遺址與祭典場域</p>
                   </div>
                   <Link href="/cultural-sites" className="text-sm font-bold hover:text-[var(--red)] transition" style={{ color: "var(--text-soft)" }}>
@@ -214,7 +214,7 @@ export default function Home() {
                   {sites.map((s: any) => (
                     <div key={s.id} className="card-solid group">
                       <div className="flex items-start gap-3">
-                        <div className="icon-brand shrink-0 group-hover:scale-110 transition-transform">📍</div>
+                        <div className="w-1 h-8 shrink-0 rounded-full" style={{ background: "var(--yellow)" }} />
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2">
                             <h3 className="font-bold truncate">{s.name}</h3>
@@ -235,7 +235,7 @@ export default function Home() {
             <div className="w-[min(1180px,92%)] mx-auto">
               <div className="flex items-center justify-between mb-8">
                 <div className="section-heading" style={{ marginBottom: 0 }}>
-                  <h2>📝 文化誌</h2>
+                  <h2>文化誌</h2>
                   <p>深入了解卑南族文化的各個面向</p>
                 </div>
                 <Link href="/articles" className="text-sm font-bold hover:text-[var(--red)] transition" style={{ color: "var(--text-soft)" }}>
@@ -251,10 +251,10 @@ export default function Home() {
                     <h3 className="font-bold text-lg group-hover:text-[var(--red)] transition line-clamp-2">{a.title}</h3>
                     <p className="text-sm mt-2 line-clamp-2" style={{ color: "var(--text-soft)" }}>{a.excerpt}</p>
                     <div className="flex items-center justify-between mt-4 text-xs" style={{ color: "var(--text-light)" }}>
-                      <span>👤 {a.authorName || "佚名"}</span>
+                      <span>{a.authorName || "佚名"}</span>
                       <div className="flex items-center gap-3">
-                        <span>👁️ {a.views}</span>
-                        <span>📅 {a.createdAt ? new Date(a.createdAt).toLocaleDateString("zh-TW", { month: "short", day: "numeric" }) : ""}</span>
+                        <span>{a.views} 閱讀</span>
+                        <span>{a.createdAt ? new Date(a.createdAt).toLocaleDateString("zh-TW", { month: "short", day: "numeric" }) : ""}</span>
                       </div>
                     </div>
                   </Link>
@@ -271,11 +271,11 @@ export default function Home() {
                 <div className="lg:col-span-2">
                   <div className="flex items-center justify-between mb-6">
                     <div className="section-heading" style={{ marginBottom: 0 }}>
-                      <h2>📖 族語學習</h2>
+                      <h2>族語學習</h2>
                       <p>一起來學卑南語</p>
                     </div>
                     <div className="flex gap-3">
-                      <Link href="/language/quiz" className="text-sm font-bold hover:text-[var(--red)] transition" style={{ color: "var(--text-soft)" }}>🎯 測驗 →</Link>
+                      <Link href="/language/quiz" className="text-sm font-bold hover:text-[var(--red)] transition" style={{ color: "var(--text-soft)" }}>測驗 →</Link>
                       <Link href="/language" className="text-sm font-bold hover:text-[var(--red)] transition" style={{ color: "var(--text-soft)" }}>更多詞彙 →</Link>
                     </div>
                   </div>
@@ -294,7 +294,7 @@ export default function Home() {
                 {/* Leaderboard */}
                 <div>
                   <div className="section-heading mb-6">
-                    <h2 className="!text-xl">🏆 學習排行榜</h2>
+                    <h2 className="!text-xl">學習排行榜</h2>
                   </div>
                   <div className="bg-white dark:bg-[#1a1a1a] border border-[var(--border)] dark:border-[#333] rounded-[var(--radius-md)] overflow-hidden shadow-[var(--shadow-sm)]">
                     {leaderboard.length > 0 ? (
@@ -304,7 +304,7 @@ export default function Home() {
                             <span className={`w-9 h-9 rounded-[var(--radius-sm)] flex items-center justify-center text-sm font-black shrink-0 ${
                               i === 0 ? "text-white" : i === 1 ? "bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300" : i === 2 ? "bg-[rgba(217,119,6,0.1)] dark:bg-orange-900/40 text-[var(--yellow)]" : "bg-gray-100 dark:bg-gray-700 text-gray-500"
                             }`} style={i === 0 ? { background: "var(--red)" } : undefined}>
-                              {i < 3 ? ["🥇", "🥈", "🥉"][i] : i + 1}
+                              {i + 1}
                             </span>
                             <div className="flex-1 min-w-0">
                               <p className="font-bold text-sm truncate">{u.userName || `用戶 #${u.userId}`}</p>
@@ -316,7 +316,7 @@ export default function Home() {
                       </div>
                     ) : (
                       <div className="text-center py-10">
-                        <p className="text-3xl mb-2">🎯</p>
+                        <div className="w-8 h-1 rounded-full mx-auto mb-3" style={{ background: "var(--red)" }} />
                         <p className="text-sm" style={{ color: "var(--text-soft)" }}>還沒有人開始學習</p>
                         <Link href="/language/quiz" className="text-sm font-bold hover:underline mt-1 inline-block" style={{ color: "var(--red)" }}>成為第一個 →</Link>
                       </div>
@@ -335,7 +335,7 @@ export default function Home() {
             <div className="w-[min(1180px,92%)] mx-auto">
               <div className="flex items-center justify-between mb-8">
                 <div className="section-heading" style={{ marginBottom: 0 }}>
-                  <h2>🎉 活動祭典</h2>
+                  <h2>活動祭典</h2>
                   <p>即將舉行的文化活動</p>
                 </div>
                 <Link href="/events" className="text-sm font-bold hover:text-[var(--red)] transition" style={{ color: "var(--text-soft)" }}>
@@ -361,10 +361,10 @@ export default function Home() {
                         <h3 className="font-bold text-lg group-hover:text-[var(--red)] transition">{e.title}</h3>
                         <p className="text-sm mt-2 line-clamp-2" style={{ color: "var(--text-soft)" }}>{e.description}</p>
                         <div className="flex items-center gap-3 mt-4 text-sm flex-wrap" style={{ color: "var(--text-light)" }}>
-                          {startDate && <span>📅 {startDate.toLocaleDateString("zh-TW", { month: "long", day: "numeric" })}</span>}
-                          {e.location && <span>📍 {e.location}</span>}
+                          {startDate && <span>{startDate.toLocaleDateString("zh-TW", { month: "long", day: "numeric" })}</span>}
+                          {e.location && <span>{e.location}</span>}
                         </div>
-                        {e.tribeName && <p className="text-xs mt-2 flex items-center gap-1" style={{ color: "var(--text-light)" }}>🏘️ {e.tribeName}</p>}
+                        {e.tribeName && <p className="text-xs mt-2" style={{ color: "var(--text-light)" }}>{e.tribeName}</p>}
                       </div>
                     );
                   })}
@@ -384,8 +384,8 @@ export default function Home() {
               </p>
               <div className="flex flex-wrap justify-center gap-3">
                 <Link href="/register" className="btn-brand">免費註冊</Link>
-                <Link href="/community" className="btn-glass !border-white/50 !text-white hover:!bg-white/10">💬 瀏覽社群</Link>
-                <Link href="/about" className="btn-glass !border-white/50 !text-white hover:!bg-white/10 hidden sm:inline-flex">ℹ️ 了解更多</Link>
+                <Link href="/community" className="btn-glass !border-white/50 !text-white hover:!bg-white/10">瀏覽社群</Link>
+                <Link href="/about" className="btn-glass !border-white/50 !text-white hover:!bg-white/10 hidden sm:inline-flex">了解更多</Link>
               </div>
             </div>
           </section>

@@ -10,8 +10,8 @@ interface CulturalSite {
 }
 
 const TYPE_ICONS: Record<string, string> = {
-  "集會所": "🏛️", "祭祀場": "⛩️", "會所": "🏠", "獵場": "🌲",
-  "文化區": "🎭", "遺址": "🏺", "工藝": "🧶", "祭典場": "🎪",
+  "集會所": "", "祭祀場": "", "會所": "", "獵場": "🌲",
+  "文化區": "", "遺址": "", "工藝": "🧶", "祭典場": "",
 };
 const TYPE_COLORS: Record<string, string> = {
   "集會所": "bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300",
@@ -130,13 +130,13 @@ export default function CulturalSitesPage() {
       markersRef.current = [];
       // User location marker
       if (userLoc) {
-        const userIcon = L.divIcon({ html: '<div style="font-size:20px;text-align:center">📍</div>', className: "user-loc-marker", iconSize: [24, 24], iconAnchor: [12, 24] });
-        const um = L.marker([userLoc.lat, userLoc.lng], { icon: userIcon }).addTo(mapInstanceRef.current).bindPopup("<strong>📍 你的位置</strong>");
+        const userIcon = L.divIcon({ html: '<div style="font-size:20px;text-align:center"></div>', className: "user-loc-marker", iconSize: [24, 24], iconAnchor: [12, 24] });
+        const um = L.marker([userLoc.lat, userLoc.lng], { icon: userIcon }).addTo(mapInstanceRef.current).bindPopup("<strong>你的位置</strong>");
         markersRef.current.push(um);
       }
       filteredSites.forEach(site => {
         const icon = L.divIcon({
-          html: `<div style="font-size:24px;text-align:center;line-height:1;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.3))">${TYPE_ICONS[site.type] || "📍"}</div>`,
+          html: `<div style="font-size:24px;text-align:center;line-height:1;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.3))">${TYPE_ICONS[site.type] || ""}</div>`,
           className: "custom-marker", iconSize: [32, 32], iconAnchor: [16, 32], popupAnchor: [0, -32],
         });
         const dist = userLoc ? calcDist(userLoc.lat, userLoc.lng, site.lat, site.lng) : null;
@@ -146,11 +146,11 @@ export default function CulturalSitesPage() {
             <div style="min-width:200px;font-family:system-ui">
               <strong style="font-size:14px">${site.name}</strong><br/>
               <span style="color:#777;font-size:12px">${site.type}${site.tribeName ? " · " + site.tribeName : ""}</span>
-              ${dist !== null ? `<br/><span style="color:#b45309;font-size:11px;font-weight:600">📏 距離 ${dist.toFixed(1)} km</span>` : ""}
+              ${dist !== null ? `<br/><span style="color:#b45309;font-size:11px;font-weight:600">距離 ${dist.toFixed(1)} km</span>` : ""}
               <p style="font-size:12px;margin-top:4px;color:#555">${site.description.slice(0, 100)}...</p>
               <a href="https://www.google.com/maps/dir/?api=1&destination=${site.lat},${site.lng}" target="_blank" rel="noopener"
                 style="display:inline-block;margin-top:6px;background:#b45309;color:white;padding:4px 12px;border-radius:8px;font-size:11px;text-decoration:none">
-                🧭 導航
+                導航
               </a>
             </div>
           `);
@@ -189,14 +189,14 @@ export default function CulturalSitesPage() {
       {/* Hero Section */}
       <div ref={heroRef} className="relative bg-gradient-to-br from-[#222] via-[#1a1a1a] to-[#111] text-white overflow-hidden">
         <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-10 left-10 text-9xl">🏺</div>
-          <div className="absolute bottom-10 right-10 text-8xl">⛩️</div>
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[12rem] opacity-5">🏛️</div>
+          <div className="absolute top-10 left-10 text-9xl"></div>
+          <div className="absolute bottom-10 right-10 text-8xl"></div>
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[12rem] opacity-5"></div>
         </div>
         <div className={`max-w-7xl mx-auto px-4 py-16 md:py-24 relative z-10 transition-all duration-1000 ${heroVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
           <div className="flex flex-col md:flex-row items-center justify-between gap-8">
             <div>
-              <h1 className="text-4xl md:text-5xl font-bold mb-4">🏺 文化景點巡禮</h1>
+              <h1 className="text-4xl md:text-5xl font-bold mb-4">文化景點巡禮</h1>
               <p className="text-white/80 text-lg md:text-xl max-w-xl">
                 探索卑南族的文化遺產與重要場域 — 從古老集會所到神聖祭祀場，每個地點都承載著祖先的智慧
               </p>
@@ -204,9 +204,9 @@ export default function CulturalSitesPage() {
             {/* Stats pills */}
             <div className="flex gap-4">
               {[
-                { icon: "🏺", value: stats.total, label: "景點" },
-                { icon: "📂", value: stats.types, label: "類型" },
-                { icon: "🏘️", value: stats.tribes, label: "部落" },
+                { icon: "", value: stats.total, label: "景點" },
+                { icon: "", value: stats.types, label: "類型" },
+                { icon: "", value: stats.tribes, label: "部落" },
               ].map((s, i) => (
                 <div key={i} className={`text-center bg-white/10 backdrop-blur-sm rounded-[var(--radius-md)] px-5 py-4 transition-all duration-700 delay-${i * 200} ${heroVisible ? "opacity-100 scale-100" : "opacity-0 scale-75"}`}>
                   <p className="text-2xl mb-1">{s.icon}</p>
@@ -232,7 +232,7 @@ export default function CulturalSitesPage() {
               <input type="text" value={searchQ} onChange={e => setSearchQ(e.target.value)}
                 placeholder="搜尋景點名稱、部落..."
                 className="pl-9 pr-4 py-2.5 rounded-[var(--radius-md)] border dark:border-[#333] dark:bg-[#1a1a1a] dark:text-gray-100 text-sm w-48 focus:w-64 transition-all focus:ring-2 focus:ring-red-300 outline-none" />
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-light)] text-sm">🔍</span>
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-light)] text-sm"></span>
             </div>
             {/* Sort */}
             <select value={sortBy} onChange={e => { setSortBy(e.target.value as any); setNearbyMode(false); }}
@@ -244,18 +244,18 @@ export default function CulturalSitesPage() {
             {/* Nearby */}
             <button onClick={getUserLocation}
               className={`px-4 py-2.5 rounded-[var(--radius-md)] text-sm font-medium transition flex items-center gap-1.5 ${nearbyMode ? "bg-[var(--red)] text-white" : "bg-white dark:bg-[#1a1a1a] border dark:border-[#333] text-[var(--text-soft)] dark:text-[var(--text-light)] hover:bg-white"}`}>
-              📍 {nearbyMode ? "附近優先" : "附近的景點"}
+              {nearbyMode ? "附近優先" : "附近的景點"}
             </button>
           </div>
           {/* View toggle */}
           <div className="flex bg-gray-100 dark:bg-[#1a1a1a] rounded-[var(--radius-md)] p-1">
             <button onClick={() => setViewMode("grid")}
               className={`px-5 py-2 rounded-lg text-sm font-medium transition ${viewMode === "grid" ? "bg-white dark:bg-[#222] shadow-sm text-[var(--text-main)] dark:text-gray-200" : "text-[var(--text-soft)]"}`}>
-              📋 列表
+              列表
             </button>
             <button onClick={() => setViewMode("map")}
               className={`px-5 py-2 rounded-lg text-sm font-medium transition ${viewMode === "map" ? "bg-white dark:bg-[#222] shadow-sm text-[var(--text-main)] dark:text-gray-200" : "text-[var(--text-soft)]"}`}>
-              🗺️ 地圖
+              地圖
             </button>
           </div>
         </div>
@@ -269,7 +269,7 @@ export default function CulturalSitesPage() {
           {types.map(t => (
             <button key={t} onClick={() => setFilterType(t)}
               className={`px-4 py-2 rounded-full text-sm font-medium transition flex items-center gap-1 ${filterType === t ? "bg-[var(--red)] text-white shadow-sm" : "bg-white dark:bg-[#1a1a1a] text-[var(--text-soft)] dark:text-[var(--text-light)] hover:bg-white dark:hover:bg-[#333] border dark:border-[#333]"}`}>
-              {TYPE_ICONS[t] || "📍"} {t} ({sites.filter(s => s.type === t).length})
+              {TYPE_ICONS[t] || ""} {t} ({sites.filter(s => s.type === t).length})
             </button>
           ))}
         </div>
@@ -295,7 +295,7 @@ export default function CulturalSitesPage() {
                 <div className="flex-1 overflow-y-auto">
                   <div className="p-4 border-b dark:border-[#333] flex items-center justify-between bg-gradient-to-r from-[var(--cream)] to-white/50 dark:from-[#1a1a1a] dark:to-[#1a1a1a]">
                     <h3 className="font-bold dark:text-gray-100 flex items-center gap-2">
-                      <span className="text-xl">{TYPE_ICONS[selected.type] || "📍"}</span> 景點詳情
+                      <span className="text-xl">{TYPE_ICONS[selected.type] || ""}</span> 景點詳情
                     </h3>
                     <button onClick={() => { setShowDetail(false); setSelected(null); }} className="text-[var(--text-light)] hover:text-[var(--text-soft)] text-sm px-2 py-1 rounded-lg hover:bg-gray-100 dark:hover:bg-[#333]">✕</button>
                   </div>
@@ -311,7 +311,7 @@ export default function CulturalSitesPage() {
                       {selected.tribeName && (
                         <div className="bg-[var(--cream)] dark:bg-[#222]/50 rounded-[var(--radius-md)] p-3">
                           <p className="text-xs text-[var(--text-light)] mb-1">所屬部落</p>
-                          <p className="text-sm font-medium dark:text-gray-200">🏘️ {selected.tribeName}</p>
+                          <p className="text-sm font-medium dark:text-gray-200">{selected.tribeName}</p>
                         </div>
                       )}
                       <div className="bg-[var(--cream)] dark:bg-[#222]/50 rounded-[var(--radius-md)] p-3">
@@ -321,7 +321,7 @@ export default function CulturalSitesPage() {
                       {userLoc && (
                         <div className="bg-white dark:bg-[#222]/20 rounded-[var(--radius-md)] p-3 col-span-2">
                           <p className="text-xs text-[var(--text-light)] mb-1">距離你</p>
-                          <p className="text-sm font-bold text-[var(--red)] dark:text-[var(--yellow)]">📏 {distToSite(selected)?.toFixed(1)} 公里</p>
+                          <p className="text-sm font-bold text-[var(--red)] dark:text-[var(--yellow)]">{distToSite(selected)?.toFixed(1)} 公里</p>
                         </div>
                       )}
                     </div>
@@ -339,17 +339,17 @@ export default function CulturalSitesPage() {
                       <a href={`https://www.google.com/maps/dir/?api=1&destination=${selected.lat},${selected.lng}`}
                         target="_blank" rel="noopener noreferrer"
                         className="block w-full text-center bg-[var(--red)] text-white py-2.5 rounded-[var(--radius-md)] text-sm font-medium hover:bg-[var(--red)] transition">
-                        🧭 Google Maps 導航
+                        Google Maps 導航
                       </a>
                       <a href={`https://www.google.com/maps/@${selected.lat},${selected.lng},17z`}
                         target="_blank" rel="noopener noreferrer"
                         className="block w-full text-center bg-gray-100 dark:bg-[#222] text-[var(--text-main)] dark:text-gray-200 py-2.5 rounded-[var(--radius-md)] text-sm font-medium hover:bg-gray-200 dark:hover:bg-[#444] transition">
-                        🌍 在 Google Maps 查看
+                        在 Google Maps 查看
                       </a>
                       {selected.tribeId && (
                         <Link href={`/tribes/${selected.tribeId}`}
                           className="block w-full text-center bg-gray-100 dark:bg-[#222] text-[var(--text-main)] dark:text-gray-200 py-2.5 rounded-[var(--radius-md)] text-sm font-medium hover:bg-gray-200 dark:hover:bg-[#444] transition">
-                          🏘️ 前往部落頁面
+                          前往部落頁面
                         </Link>
                       )}
                     </div>
@@ -358,7 +358,7 @@ export default function CulturalSitesPage() {
               ) : (
                 <div className="flex-1 overflow-y-auto">
                   <div className="p-4 border-b dark:border-[#333] bg-gradient-to-r from-[var(--cream)] to-white/50 dark:from-[#1a1a1a] dark:to-[#1a1a1a]">
-                    <h3 className="font-bold dark:text-gray-100 text-sm">📍 景點列表 ({filteredSites.length})</h3>
+                    <h3 className="font-bold dark:text-gray-100 text-sm">景點列表 ({filteredSites.length})</h3>
                   </div>
                   <div className="divide-y dark:divide-[#333]">
                     {filteredSites.map(site => {
@@ -367,7 +367,7 @@ export default function CulturalSitesPage() {
                         <button key={site.id} onClick={() => { setSelected(site); setShowDetail(true); }}
                           className="w-full text-left p-4 hover:bg-[var(--cream)] dark:hover:bg-[#333]/50 transition group">
                           <div className="flex items-center gap-2 mb-1">
-                            <span className="text-lg group-hover:scale-110 transition-transform">{TYPE_ICONS[site.type] || "📍"}</span>
+                            <span className="text-lg group-hover:scale-110 transition-transform">{TYPE_ICONS[site.type] || ""}</span>
                             <span className="font-bold text-sm dark:text-gray-100 truncate flex-1">{site.name}</span>
                             {dist !== null && <span className="text-xs text-[var(--yellow)] dark:text-[var(--yellow)] font-medium shrink-0">{dist.toFixed(1)}km</span>}
                           </div>
@@ -407,7 +407,7 @@ export default function CulturalSitesPage() {
             </div>
           ) : filteredSites.length === 0 ? (
             <div className="text-center py-20 bg-white dark:bg-[#1a1a1a] rounded-[var(--radius-md)] border dark:border-[#333]">
-              <p className="text-5xl mb-4">🏺</p>
+              <p className="text-5xl mb-4"></p>
               <p className="text-[var(--text-soft)] dark:text-[var(--text-light)] text-lg">{searchQ ? `找不到「${searchQ}」的景點` : "暫無此類型的文化景點"}</p>
               <button onClick={() => { setSearchQ(""); setFilterType("全部"); }}
                 className="mt-4 text-[var(--red)] dark:text-[var(--yellow)] text-sm hover:underline">清除篩選 →</button>
@@ -424,22 +424,22 @@ export default function CulturalSitesPage() {
                     <div className={`h-1.5 ${TYPE_BAR[site.type] || "bg-gray-400"}`} />
                     <div className="p-6">
                       <div className="flex items-center gap-2 mb-3">
-                        <span className="text-3xl group-hover:scale-110 transition-transform">{TYPE_ICONS[site.type] || "📍"}</span>
+                        <span className="text-3xl group-hover:scale-110 transition-transform">{TYPE_ICONS[site.type] || ""}</span>
                         <span className={`text-xs px-2 py-1 rounded-full font-medium ${TYPE_COLORS[site.type] || "bg-gray-100 text-[var(--text-soft)]"}`}>{site.type}</span>
                         {dist !== null && (
-                          <span className="text-xs text-[var(--yellow)] dark:text-[var(--yellow)] font-medium ml-auto">📏 {dist.toFixed(1)}km</span>
+                          <span className="text-xs text-[var(--yellow)] dark:text-[var(--yellow)] font-medium ml-auto">{dist.toFixed(1)}km</span>
                         )}
                       </div>
                       <h2 className="text-lg font-bold text-[var(--text-main)] dark:text-gray-100 mb-2 group-hover:text-[var(--red)] dark:group-hover:text-[var(--yellow)] transition">{site.name}</h2>
                       <p className="text-[var(--text-soft)] dark:text-[var(--text-light)] text-sm line-clamp-3 mb-4 leading-relaxed">{site.description}</p>
                       <div className="border-t dark:border-[#333] pt-3 flex items-center justify-between text-sm text-[var(--text-soft)] dark:text-[var(--text-light)]">
                         <div>
-                          {site.tribeName && <p className="text-xs flex items-center gap-1">🏘️ {site.tribeName}</p>}
-                          <p className="text-xs flex items-center gap-1 mt-0.5">📍 {site.lat.toFixed(4)}°N, {site.lng.toFixed(4)}°E</p>
+                          {site.tribeName && <p className="text-xs flex items-center gap-1">{site.tribeName}</p>}
+                          <p className="text-xs flex items-center gap-1 mt-0.5">{site.lat.toFixed(4)}°N, {site.lng.toFixed(4)}°E</p>
                         </div>
                         <button onClick={() => { setSelected(site); setViewMode("map"); setShowDetail(true); }}
                           className="text-xs bg-white dark:bg-[#222]/20 text-[var(--red)] dark:text-[var(--yellow)] px-3 py-1.5 rounded-lg hover:bg-[rgba(153,27,27,0.06)] dark:hover:bg-[#222]/40 transition font-medium">
-                          🗺️ 地圖
+                          地圖
                         </button>
                       </div>
                       {site.tags?.length > 0 && (
@@ -459,13 +459,13 @@ export default function CulturalSitesPage() {
 
         {/* Bottom navigation */}
         <div className="mt-16 bg-white dark:bg-[#1a1a1a] rounded-[var(--radius-md)] border dark:border-[#333] p-8">
-          <h3 className="text-lg font-bold text-[var(--text-main)] dark:text-gray-100 text-center mb-6">🌿 探索更多卑南族文化</h3>
+          <h3 className="text-lg font-bold text-[var(--text-main)] dark:text-gray-100 text-center mb-6">探索更多卑南族文化</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[
-              { icon: "🗺️", label: "部落地圖", href: "/tribes/map", desc: "互動式地圖總覽" },
-              { icon: "🏘️", label: "部落列表", href: "/tribes", desc: "認識各部落特色" },
-              { icon: "🎉", label: "活動祭典", href: "/events", desc: "傳統祭儀與活動" },
-              { icon: "📖", label: "族語學習", href: "/language", desc: "學習卑南族語言" },
+              { icon: "", label: "部落地圖", href: "/tribes/map", desc: "互動式地圖總覽" },
+              { icon: "", label: "部落列表", href: "/tribes", desc: "認識各部落特色" },
+              { icon: "", label: "活動祭典", href: "/events", desc: "傳統祭儀與活動" },
+              { icon: "", label: "族語學習", href: "/language", desc: "學習卑南族語言" },
             ].map(link => (
               <Link key={link.href} href={link.href}
                 className="text-center p-4 rounded-[var(--radius-md)] bg-[var(--cream)] dark:bg-[#222]/50 hover:bg-white dark:hover:bg-[#333] transition group">

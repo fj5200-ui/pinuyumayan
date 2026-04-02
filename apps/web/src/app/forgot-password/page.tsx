@@ -24,10 +24,10 @@ export default function ForgotPasswordPage() {
   return (
     <div className="max-w-md mx-auto px-4 py-20">
       <div className="bg-white dark:bg-[#1a1a1a] rounded-[var(--radius-md)] shadow-sm p-8 border dark:border-[#333]">
-        <h1 className="text-2xl font-bold text-center mb-2 dark:text-gray-100">🔑 忘記密碼</h1>
+        <h1 className="text-2xl font-bold text-center mb-2 dark:text-gray-100">忘記密碼</h1>
         {sent ? (
           <div className="text-center py-8">
-            <p className="text-4xl mb-4">📧</p>
+            <p className="text-4xl mb-4"></p>
             <p className="text-[var(--text-soft)] dark:text-[var(--text-light)] mb-2">重設連結已發送</p>
             <p className="text-sm text-[var(--text-light)]">如果 {email} 已註冊，您將收到重設密碼的電子郵件。</p>
             <Link href="/login" className="text-[var(--red)] dark:text-[var(--yellow)] text-sm mt-4 inline-block hover:underline">← 回到登入</Link>

@@ -6,7 +6,7 @@ import Modal from "@/components/ui/Modal";
 
 const TYPES = ["temple", "monument", "gathering", "nature", "heritage", "other"];
 const TYPE_LABELS: Record<string, string> = { temple: "祭祀場所", monument: "紀念碑", gathering: "集會所", nature: "自然景觀", heritage: "遺址", other: "其他" };
-const TYPE_ICONS: Record<string, string> = { temple: "⛩️", monument: "🗿", gathering: "🏛️", nature: "🌿", heritage: "🏺", other: "📍" };
+const TYPE_ICONS: Record<string, string> = { temple: "", monument: "🗿", gathering: "", nature: "", heritage: "", other: "" };
 
 export default function AdminCulturalSites() {
   const { toast } = useToast();
@@ -68,7 +68,7 @@ export default function AdminCulturalSites() {
   return (
     <div>
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-6">
-        <div><h1 className="text-2xl font-bold dark:text-gray-100">🏺 文化景點管理</h1><p className="text-sm text-[var(--text-soft)]">{sites.length} 個景點</p></div>
+        <div><h1 className="text-2xl font-bold dark:text-gray-100">文化景點管理</h1><p className="text-sm text-[var(--text-soft)]">{sites.length} 個景點</p></div>
         <div className="flex gap-2">
           <input value={search} onChange={e => setSearch(e.target.value)} placeholder="搜尋景點..." className="px-3 py-2 border rounded-lg text-sm dark:border-[#444] dark:bg-[#222] dark:text-gray-100 w-48" />
           <button onClick={() => openEditor()} className="bg-[var(--red)] text-white px-4 py-2 rounded-lg hover:bg-[var(--red)] transition text-sm whitespace-nowrap">+ 新增景點</button>
@@ -88,7 +88,7 @@ export default function AdminCulturalSites() {
 
       {loading ? <div className="text-center py-10 text-[var(--text-light)]">載入中...</div> : filtered.length === 0 ? (
         <div className="text-center py-16 text-[var(--text-light)]">
-          <p className="text-4xl mb-2">🏺</p>
+          <p className="text-4xl mb-2"></p>
           <p className="font-bold">尚無景點資料</p>
           <p className="text-sm mt-1">點擊「新增景點」開始建立</p>
         </div>
@@ -113,7 +113,7 @@ export default function AdminCulturalSites() {
                   </td>
                   <td className="px-4 py-3">
                     <span className="inline-flex items-center gap-1 text-xs px-2 py-1 bg-white dark:bg-[#222]/20 text-[var(--red)] dark:text-[var(--yellow)] rounded-lg">
-                      {TYPE_ICONS[s.type] || "📍"} {TYPE_LABELS[s.type] || s.type}
+                      {TYPE_ICONS[s.type] || ""} {TYPE_LABELS[s.type] || s.type}
                     </span>
                   </td>
                   <td className="px-4 py-3 hidden md:table-cell text-xs text-[var(--text-light)]">

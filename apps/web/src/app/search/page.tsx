@@ -4,11 +4,11 @@ import Link from "next/link";
 import { api } from "@/lib/api";
 
 const TYPE_FILTERS = [
-  { key: "all", label: "全部", icon: "🔍" },
-  { key: "articles", label: "文章", icon: "📝" },
-  { key: "vocabulary", label: "詞彙", icon: "📖" },
-  { key: "tribes", label: "部落", icon: "🏘️" },
-  { key: "events", label: "活動", icon: "🎉" },
+  { key: "all", label: "全部", icon: "" },
+  { key: "articles", label: "文章", icon: "" },
+  { key: "vocabulary", label: "詞彙", icon: "" },
+  { key: "tribes", label: "部落", icon: "" },
+  { key: "events", label: "活動", icon: "" },
 ];
 
 const TRENDING_KEYWORDS = ["卑南族", "祭典", "uninan", "南王", "工藝", "會所", "猴祭", "大獵祭", "少年會所"];
@@ -99,7 +99,7 @@ export default function SearchPage() {
       {/* Search Hero */}
       <div className="bg-gradient-to-br from-[#1a1a1a] via-[#111] to-[#111] text-white">
         <div className="max-w-4xl mx-auto px-4 py-16 md:py-20">
-          <h1 className="text-4xl md:text-5xl font-bold text-center mb-3">🔍 全站搜尋</h1>
+          <h1 className="text-4xl md:text-5xl font-bold text-center mb-3">全站搜尋</h1>
           <p className="text-center text-[var(--text-light)] mb-8">搜尋文章、族語詞彙、部落資訊、活動祭典</p>
 
           {/* Search Box */}
@@ -119,7 +119,7 @@ export default function SearchPage() {
                     {suggestions.map((s, i) => (
                       <button key={i} onClick={() => selectSuggestion(s)}
                         className="w-full text-left px-4 py-3 text-sm text-[var(--text-main)] dark:text-gray-200 hover:bg-white dark:hover:bg-[#333] transition flex items-center gap-2 border-b dark:border-[#333] last:border-0">
-                        <span className="text-[var(--text-light)]">🔍</span>
+                        <span className="text-[var(--text-light)]"></span>
                         <Highlight text={s} keyword={q} />
                       </button>
                     ))}
@@ -137,7 +137,7 @@ export default function SearchPage() {
           {/* Trending keywords */}
           {!results && (
             <div className="max-w-2xl mx-auto mt-6 text-center">
-              <p className="text-xs text-[var(--text-soft)] mb-2">🔥 熱門搜尋</p>
+              <p className="text-xs text-[var(--text-soft)] mb-2">熱門搜尋</p>
               <div className="flex flex-wrap justify-center gap-2">
                 {TRENDING_KEYWORDS.map(kw => (
                   <button key={kw} onClick={() => { setQ(kw); doSearch(kw); }}
@@ -159,14 +159,14 @@ export default function SearchPage() {
         {!results && !loading && history.length > 0 && (
           <div className="mb-8 bg-white dark:bg-[#1a1a1a] rounded-[var(--radius-md)] border dark:border-[#333] p-6">
             <div className="flex items-center justify-between mb-3">
-              <h3 className="font-bold dark:text-gray-100 text-sm flex items-center gap-2">🕐 搜尋歷史</h3>
+              <h3 className="font-bold dark:text-gray-100 text-sm flex items-center gap-2">搜尋歷史</h3>
               <button onClick={clearHistory} className="text-xs text-[var(--text-light)] hover:text-red-500 transition">清除全部</button>
             </div>
             <div className="flex flex-wrap gap-2">
               {history.map((h, i) => (
                 <button key={i} onClick={() => { setQ(h); doSearch(h); }}
                   className="px-3 py-1.5 bg-[var(--cream)] dark:bg-[#222] rounded-full text-sm text-[var(--text-soft)] dark:text-[var(--text-light)] hover:bg-white dark:hover:bg-[#444] transition flex items-center gap-1.5">
-                  <span className="text-[var(--text-light)] dark:text-[var(--text-soft)]">🕐</span> {h}
+                  <span className="text-[var(--text-light)] dark:text-[var(--text-soft)]"></span> {h}
                 </button>
               ))}
             </div>
@@ -222,7 +222,7 @@ export default function SearchPage() {
             {(typeFilter === "all" || typeFilter === "articles") && results.articles?.length > 0 && (
               <div>
                 <h2 className="text-lg font-bold mb-4 dark:text-gray-100 flex items-center gap-2">
-                  📝 文章 <span className="text-sm font-normal text-[var(--text-light)]">({results.articles.length})</span>
+                  文章 <span className="text-sm font-normal text-[var(--text-light)]">({results.articles.length})</span>
                 </h2>
                 <div className="space-y-3">{results.articles.map((a: any) => (
                   <Link key={a.id} href={`/articles/${a.slug}`}
@@ -237,8 +237,8 @@ export default function SearchPage() {
                         </p>
                         <div className="flex items-center gap-3 mt-3 text-xs text-[var(--text-light)]">
                           <span className="bg-[rgba(153,27,27,0.06)] dark:bg-[#222]/50 text-[var(--red)] dark:text-[var(--yellow)] px-2.5 py-0.5 rounded-full font-medium">{a.category}</span>
-                          <span>👁️ {a.views}</span>
-                          {a.authorName && <span>✍️ {a.authorName}</span>}
+                          <span>{a.views}</span>
+                          {a.authorName && <span>{a.authorName}</span>}
                         </div>
                       </div>
                       <span className="text-[var(--text-light)] dark:text-[var(--text-soft)] group-hover:text-[var(--yellow)] transition text-xl shrink-0">→</span>
@@ -252,7 +252,7 @@ export default function SearchPage() {
             {(typeFilter === "all" || typeFilter === "vocabulary") && results.vocabulary?.length > 0 && (
               <div>
                 <h2 className="text-lg font-bold mb-4 dark:text-gray-100 flex items-center gap-2">
-                  📖 詞彙 <span className="text-sm font-normal text-[var(--text-light)]">({results.vocabulary.length})</span>
+                  詞彙 <span className="text-sm font-normal text-[var(--text-light)]">({results.vocabulary.length})</span>
                 </h2>
                 <div className="grid md:grid-cols-2 gap-3">{results.vocabulary.map((v: any) => (
                   <div key={v.id} className="bg-white dark:bg-[#1a1a1a] p-5 rounded-[var(--radius-md)] border dark:border-[#333] hover:shadow-sm transition group">
@@ -275,13 +275,13 @@ export default function SearchPage() {
             {(typeFilter === "all" || typeFilter === "tribes") && results.tribes?.length > 0 && (
               <div>
                 <h2 className="text-lg font-bold mb-4 dark:text-gray-100 flex items-center gap-2">
-                  🏘️ 部落 <span className="text-sm font-normal text-[var(--text-light)]">({results.tribes.length})</span>
+                  部落 <span className="text-sm font-normal text-[var(--text-light)]">({results.tribes.length})</span>
                 </h2>
                 <div className="space-y-3">{results.tribes.map((t: any) => (
                   <Link key={t.id} href={`/tribes/${t.id}`}
                     className="block bg-white dark:bg-[#1a1a1a] p-5 rounded-[var(--radius-md)] border dark:border-[#333] hover:shadow-md hover:-translate-y-0.5 transition-all group">
                     <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 bg-gradient-to-br from-[rgba(217,119,6,0.1)] to-orange-200 dark:from-[var(--red)] dark:to-orange-800 rounded-[var(--radius-md)] flex items-center justify-center text-xl shrink-0">🏘️</div>
+                      <div className="w-12 h-12 bg-gradient-to-br from-[rgba(217,119,6,0.1)] to-orange-200 dark:from-[var(--red)] dark:to-orange-800 rounded-[var(--radius-md)] flex items-center justify-center text-xl shrink-0"></div>
                       <div className="flex-1 min-w-0">
                         <h3 className="font-bold dark:text-gray-100 group-hover:text-[var(--red)] dark:group-hover:text-[var(--yellow)] transition">
                           <Highlight text={t.name} keyword={q} />
@@ -300,7 +300,7 @@ export default function SearchPage() {
             {(typeFilter === "all" || typeFilter === "events") && results.events?.length > 0 && (
               <div>
                 <h2 className="text-lg font-bold mb-4 dark:text-gray-100 flex items-center gap-2">
-                  🎉 活動 <span className="text-sm font-normal text-[var(--text-light)]">({results.events.length})</span>
+                  活動 <span className="text-sm font-normal text-[var(--text-light)]">({results.events.length})</span>
                 </h2>
                 <div className="space-y-3">{results.events.map((e: any) => (
                   <div key={e.id} className="bg-white dark:bg-[#1a1a1a] p-5 rounded-[var(--radius-md)] border dark:border-[#333] hover:shadow-sm transition group">
@@ -314,7 +314,7 @@ export default function SearchPage() {
                         <p className="text-sm text-[var(--text-soft)] dark:text-[var(--text-light)] mt-1 line-clamp-2"><Highlight text={e.description || ""} keyword={q} /></p>
                         <div className="flex items-center gap-2 mt-2">
                           <span className="text-xs bg-[rgba(217,119,6,0.1)] dark:bg-orange-900/50 text-[var(--yellow)] dark:text-orange-300 px-2 py-0.5 rounded-full font-medium">{e.type}</span>
-                          {e.location && <span className="text-xs text-[var(--text-light)]">📍 {e.location}</span>}
+                          {e.location && <span className="text-xs text-[var(--text-light)]">{e.location}</span>}
                         </div>
                       </div>
                     </div>
@@ -326,7 +326,7 @@ export default function SearchPage() {
             {/* No Results */}
             {totalCount === 0 && (
               <div className="text-center py-16 bg-white dark:bg-[#1a1a1a] rounded-[var(--radius-md)] border dark:border-[#333]">
-                <p className="text-5xl mb-4">🔍</p>
+                <p className="text-5xl mb-4"></p>
                 <p className="text-[var(--text-main)] dark:text-gray-200 text-xl font-medium">找不到「{q}」的相關結果</p>
                 <p className="text-[var(--text-light)] text-sm mt-2 mb-6">試試其他關鍵字，或使用更簡短的搜尋詞</p>
                 <div className="flex flex-wrap justify-center gap-2">
@@ -347,13 +347,13 @@ export default function SearchPage() {
           <div className="space-y-8">
             {/* Quick explore */}
             <div className="bg-white dark:bg-[#1a1a1a] rounded-[var(--radius-md)] border dark:border-[#333] p-8">
-              <h3 className="font-bold dark:text-gray-100 text-lg mb-6 text-center">🌿 快速探索</h3>
+              <h3 className="font-bold dark:text-gray-100 text-lg mb-6 text-center">快速探索</h3>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {[
-                  { icon: "📝", label: "文化文章", desc: "深度部落報導", href: "/articles" },
-                  { icon: "📖", label: "族語詞彙", desc: "學習卑南語", href: "/language" },
-                  { icon: "🏘️", label: "部落巡禮", desc: "認識各部落", href: "/tribes" },
-                  { icon: "🎉", label: "活動祭典", desc: "傳統祭儀", href: "/events" },
+                  { icon: "", label: "文化文章", desc: "深度部落報導", href: "/articles" },
+                  { icon: "", label: "族語詞彙", desc: "學習卑南語", href: "/language" },
+                  { icon: "", label: "部落巡禮", desc: "認識各部落", href: "/tribes" },
+                  { icon: "", label: "活動祭典", desc: "傳統祭儀", href: "/events" },
                 ].map(link => (
                   <Link key={link.href} href={link.href}
                     className="text-center p-5 rounded-[var(--radius-md)] bg-[var(--cream)] dark:bg-[#222]/50 hover:bg-white dark:hover:bg-[#333] transition group">

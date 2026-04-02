@@ -43,7 +43,7 @@ export default function AdminTribes() {
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <div><h1 className="text-2xl font-bold dark:text-gray-100">🏘️ 部落管理</h1><p className="text-sm text-[var(--text-soft)]">{tribes.length} 個部落</p></div>
+        <div><h1 className="text-2xl font-bold dark:text-gray-100">部落管理</h1><p className="text-sm text-[var(--text-soft)]">{tribes.length} 個部落</p></div>
         <button onClick={() => openEditor()} className="bg-[var(--red)] text-white px-4 py-2 rounded-lg hover:bg-[var(--red)] transition text-sm">+ 新增部落</button>
       </div>
       {loading ? <div className="text-center py-10 text-[var(--text-light)]">載入中...</div> : (
@@ -57,8 +57,8 @@ export default function AdminTribes() {
                   <button onClick={() => del(t.id)} className="text-red-500 text-xs hover:underline">刪除</button>
                 </div>
               </div>
-              {t.region && <p className="text-xs text-[var(--text-light)] mb-1">📍 {t.region}</p>}
-              {t.population && <p className="text-xs text-[var(--text-light)] mb-2">👥 {t.population?.toLocaleString()}</p>}
+              {t.region && <p className="text-xs text-[var(--text-light)] mb-1">{t.region}</p>}
+              {t.population && <p className="text-xs text-[var(--text-light)] mb-2">{t.population?.toLocaleString()}</p>}
               <p className="text-sm text-[var(--text-soft)] dark:text-[var(--text-light)] line-clamp-2">{t.description}</p>
             </div>
           ))}

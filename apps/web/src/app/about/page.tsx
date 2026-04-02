@@ -5,14 +5,14 @@ import { api } from "@/lib/api";
 
 const MILESTONES = [
   { ver: "v1.0", date: "Phase 1", desc: "核心功能 — 18 頁面、12 API 模組、11 資料表", icon: "🌱" },
-  { ver: "v2.0", date: "Phase 2-3", desc: "密碼管理 + CMS + 操作日誌 + Dashboard", icon: "🌿" },
+  { ver: "v2.0", date: "Phase 2-3", desc: "密碼管理 + CMS + 操作日誌 + Dashboard", icon: "" },
   { ver: "v3.0", date: "Phase 4", desc: "Feature Flags + AI 工具 + 監控 + 設定 + 討論 + 搜尋升級", icon: "🌳" },
-  { ver: "v4.0", date: "Phase 5", desc: "文化景點 + 活動報名 + 審核管理 + 資料匯出 + 學習進度", icon: "🏔️" },
+  { ver: "v4.0", date: "Phase 5", desc: "文化景點 + 活動報名 + 審核管理 + 資料匯出 + 學習進度", icon: "" },
   { ver: "v4.4", date: "Phase 6", desc: "首頁/Profile/Dashboard/編輯器升級 + Rate Limiting + JWT Refresh + SEO", icon: "⛰️" },
   { ver: "v4.5", date: "Phase 7", desc: "DB 遷移 (6 新表) + 文章版本歷史 + 批次操作 + Workflows", icon: "🗻" },
-  { ver: "v4.6", date: "Phase 8", desc: "DB 遷移完成 (5 新表) + 文章 v2 + Sitemap + robots.txt + 404", icon: "🏛️" },
-  { ver: "v4.7", date: "Phase 9", desc: "首頁/活動/社群/部落/Dashboard/Header/Footer 全面 UX 升級", icon: "🌾" },
-  { ver: "v4.8", date: "Phase 10", desc: "關於/媒體/景點/族語/搜尋 深度互動升級", icon: "🎯" },
+  { ver: "v4.6", date: "Phase 8", desc: "DB 遷移完成 (5 新表) + 文章 v2 + Sitemap + robots.txt + 404", icon: "" },
+  { ver: "v4.7", date: "Phase 9", desc: "首頁/活動/社群/部落/Dashboard/Header/Footer 全面 UX 升級", icon: "" },
+  { ver: "v4.8", date: "Phase 10", desc: "關於/媒體/景點/族語/搜尋 深度互動升級", icon: "" },
 ];
 
 const TECH_STACK = [
@@ -34,18 +34,18 @@ const TECH_STACK = [
 ];
 
 const FEATURES = [
-  { icon: "🏘️", name: "卑南八社", desc: "完整部落資料庫與互動地圖" },
-  { icon: "📝", name: "文化誌", desc: "Markdown 文章系統、版本歷史、批次管理" },
-  { icon: "📖", name: "族語學習", desc: "詞彙庫、每日一詞、族語測驗、進度追蹤" },
-  { icon: "🎉", name: "活動祭典", desc: "線上報名、倒計時、報名人數顯示" },
-  { icon: "🏺", name: "文化景點", desc: "GIS 定位、類型篩選、互動地圖" },
-  { icon: "🎬", name: "媒體庫", desc: "照片/影片/音檔管理與播放" },
-  { icon: "💬", name: "社群討論", desc: "多板塊系統、回覆、按讚" },
-  { icon: "🔍", name: "全站搜尋", desc: "即時建議、類型篩選、關鍵字高亮" },
+  { icon: "", name: "卑南八社", desc: "完整部落資料庫與互動地圖" },
+  { icon: "", name: "文化誌", desc: "Markdown 文章系統、版本歷史、批次管理" },
+  { icon: "", name: "族語學習", desc: "詞彙庫、每日一詞、族語測驗、進度追蹤" },
+  { icon: "", name: "活動祭典", desc: "線上報名、倒計時、報名人數顯示" },
+  { icon: "", name: "文化景點", desc: "GIS 定位、類型篩選、互動地圖" },
+  { icon: "", name: "媒體庫", desc: "照片/影片/音檔管理與播放" },
+  { icon: "", name: "社群討論", desc: "多板塊系統、回覆、按讚" },
+  { icon: "", name: "全站搜尋", desc: "即時建議、類型篩選、關鍵字高亮" },
   { icon: "🌙", name: "暗色模式", desc: "全站暗色主題支援" },
-  { icon: "⚙️", name: "管理後台", desc: "15 頁管理界面、審核、匯出、日誌" },
-  { icon: "📊", name: "學習系統", desc: "排行榜、成就徽章、週報圖表" },
-  { icon: "🗺️", name: "SEO 最佳化", desc: "Sitemap、robots.txt、Open Graph" },
+  { icon: "", name: "管理後台", desc: "15 頁管理界面、審核、匯出、日誌" },
+  { icon: "", name: "學習系統", desc: "排行榜、成就徽章、週報圖表" },
+  { icon: "", name: "SEO 最佳化", desc: "Sitemap、robots.txt、Open Graph" },
 ];
 
 export default function AboutPage() {
@@ -62,7 +62,7 @@ export default function AboutPage() {
         <div className="absolute inset-0 opacity-10" style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h20v20H0V0zm20 20h20v20H20V20z' fill='%23ffffff' fill-opacity='.15'/%3E%3C/svg%3E\")" }} />
         <div className="max-w-4xl mx-auto px-4 text-center relative z-10">
           <p className="text-white/80 text-lg mb-4 tracking-wider">About Pinuyumayan</p>
-          <h1 className="text-5xl md:text-6xl font-bold mb-6">🌾 關於我們</h1>
+          <h1 className="text-5xl md:text-6xl font-bold mb-6">關於我們</h1>
           <p className="text-xl text-white/85 max-w-2xl mx-auto leading-relaxed">
             Pinuyumayan（卑南族入口網）致力於以數位科技保存、推廣與傳承卑南族豐富的文化遺產
           </p>
@@ -74,7 +74,7 @@ export default function AboutPage() {
         {/* Mission */}
         <section className="grid md:grid-cols-2 gap-12 items-center">
           <div>
-            <h2 className="text-3xl font-bold text-[var(--text-main)] dark:text-gray-100 mb-4">🎯 使命與願景</h2>
+            <h2 className="text-3xl font-bold text-[var(--text-main)] dark:text-gray-100 mb-4">使命與願景</h2>
             <p className="text-[var(--text-soft)] dark:text-[var(--text-light)] leading-relaxed mb-6">
               我們相信，每一個語言、每一段歷史、每一首古調，都值得被記錄與傳承。
               Pinuyumayan 以現代數位技術為橋樑，連結傳統智慧與當代社會，
@@ -82,11 +82,11 @@ export default function AboutPage() {
             </p>
             <div className="space-y-3">
               {[
-                { icon: "📖", label: "族語保存", desc: "系統化記錄卑南語詞彙、發音與例句" },
-                { icon: "🏘️", label: "部落紀錄", desc: "詳細介紹卑南族八社的歷史與文化特色" },
-                { icon: "📝", label: "文化書寫", desc: "深入報導祭儀、工藝、音樂、信仰等面向" },
-                { icon: "🎉", label: "活動推廣", desc: "整理祭典、工作坊與展覽等文化活動資訊" },
-                { icon: "🎯", label: "互動學習", desc: "族語測驗、每日一詞、學習進度與排行榜" },
+                { icon: "", label: "族語保存", desc: "系統化記錄卑南語詞彙、發音與例句" },
+                { icon: "", label: "部落紀錄", desc: "詳細介紹卑南族八社的歷史與文化特色" },
+                { icon: "", label: "文化書寫", desc: "深入報導祭儀、工藝、音樂、信仰等面向" },
+                { icon: "", label: "活動推廣", desc: "整理祭典、工作坊與展覽等文化活動資訊" },
+                { icon: "", label: "互動學習", desc: "族語測驗、每日一詞、學習進度與排行榜" },
               ].map(v => (
                 <div key={v.label} className="flex gap-3 items-start group">
                   <span className="text-2xl shrink-0 group-hover:scale-110 transition-transform">{v.icon}</span>
@@ -99,13 +99,13 @@ export default function AboutPage() {
             </div>
           </div>
           <div className="bg-gradient-to-br from-white to-white dark:from-[#222]/20 dark:to-[#222]/20 rounded-[var(--radius-md)] p-8 border border-amber-200 dark:border-amber-800">
-            <p className="text-center text-6xl mb-6">🌾</p>
+            <p className="text-center text-6xl mb-6"></p>
             <div className="grid grid-cols-2 gap-4">
               {[
-                { n: stats?.tribes || 8, l: "卑南八社", icon: "🏘️" },
-                { n: stats?.vocabulary || 15, l: "族語詞彙", icon: "📖", suffix: "+" },
-                { n: stats?.articles || 6, l: "文化文章", icon: "📝", suffix: "+" },
-                { n: stats?.events || 6, l: "活動祭典", icon: "🎉", suffix: "+" },
+                { n: stats?.tribes || 8, l: "卑南八社", icon: "" },
+                { n: stats?.vocabulary || 15, l: "族語詞彙", icon: "", suffix: "+" },
+                { n: stats?.articles || 6, l: "文化文章", icon: "", suffix: "+" },
+                { n: stats?.events || 6, l: "活動祭典", icon: "", suffix: "+" },
               ].map(s => (
                 <div key={s.l} className="text-center p-4 bg-white/80 dark:bg-[#1a1a1a]/80 rounded-[var(--radius-md)]">
                   <p className="text-2xl mb-1">{s.icon}</p>
@@ -119,7 +119,7 @@ export default function AboutPage() {
 
         {/* Features grid */}
         <section>
-          <h2 className="text-3xl font-bold text-[var(--text-main)] dark:text-gray-100 mb-2 text-center">✨ 平台功能</h2>
+          <h2 className="text-3xl font-bold text-[var(--text-main)] dark:text-gray-100 mb-2 text-center">平台功能</h2>
           <p className="text-[var(--text-soft)] dark:text-[var(--text-light)] text-center mb-8">涵蓋文化保存、語言學習、社群互動、內容管理的全方位平台</p>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {FEATURES.map(f => (
@@ -136,7 +136,7 @@ export default function AboutPage() {
 
         {/* Tech stack */}
         <section>
-          <h2 className="text-3xl font-bold text-[var(--text-main)] dark:text-gray-100 mb-2 text-center">🛠️ 技術架構</h2>
+          <h2 className="text-3xl font-bold text-[var(--text-main)] dark:text-gray-100 mb-2 text-center">技術架構</h2>
           <p className="text-[var(--text-soft)] dark:text-[var(--text-light)] text-center mb-8">採用現代化全端技術堆疊打造</p>
           <div className="grid md:grid-cols-3 gap-6">
             {TECH_STACK.map(group => (
@@ -156,10 +156,10 @@ export default function AboutPage() {
           {/* Numbers bar */}
           <div className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-4">
             {[
-              { n: 37, l: "前端路由", icon: "🌐" },
+              { n: 37, l: "前端路由", icon: "" },
               { n: 19, l: "API 模組", icon: "⚡" },
-              { n: 22, l: "資料表", icon: "🗄️" },
-              { n: 21, l: "API 通過", icon: "✅" },
+              { n: 22, l: "資料表", icon: "" },
+              { n: 21, l: "API 通過", icon: "" },
             ].map(s => (
               <div key={s.l} className="text-center p-5 bg-[var(--cream)] dark:bg-[#1a1a1a] rounded-[var(--radius-md)] border dark:border-[#333]">
                 <p className="text-lg mb-1">{s.icon}</p>
@@ -172,7 +172,7 @@ export default function AboutPage() {
 
         {/* Timeline */}
         <section>
-          <h2 className="text-3xl font-bold text-[var(--text-main)] dark:text-gray-100 mb-2 text-center">📅 開發歷程</h2>
+          <h2 className="text-3xl font-bold text-[var(--text-main)] dark:text-gray-100 mb-2 text-center">開發歷程</h2>
           <p className="text-[var(--text-soft)] dark:text-[var(--text-light)] text-center mb-8">從零到一，從基礎功能到完整文化平台</p>
           <div className="relative">
             {/* Vertical line */}
@@ -199,19 +199,19 @@ export default function AboutPage() {
 
         {/* Contact */}
         <section className="bg-gradient-to-r from-white to-white dark:from-[#222]/20 dark:to-[#222]/20 rounded-[var(--radius-md)] p-8 border border-amber-200 dark:border-amber-800 text-center">
-          <h2 className="text-2xl font-bold text-[var(--red)] dark:text-[var(--yellow)] mb-3">💬 聯繫我們</h2>
+          <h2 className="text-2xl font-bold text-[var(--red)] dark:text-[var(--yellow)] mb-3">聯繫我們</h2>
           <p className="text-[var(--text-soft)] dark:text-[var(--text-light)] mb-4 max-w-lg mx-auto">
             如果您有任何建議、資料更正或合作意向，歡迎與我們聯繫。
             每一份回饋都是推動平台進步的動力。
           </p>
           <a href="mailto:pinuyumayan@example.com" className="inline-block bg-[var(--red)] text-white px-6 py-3 rounded-[var(--radius-md)] font-medium hover:bg-[var(--red)] transition">
-            📧 pinuyumayan@example.com
+            pinuyumayan@example.com
           </a>
           <div className="flex justify-center gap-4 mt-6">
-            <Link href="/" className="text-[var(--red)] dark:text-[var(--yellow)] hover:underline text-sm">🏠 首頁</Link>
-            <Link href="/tribes" className="text-[var(--red)] dark:text-[var(--yellow)] hover:underline text-sm">🏘️ 部落</Link>
-            <Link href="/language" className="text-[var(--red)] dark:text-[var(--yellow)] hover:underline text-sm">📖 族語</Link>
-            <Link href="/community" className="text-[var(--red)] dark:text-[var(--yellow)] hover:underline text-sm">💬 社群</Link>
+            <Link href="/" className="text-[var(--red)] dark:text-[var(--yellow)] hover:underline text-sm">首頁</Link>
+            <Link href="/tribes" className="text-[var(--red)] dark:text-[var(--yellow)] hover:underline text-sm">部落</Link>
+            <Link href="/language" className="text-[var(--red)] dark:text-[var(--yellow)] hover:underline text-sm">族語</Link>
+            <Link href="/community" className="text-[var(--red)] dark:text-[var(--yellow)] hover:underline text-sm">社群</Link>
           </div>
         </section>
       </div>

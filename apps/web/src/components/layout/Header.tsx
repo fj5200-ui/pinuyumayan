@@ -106,17 +106,18 @@ export default function Header() {
               <button onClick={() => setSearchOpen(true)}
                 className="px-2.5 py-1.5 text-sm text-[var(--text-soft)] hover:text-[var(--red)] transition flex items-center gap-1"
                 title="搜尋 (⌘K)">
-                🔍 <span className="text-xs border border-[var(--border)] px-1.5 py-0.5 rounded text-[var(--text-light)] hidden xl:inline">⌘K</span>
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                <span className="text-xs border border-[var(--border)] px-1.5 py-0.5 rounded text-[var(--text-light)] hidden xl:inline">⌘K</span>
               </button>
 
               <button onClick={toggle} className="px-2 py-1.5 text-sm text-[var(--text-soft)] hover:text-[var(--yellow)] transition" title="切換主題">
-                {dark ? "☀️" : "🌙"}
+                {dark ? "☀" : "☽"}
               </button>
 
               {user ? (
                 <>
                   <Link href="/notifications" className="px-2 py-1.5 relative text-[var(--text-soft)] hover:text-[var(--red)] transition">
-                    🔔
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
                     {notifCount > 0 && (
                       <span className="absolute -top-0.5 -right-0.5 text-white text-[10px] min-w-[16px] h-[16px] rounded-full flex items-center justify-center font-black px-0.5" style={{ background: "var(--red)" }}>
                         {notifCount > 9 ? "9+" : notifCount}
@@ -145,24 +146,24 @@ export default function Header() {
                         </div>
                         <div className="py-1">
                           {[
-                            { href: "/profile", label: "個人檔案", icon: "👤" },
-                            { href: "/notifications", label: "通知", icon: "🔔", badge: notifCount },
+                            { href: "/profile", label: "個人檔案" },
+                            { href: "/notifications", label: "通知", badge: notifCount },
                           ].map(l => (
                             <Link key={l.href} href={l.href} className="flex items-center gap-2 px-4 py-2 text-sm hover:bg-gray-50 dark:hover:bg-[#222] transition">
-                              <span>{l.icon}</span> {l.label}
+                              {l.label}
                               {l.badge ? <span className="ml-auto text-[10px] px-1.5 py-0.5 rounded font-black" style={{ background: "rgba(153,27,27,0.1)", color: "var(--red)" }}>{l.badge}</span> : null}
                             </Link>
                           ))}
                           {isAdmin && (
                             <Link href="/admin" className="flex items-center gap-2 px-4 py-2 text-sm font-bold hover:bg-gray-50 dark:hover:bg-[#222] transition" style={{ color: "var(--red)" }}>
-                              <span>⚙️</span> 管理後台
+                              管理後台
                             </Link>
                           )}
                         </div>
                         <div className="border-t border-[var(--border)] dark:border-[#333] py-1">
                           <button onClick={() => { logout(); setUserMenuOpen(false); window.location.href = "/"; }}
                             className="flex items-center gap-2 px-4 py-2 text-sm text-[var(--text-soft)] hover:text-[var(--red)] transition w-full text-left">
-                            <span>🚪</span> 登出
+                            登出
                           </button>
                         </div>
                       </div>
@@ -179,16 +180,18 @@ export default function Header() {
 
             {/* Mobile right */}
             <div className="lg:hidden flex items-center gap-1">
-              <button onClick={() => setSearchOpen(true)} className="p-2 text-[var(--text-soft)]">🔍</button>
+              <button onClick={() => setSearchOpen(true)} className="p-2 text-[var(--text-soft)]">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+              </button>
               <button onClick={toggle} className="p-2 text-[var(--text-soft)]">{dark ? "☀️" : "🌙"}</button>
               {user && (
                 <Link href="/notifications" className="p-2 relative text-[var(--text-soft)]">
-                  🔔
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
                   {notifCount > 0 && <span className="absolute -top-0.5 -right-0.5 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-black" style={{ background: "var(--red)" }}>{notifCount > 9 ? "9+" : notifCount}</span>}
                 </Link>
               )}
               <button onClick={() => setMenuOpen(!menuOpen)} className="p-2 text-[var(--text-main)] dark:text-gray-200">
-                <span className="text-xl font-black">{menuOpen ? "✕" : "☰"}</span>
+                <span className="text-xl font-black">{menuOpen ? "×" : "≡"}</span>
               </button>
             </div>
           </div>
@@ -216,11 +219,11 @@ export default function Header() {
                       <span className="font-bold dark:text-gray-100">{user.name}</span>
                       <span className="tag-red ml-1" style={{ fontSize: "10px" }}>{user.role}</span>
                     </div>
-                    <Link href="/profile" onClick={() => setMenuOpen(false)} className="flex items-center gap-2 px-4 py-2 text-sm hover:bg-gray-50 dark:hover:bg-[#222] rounded-[var(--radius-sm)] transition">👤 個人檔案</Link>
-                    {isAdmin && <Link href="/admin" onClick={() => setMenuOpen(false)} className="flex items-center gap-2 px-4 py-2 text-sm font-bold hover:bg-gray-50 dark:hover:bg-[#222] rounded-[var(--radius-sm)] transition" style={{ color: "var(--red)" }}>⚙️ 管理後台</Link>}
+                    <Link href="/profile" onClick={() => setMenuOpen(false)} className="flex items-center gap-2 px-4 py-2 text-sm hover:bg-gray-50 dark:hover:bg-[#222] rounded-[var(--radius-sm)] transition">個人檔案</Link>
+                    {isAdmin && <Link href="/admin" onClick={() => setMenuOpen(false)} className="flex items-center gap-2 px-4 py-2 text-sm font-bold hover:bg-gray-50 dark:hover:bg-[#222] rounded-[var(--radius-sm)] transition" style={{ color: "var(--red)" }}>管理後台</Link>}
                     <button onClick={() => { logout(); setMenuOpen(false); window.location.href = "/"; }}
                       className="flex items-center gap-2 px-4 py-2 text-sm text-[var(--text-soft)] hover:text-[var(--red)] transition w-full text-left rounded-[var(--radius-sm)]">
-                      🚪 登出
+                      登出
                     </button>
                   </>
                 ) : (
@@ -240,7 +243,7 @@ export default function Header() {
         <div className="fixed inset-0 z-[60] bg-black/40 flex items-start justify-center pt-[18vh] px-4 animate-fade-in" onClick={(e) => { if (e.target === e.currentTarget) setSearchOpen(false); }}>
           <div className="bg-white dark:bg-[#1a1a1a] border border-[var(--border)] dark:border-[#333] w-full max-w-lg overflow-hidden shadow-xl" style={{ borderRadius: "var(--radius-md)" }}>
             <form onSubmit={handleSearch} className="flex items-center gap-3 p-4 border-b border-[var(--border)] dark:border-[#333]">
-              <span className="text-lg">🔍</span>
+              <svg className="w-5 h-5 text-[var(--text-soft)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
               <input ref={searchRef} type="text" value={searchQ} onChange={e => setSearchQ(e.target.value)}
                 placeholder="搜尋文章、部落、詞彙..."
                 className="flex-1 bg-transparent outline-none text-base placeholder:text-[var(--text-light)] dark:text-gray-100" />

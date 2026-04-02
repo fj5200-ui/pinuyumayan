@@ -51,13 +51,13 @@ export default function MonitoringPage() {
   return (
     <div>
       <div className="mb-6">
-        <h1 className="text-2xl font-bold dark:text-gray-100">📡 系統監控</h1>
+        <h1 className="text-2xl font-bold dark:text-gray-100">系統監控</h1>
         <p className="text-sm text-[var(--text-soft)] mt-1">即時系統狀態與效能監控</p>
       </div>
 
       {/* Tabs */}
       <div className="flex gap-2 mb-6">
-        {([["overview", "📊 總覽"], ["health", "💚 服務健康"], ["logs", "📋 系統日誌"]] as const).map(([t, label]) => (
+        {([["overview", "總覽"], ["health", "服務健康"], ["logs", "系統日誌"]] as const).map(([t, label]) => (
           <button key={t} onClick={() => setTab(t)}
             className={`px-4 py-2 rounded-lg text-sm font-medium transition ${tab === t ? "bg-[var(--red)] text-white" : "bg-white dark:bg-[#1a1a1a] border dark:border-[#333] dark:text-[var(--text-light)]"}`}>
             {label}
@@ -108,16 +108,16 @@ export default function MonitoringPage() {
           {/* DB Stats */}
           {stats && (
             <div className="bg-white dark:bg-[#1a1a1a] rounded-[var(--radius-md)] border dark:border-[#333] p-5">
-              <h3 className="font-bold dark:text-gray-100 mb-4">📦 資料庫統計</h3>
+              <h3 className="font-bold dark:text-gray-100 mb-4">資料庫統計</h3>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {[
-                  { label: "部落", value: stats.tribes, icon: "🏘️" },
-                  { label: "文章", value: stats.articles, icon: "📝" },
-                  { label: "詞彙", value: stats.vocabulary, icon: "📖" },
-                  { label: "活動", value: stats.events, icon: "🎉" },
-                  { label: "媒體", value: stats.media, icon: "🎬" },
-                  { label: "用戶", value: stats.users, icon: "👥" },
-                  { label: "留言", value: stats.comments, icon: "💬" },
+                  { label: "部落", value: stats.tribes, icon: "" },
+                  { label: "文章", value: stats.articles, icon: "" },
+                  { label: "詞彙", value: stats.vocabulary, icon: "" },
+                  { label: "活動", value: stats.events, icon: "" },
+                  { label: "媒體", value: stats.media, icon: "" },
+                  { label: "用戶", value: stats.users, icon: "" },
+                  { label: "留言", value: stats.comments, icon: "" },
                 ].map(s => (
                   <div key={s.label} className="text-center py-2">
                     <span className="text-xl">{s.icon}</span>

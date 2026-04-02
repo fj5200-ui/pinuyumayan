@@ -64,7 +64,7 @@ export default function TribeDetail() {
 
   if (!tribe) return (
     <div className="max-w-4xl mx-auto px-4 py-20 text-center">
-      <div className="text-6xl mb-4">🏔️</div>
+      <div className="text-6xl mb-4"></div>
       <h1 className="text-2xl font-bold dark:text-gray-100 mb-2">找不到此部落</h1>
       <p className="text-[var(--text-light)] mb-6">部落資料可能已被移除</p>
       <Link href="/tribes" className="inline-block px-6 py-3 bg-[var(--red)] text-white rounded-[var(--radius-md)] font-medium hover:bg-[var(--red)] transition">← 返回部落列表</Link>
@@ -72,8 +72,8 @@ export default function TribeDetail() {
   );
 
   const siteTypeIcons: Record<string, string> = {
-    "集會所": "🏛️", "祭祀場": "🔥", "會所": "🏠", "獵場": "🏹",
-    "文化區": "🎭", "遺址": "🏺", "工藝": "🧵", "祭典場": "⛩️",
+    "集會所": "", "祭祀場": "", "會所": "", "獵場": "",
+    "文化區": "", "遺址": "", "工藝": "", "祭典場": "",
   };
 
   return (
@@ -116,25 +116,25 @@ export default function TribeDetail() {
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
             {tribe.region && (
               <div className="bg-[var(--cream)] dark:bg-[#222]/50 rounded-[var(--radius-md)] p-3 text-center">
-                <span className="text-lg">📍</span>
+                <span className="text-lg"></span>
                 <p className="text-xs text-[var(--text-light)] mt-1">地區</p>
                 <p className="text-sm font-medium text-[var(--text-main)] dark:text-gray-200 truncate">{tribe.region}</p>
               </div>
             )}
             {tribe.population && (
               <div className="bg-[var(--cream)] dark:bg-[#222]/50 rounded-[var(--radius-md)] p-3 text-center">
-                <span className="text-lg">👥</span>
+                <span className="text-lg"></span>
                 <p className="text-xs text-[var(--text-light)] mt-1">人口</p>
                 <p className="text-sm font-medium text-[var(--text-main)] dark:text-gray-200">~{tribe.population?.toLocaleString()}</p>
               </div>
             )}
             <div className="bg-[var(--cream)] dark:bg-[#222]/50 rounded-[var(--radius-md)] p-3 text-center">
-              <span className="text-lg">🏛️</span>
+              <span className="text-lg"></span>
               <p className="text-xs text-[var(--text-light)] mt-1">文化景點</p>
               <p className="text-sm font-medium text-[var(--text-main)] dark:text-gray-200">{sites.length}</p>
             </div>
             <div className="bg-[var(--cream)] dark:bg-[#222]/50 rounded-[var(--radius-md)] p-3 text-center">
-              <span className="text-lg">🎉</span>
+              <span className="text-lg"></span>
               <p className="text-xs text-[var(--text-light)] mt-1">相關活動</p>
               <p className="text-sm font-medium text-[var(--text-main)] dark:text-gray-200">{events.length}</p>
             </div>
@@ -143,10 +143,10 @@ export default function TribeDetail() {
           {/* Tabs */}
           <div className="flex border-b dark:border-[#333] gap-1 -mx-2">
             {([
-              { id: "overview", label: "總覽", icon: "📋" },
-              { id: "sites", label: `景點 (${sites.length})`, icon: "🏛️" },
-              { id: "articles", label: `文章 (${articles.length})`, icon: "📝" },
-              { id: "events", label: `活動 (${events.length})`, icon: "🎉" },
+              { id: "overview", label: "總覽", icon: "" },
+              { id: "sites", label: `景點 (${sites.length})`, icon: "" },
+              { id: "articles", label: `文章 (${articles.length})`, icon: "" },
+              { id: "events", label: `活動 (${events.length})`, icon: "" },
             ] as const).map(tab => (
               <button key={tab.id} onClick={() => setActiveTab(tab.id)}
                 className={`px-4 py-3 text-sm font-medium border-b-2 transition ${activeTab === tab.id ? "border-amber-700 text-[var(--red)] dark:text-[var(--yellow)] dark:border-amber-400" : "border-transparent text-[var(--text-light)] hover:text-[var(--text-soft)] dark:hover:text-[var(--text-light)]"}`}>
@@ -162,28 +162,28 @@ export default function TribeDetail() {
         <div className="space-y-6">
           {tribe.description && (
             <div className="bg-white dark:bg-[#1a1a1a] rounded-[var(--radius-md)] border dark:border-[#333] p-6">
-              <h2 className="text-xl font-bold mb-3 dark:text-gray-100">📋 部落簡介</h2>
+              <h2 className="text-xl font-bold mb-3 dark:text-gray-100">部落簡介</h2>
               <p className="text-[var(--text-soft)] dark:text-[var(--text-light)] leading-relaxed">{tribe.description}</p>
             </div>
           )}
           {tribe.history && (
             <div className="bg-white dark:bg-[#1a1a1a] rounded-[var(--radius-md)] border dark:border-[#333] p-6">
-              <h2 className="text-xl font-bold mb-3 dark:text-gray-100">📜 歷史沿革</h2>
+              <h2 className="text-xl font-bold mb-3 dark:text-gray-100">歷史沿革</h2>
               <p className="text-[var(--text-soft)] dark:text-[var(--text-light)] leading-relaxed whitespace-pre-line">{tribe.history}</p>
             </div>
           )}
           {tribe.latitude && tribe.longitude && (
             <div className="bg-white dark:bg-[#1a1a1a] rounded-[var(--radius-md)] border dark:border-[#333] p-6">
-              <h2 className="text-xl font-bold mb-3 dark:text-gray-100">📍 地理位置</h2>
+              <h2 className="text-xl font-bold mb-3 dark:text-gray-100">地理位置</h2>
               <div className="bg-[var(--cream)] dark:bg-[#222]/50 rounded-[var(--radius-md)] p-4">
                 <p className="text-sm text-[var(--text-soft)] dark:text-[var(--text-light)] mb-3">座標：{tribe.latitude.toFixed(4)}, {tribe.longitude.toFixed(4)}</p>
                 <div className="flex gap-3">
                   <a href={`https://www.google.com/maps?q=${tribe.latitude},${tribe.longitude}`} target="_blank" rel="noopener"
                     className="flex items-center gap-2 px-4 py-2 bg-[var(--red)] text-white rounded-lg text-sm hover:bg-[var(--red)] transition">
-                    🗺️ Google Maps
+                    Google Maps
                   </a>
                   <Link href="/tribes/map" className="flex items-center gap-2 px-4 py-2 border dark:border-[#444] rounded-lg text-sm hover:bg-[var(--cream)] dark:hover:bg-[#333] transition dark:text-[var(--text-light)]">
-                    🗺️ 部落地圖
+                    部落地圖
                   </Link>
                 </div>
               </div>
@@ -194,10 +194,10 @@ export default function TribeDetail() {
 
       {activeTab === "sites" && (
         <div className="bg-white dark:bg-[#1a1a1a] rounded-[var(--radius-md)] border dark:border-[#333] p-6">
-          <h2 className="text-xl font-bold mb-4 dark:text-gray-100">🏛️ 文化景點</h2>
+          <h2 className="text-xl font-bold mb-4 dark:text-gray-100">文化景點</h2>
           {sites.length === 0 ? (
             <div className="text-center py-10 text-[var(--text-light)]">
-              <p className="text-4xl mb-3">🏛️</p>
+              <p className="text-4xl mb-3"></p>
               <p>暫無文化景點資料</p>
               <Link href="/cultural-sites" className="text-[var(--red)] dark:text-[var(--yellow)] text-sm mt-2 inline-block hover:underline">瀏覽所有文化景點 →</Link>
             </div>
@@ -206,14 +206,14 @@ export default function TribeDetail() {
               {sites.map((s: any) => (
                 <div key={s.id} className="bg-[var(--cream)] dark:bg-[#222]/50 rounded-[var(--radius-md)] p-4 hover:bg-gray-100 dark:hover:bg-[#333] transition">
                   <div className="flex items-start gap-3">
-                    <span className="text-2xl">{siteTypeIcons[s.type] || "📌"}</span>
+                    <span className="text-2xl">{siteTypeIcons[s.type] || ""}</span>
                     <div>
                       <h3 className="font-bold text-[var(--text-main)] dark:text-gray-100">{s.name}</h3>
                       <span className="text-xs bg-[rgba(153,27,27,0.06)] dark:bg-[#222]/50 text-[var(--red)] dark:text-[var(--yellow)] px-2 py-0.5 rounded-full">{s.type}</span>
                       {s.description && <p className="text-sm text-[var(--text-soft)] dark:text-[var(--text-light)] mt-2 line-clamp-2">{s.description}</p>}
                       {s.latitude && (
                         <a href={`https://www.google.com/maps?q=${s.latitude},${s.longitude}`} target="_blank" rel="noopener"
-                          className="text-xs text-[var(--red)] dark:text-[var(--yellow)] mt-2 inline-block hover:underline">📍 查看地圖</a>
+                          className="text-xs text-[var(--red)] dark:text-[var(--yellow)] mt-2 inline-block hover:underline">查看地圖</a>
                       )}
                     </div>
                   </div>
@@ -227,12 +227,12 @@ export default function TribeDetail() {
       {activeTab === "articles" && (
         <div className="bg-white dark:bg-[#1a1a1a] rounded-[var(--radius-md)] border dark:border-[#333] p-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-bold dark:text-gray-100">📝 相關文章</h2>
+            <h2 className="text-xl font-bold dark:text-gray-100">相關文章</h2>
             <Link href="/articles" className="text-sm text-[var(--red)] dark:text-[var(--yellow)] hover:underline">查看全部 →</Link>
           </div>
           {articles.length === 0 ? (
             <div className="text-center py-10 text-[var(--text-light)]">
-              <p className="text-4xl mb-3">📝</p>
+              <p className="text-4xl mb-3"></p>
               <p>暫無相關文章</p>
             </div>
           ) : (
@@ -244,7 +244,7 @@ export default function TribeDetail() {
                   <h3 className="font-medium mt-2 dark:text-gray-200 line-clamp-2 group-hover:text-[var(--red)] dark:group-hover:text-[var(--yellow)] transition">{a.title}</h3>
                   {a.excerpt && <p className="text-xs text-[var(--text-light)] mt-1 line-clamp-2">{a.excerpt}</p>}
                   <div className="flex items-center gap-2 mt-2 text-xs text-[var(--text-light)]">
-                    <span>👁️ {a.views || 0}</span>
+                    <span>{a.views || 0}</span>
                     <span>{new Date(a.createdAt).toLocaleDateString("zh-TW")}</span>
                   </div>
                 </Link>
@@ -257,12 +257,12 @@ export default function TribeDetail() {
       {activeTab === "events" && (
         <div className="bg-white dark:bg-[#1a1a1a] rounded-[var(--radius-md)] border dark:border-[#333] p-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-bold dark:text-gray-100">🎉 部落活動</h2>
+            <h2 className="text-xl font-bold dark:text-gray-100">部落活動</h2>
             <Link href="/events" className="text-sm text-[var(--red)] dark:text-[var(--yellow)] hover:underline">查看全部 →</Link>
           </div>
           {events.length === 0 ? (
             <div className="text-center py-10 text-[var(--text-light)]">
-              <p className="text-4xl mb-3">🎉</p>
+              <p className="text-4xl mb-3"></p>
               <p>暫無相關活動</p>
             </div>
           ) : (
@@ -271,11 +271,11 @@ export default function TribeDetail() {
                 <div key={e.id} className="bg-[var(--cream)] dark:bg-[#222]/50 rounded-[var(--radius-md)] p-4 hover:bg-gray-100 dark:hover:bg-[#333] transition">
                   <div className="flex items-center gap-2 mb-2">
                     <span className="text-xs bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 px-2 py-0.5 rounded-full">{e.type}</span>
-                    <span className="text-xs text-[var(--text-light)]">📅 {e.startDate}</span>
+                    <span className="text-xs text-[var(--text-light)]">{e.startDate}</span>
                   </div>
                   <h3 className="font-bold text-[var(--text-main)] dark:text-gray-100">{e.title}</h3>
                   {e.description && <p className="text-sm text-[var(--text-soft)] dark:text-[var(--text-light)] mt-1 line-clamp-2">{e.description}</p>}
-                  {e.location && <p className="text-xs text-[var(--text-light)] mt-2">📍 {e.location}</p>}
+                  {e.location && <p className="text-xs text-[var(--text-light)] mt-2">{e.location}</p>}
                 </div>
               ))}
             </div>
