@@ -19,6 +19,7 @@ import { RegistrationsModule } from './registrations/registrations.module';
 import { ApprovalModule } from './approval/approval.module';
 import { CulturalSitesModule } from './cultural-sites/cultural-sites.module';
 import { ExportsModule } from './exports/exports.module';
+import { WorkflowsModule } from './workflows/workflows.module';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { ExportsModule } from './exports/exports.module';
     ApprovalModule,
     CulturalSitesModule,
     ExportsModule,
+    WorkflowsModule,
   ],
   controllers: [],
   providers: [],

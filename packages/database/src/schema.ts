@@ -203,6 +203,104 @@ export const notifications = pgTable('notifications', {
 ]);
 
 // ═══════════════════════════════════════════
+//  Discussions (社群討論)
+// ═══════════════════════════════════════════
+export const discussions = pgTable('discussions', {
+  id: serial('id').primaryKey(),
+  board: varchar('board', { length: 50 }).default('general').notNull(),
+  title: varchar('title', { length: 255 }).notNull(),
+  content: text('content').notNull(),
+  authorId: integer('author_id').references(() => users.id, { onDelete: 'set null' }),
+  authorName: varchar('author_name', { length: 100 }).notNull(),
+  likes: integer('likes').default(0).notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+}, (table) => [
+  index('idx_discussions_board').on(table.board),
+  index('idx_discussions_author').on(table.authorId),
+]);
+
+export const discussionReplies = pgTable('discussion_replies', {
+  id: serial('id').primaryKey(),
+  discussionId: integer('discussion_id').references(() => discussions.id, { onDelete: 'cascade' }).notNull(),
+  content: text('content').notNull(),
+  authorId: integer('author_id').references(() => users.id, { onDelete: 'set null' }),
+  authorName: varchar('author_name', { length: 100 }).notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+}, (table) => [
+  index('idx_replies_discussion').on(table.discussionId),
+]);
+
+export const discussionLikes = pgTable('discussion_likes', {
+  id: serial('id').primaryKey(),
+  discussionId: integer('discussion_id').references(() => discussions.id, { onDelete: 'cascade' }).notNull(),
+  userId: integer('user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+}, (table) => [
+  uniqueIndex('idx_disc_likes_unique').on(table.discussionId, table.userId),
+]);
+
+// ═══════════════════════════════════════════
+//  Cultural Sites (文化景點)
+// ═══════════════════════════════════════════
+export const culturalSiteTypeEnum = pgEnum('cultural_site_type', [
+  '集會所', '祭祀場', '會所', '獵場', '文化區', '遺址', '工藝', '祭典場', '其他',
+]);
+
+export const culturalSites = pgTable('cultural_sites', {
+  id: serial('id').primaryKey(),
+  name: varchar('name', { length: 200 }).notNull(),
+  type: culturalSiteTypeEnum('type').default('其他').notNull(),
+  description: text('description'),
+  latitude: doublePrecision('latitude'),
+  longitude: doublePrecision('longitude'),
+  tribeId: integer('tribe_id').references(() => tribes.id, { onDelete: 'set null' }),
+  tribeName: varchar('tribe_name', { length: 100 }),
+  images: text('images'), // JSON string array
+  tags: text('tags'), // JSON string array
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+}, (table) => [
+  index('idx_sites_type').on(table.type),
+  index('idx_sites_tribe').on(table.tribeId),
+]);
+
+// ═══════════════════════════════════════════
+//  Event Registrations (活動報名)
+// ═══════════════════════════════════════════
+export const registrationStatusEnum = pgEnum('registration_status', ['pending', 'confirmed', 'cancelled']);
+
+export const eventRegistrations = pgTable('event_registrations', {
+  id: serial('id').primaryKey(),
+  eventId: integer('event_id').references(() => events.id, { onDelete: 'cascade' }).notNull(),
+  userId: integer('user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
+  userName: varchar('user_name', { length: 100 }).notNull(),
+  status: registrationStatusEnum('status').default('pending').notNull(),
+  note: text('note'),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+}, (table) => [
+  uniqueIndex('idx_reg_unique').on(table.eventId, table.userId),
+  index('idx_reg_event').on(table.eventId),
+  index('idx_reg_user').on(table.userId),
+]);
+
+// ═══════════════════════════════════════════
+//  Article Versions (文章版本歷史)
+// ═══════════════════════════════════════════
+export const articleVersions = pgTable('article_versions', {
+  id: serial('id').primaryKey(),
+  articleId: integer('article_id').references(() => articles.id, { onDelete: 'cascade' }).notNull(),
+  title: varchar('title', { length: 255 }).notNull(),
+  content: text('content').notNull(),
+  excerpt: text('excerpt'),
+  version: integer('version').notNull(),
+  editedBy: integer('edited_by').references(() => users.id, { onDelete: 'set null' }),
+  editedByName: varchar('edited_by_name', { length: 100 }),
+  changeNote: text('change_note'),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+}, (table) => [
+  index('idx_versions_article').on(table.articleId),
+]);
+
+// ═══════════════════════════════════════════
 //  Relations
 // ═══════════════════════════════════════════
 export const usersRelations = relations(users, ({ one, many }) => ({
@@ -258,4 +356,34 @@ export const eventsRelations = relations(events, ({ one }) => ({
 
 export const mediaRelations = relations(media, ({ one }) => ({
   uploader: one(users, { fields: [media.uploadedBy], references: [users.id] }),
+}));
+
+export const discussionsRelations = relations(discussions, ({ one, many }) => ({
+  author: one(users, { fields: [discussions.authorId], references: [users.id] }),
+  replies: many(discussionReplies),
+  likesRecords: many(discussionLikes),
+}));
+
+export const discussionRepliesRelations = relations(discussionReplies, ({ one }) => ({
+  discussion: one(discussions, { fields: [discussionReplies.discussionId], references: [discussions.id] }),
+  author: one(users, { fields: [discussionReplies.authorId], references: [users.id] }),
+}));
+
+export const discussionLikesRelations = relations(discussionLikes, ({ one }) => ({
+  discussion: one(discussions, { fields: [discussionLikes.discussionId], references: [discussions.id] }),
+  user: one(users, { fields: [discussionLikes.userId], references: [users.id] }),
+}));
+
+export const culturalSitesRelations = relations(culturalSites, ({ one }) => ({
+  tribe: one(tribes, { fields: [culturalSites.tribeId], references: [tribes.id] }),
+}));
+
+export const eventRegistrationsRelations = relations(eventRegistrations, ({ one }) => ({
+  event: one(events, { fields: [eventRegistrations.eventId], references: [events.id] }),
+  user: one(users, { fields: [eventRegistrations.userId], references: [users.id] }),
+}));
+
+export const articleVersionsRelations = relations(articleVersions, ({ one }) => ({
+  article: one(articles, { fields: [articleVersions.articleId], references: [articles.id] }),
+  editor: one(users, { fields: [articleVersions.editedBy], references: [users.id] }),
 }));

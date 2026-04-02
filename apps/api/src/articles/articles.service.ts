@@ -1,9 +1,10 @@
 import { Injectable, Inject, NotFoundException, ForbiddenException } from '@nestjs/common';
-import { eq, desc, sql, and, like, ne, ilike } from 'drizzle-orm';
+import { eq, desc, sql, and, like, ne, ilike, inArray } from 'drizzle-orm';
 import { DRIZZLE } from '../database/database.module';
-import { articles, users } from '../database/schema';
+import { articles, users, articleVersions } from '../database/schema';
 import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import type * as schema from '../database/schema';
+import { max } from 'drizzle-orm';
 
 @Injectable()
 export class ArticlesService {
@@ -81,6 +82,21 @@ export class ArticlesService {
     if (!existing) throw new NotFoundException('找不到文章');
     if (existing.authorId !== userId && role !== 'admin') throw new ForbiddenException('無權限');
 
+    // Auto-save version before updating (if content or title changed)
+    if (data.content !== existing.content || data.title !== existing.title) {
+      try {
+        const [{ maxVer }] = await this.db.select({ maxVer: max(articleVersions.version) })
+          .from(articleVersions).where(eq(articleVersions.articleId, id));
+        const nextVersion = (maxVer || 0) + 1;
+        await this.db.insert(articleVersions).values({
+          articleId: id, title: existing.title, content: existing.content,
+          excerpt: existing.excerpt, version: nextVersion,
+          editedBy: userId, editedByName: `User#${userId}`,
+          changeNote: data.changeNote || null,
+        });
+      } catch { /* version save is non-critical */ }
+    }
+
     const updateData: any = { updatedAt: new Date() };
     for (const key of ['title', 'content', 'excerpt', 'coverImage', 'category', 'tags', 'published']) {
       if (data[key] !== undefined) updateData[key] = data[key];
@@ -89,6 +105,19 @@ export class ArticlesService {
     await this.db.update(articles).set(updateData).where(eq(articles.id, id));
     const [updated] = await this.db.select().from(articles).where(eq(articles.id, id));
     return { article: updated };
+  }
+
+  /**
+   * Batch operations for admin
+   */
+  async batchDelete(ids: number[]) {
+    await this.db.delete(articles).where(inArray(articles.id, ids));
+    return { success: true, deletedCount: ids.length };
+  }
+
+  async batchPublish(ids: number[], published: boolean) {
+    await this.db.update(articles).set({ published, updatedAt: new Date() }).where(inArray(articles.id, ids));
+    return { success: true, updatedCount: ids.length, published };
   }
 
   async remove(id: number, userId: number, role: string) {

@@ -1,5 +1,5 @@
 import 'dotenv/config';
-import { createDb, users, tribes, articles, vocabulary, events, media } from './index.js';
+import { createDb, users, tribes, articles, vocabulary, events, media, discussions, discussionReplies, culturalSites, eventRegistrations } from './index.js';
 import bcrypt from 'bcryptjs';
 
 async function main() {
@@ -96,6 +96,36 @@ async function main() {
     { title: '部落歌謠演唱', description: '族人在聚會中演唱傳統歌謠的珍貴錄音', type: 'audio', uploadedBy: 1 },
     { title: '知本溫泉部落風光', description: '從知本部落眺望知本溪谷的壯麗景色', type: 'photo', uploadedBy: 2 },
     { title: '族語教學紀錄', description: '部落族語教室的日常教學紀錄影片', type: 'video', uploadedBy: 1 },
+  ]).onConflictDoNothing();
+
+  // ── Discussions ──
+  console.log('  → 插入討論資料...');
+  await db.insert(discussions).values([
+    { board: 'general', title: '歡迎來到 Pinuyumayan 社群！', content: '這是一個讓所有關心卑南族文化的朋友交流的空間。', authorId: 1, authorName: '系統管理員', likes: 8 },
+    { board: 'language', title: '族語日常問候用語整理', content: '常用的卑南語問候語：uninan (謝謝)、marekumare (你好)', authorId: 2, authorName: '文化編輯', likes: 12 },
+    { board: 'culture', title: '2026年大獵祭準備工作開始', content: '今年的大獵祭將在12月舉行，歡迎族人分享準備過程。', authorId: 2, authorName: '文化編輯', likes: 15 },
+    { board: 'events', title: '南王部落春季文化體驗營', content: '4月底將舉辦兩天的文化體驗營，內容包含族語教學和傳統工藝。', authorId: 1, authorName: '系統管理員', likes: 6 },
+  ]).onConflictDoNothing();
+
+  // Add a reply to the first discussion
+  const [firstDisc] = await db.select({ id: discussions.id }).from(discussions).limit(1);
+  if (firstDisc) {
+    await db.insert(discussionReplies).values({
+      discussionId: firstDisc.id, content: '感謝建立這個平台！', authorId: 3, authorName: '訪客用戶',
+    }).onConflictDoNothing();
+  }
+
+  // ── Cultural Sites ──
+  console.log('  → 插入文化景點資料...');
+  await db.insert(culturalSites).values([
+    { name: '南王 Palakuwan (青年會所)', type: '集會所', description: '南王部落傳統青年會所 palakuwan，是卑南族年齡階級制度的核心場所，青年在此接受訓練與文化薰陶。', latitude: 22.7835, longitude: 121.1085, tribeId: 1, tribeName: '南王部落', tags: '["會所","年齡階級","青年訓練"]' },
+    { name: '知本 Muveneng (祭祀場)', type: '祭祀場', description: '知本部落傳統祭祀場域，族人在此舉行重要的祭儀活動，是部落精神生活的中心。', latitude: 22.7025, longitude: 121.0412, tribeId: 2, tribeName: '知本部落', tags: '["祭祀","祭儀","巫師"]' },
+    { name: '建和刺繡工藝坊', type: '工藝', description: '建和部落的傳統刺繡工藝坊，保存並傳承卑南族獨特的刺繡技藝，遊客可預約體驗。', latitude: 22.7330, longitude: 121.0785, tribeId: 3, tribeName: '建和部落', tags: '["刺繡","工藝","體驗"]' },
+    { name: '卑南遺址公園', type: '遺址', description: '國家一級古蹟，距今約3000年前的史前文化遺址，出土大量石棺和精美玉器，是認識臺灣史前文化的重要場域。', latitude: 22.7900, longitude: 121.1200, tribeName: '臺東市', tags: '["遺址","史前","玉器","石棺"]' },
+    { name: '利嘉傳統獵場', type: '獵場', description: '利嘉部落傳統的狩獵場域，至今仍在大獵祭期間使用，見證了卑南族人與山林共存的智慧。', latitude: 22.7950, longitude: 121.0650, tribeId: 4, tribeName: '利嘉部落', tags: '["獵場","狩獵","大獵祭"]' },
+    { name: '初鹿文化區', type: '文化區', description: '初鹿部落週邊的文化生活圈，包含傳統家屋遺址和農業文化景觀。', latitude: 22.8270, longitude: 121.0535, tribeId: 5, tribeName: '初鹿部落', tags: '["文化區","家屋","農業"]' },
+    { name: '南王 Mangayaw 祭典場', type: '祭典場', description: '南王部落舉行大獵祭（Mangayaw）的傳統場域，每年12月底在此進行為期一週的祭典活動。', latitude: 22.7840, longitude: 121.1075, tribeId: 1, tribeName: '南王部落', tags: '["大獵祭","Mangayaw","祭典"]' },
+    { name: '知本猴祭場', type: '祭典場', description: '知本部落舉行猴祭的場所，猴祭是卑南族少年成年禮的重要祭典，意義深遠。', latitude: 22.7015, longitude: 121.0400, tribeId: 2, tribeName: '知本部落', tags: '["猴祭","成年禮","少年"]' },
   ]).onConflictDoNothing();
 
   console.log('✅ Seed completed!');

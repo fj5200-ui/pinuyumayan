@@ -1,4 +1,4 @@
-# Pinuyumayan 卑南族入口網 v4.4
+# Pinuyumayan 卑南族入口網 v4.5
 
 ## Project Overview
 - **Name**: Pinuyumayan (卑南族入口網)
@@ -28,12 +28,12 @@ pinuyumayan/
 └── vercel.json       # Vercel monorepo deployment config
 ```
 
-### Backend — NestJS API (18 Modules)
+### Backend — NestJS API (19 Modules)
 | Module | Endpoints | Description |
 |--------|-----------|-------------|
 | Auth | POST /register, /login, /refresh, /change-password, /forgot-password, /reset-password, GET /me, PUT /me | JWT 認證 + Token 刷新 + 密碼管理 |
 | Tribes | GET /, /:id | 卑南八社資料 |
-| Articles | GET /, /:slug, /meta/categories, /meta/related/:id, /meta/sitemap, POST /, PUT /:id, DELETE /:id | 文化誌文章 CRUD |
+| Articles | GET /, /:slug, /meta/categories, /meta/related/:id, /meta/sitemap, POST /, /batch/publish, /batch/delete, PUT /:id, DELETE /:id | 文化誌文章 CRUD + **批次操作** |
 | Language | GET /vocabulary, /daily, /categories, POST/PUT/DELETE | 族語詞彙 + 每日一詞 |
 | Events | GET /, /:id, POST /, PUT /:id, DELETE /:id | 活動祭典 |
 | Media | GET /, /:id, POST /, DELETE /:id | 媒體庫 |
@@ -43,19 +43,20 @@ pinuyumayan/
 | Notifications | GET /, GET /unread-count, PUT /read-all, PUT /:id/read, DELETE /:id | 通知系統 |
 | Search | GET /?q=keyword | 全站搜尋 |
 | Admin | GET /stats, /dashboard, /users, /comments, /audit-logs, PUT /users/:id/role, DELETE /comments/:id, POST+PUT+DELETE /tribes, /events, /media, /vocabulary | 管理後台完整 CRUD |
-| Discussions | GET /, /:id, POST /, /:id/replies, /:id/like, DELETE /:id | 社群討論系統 |
+| Discussions | GET /, /:id, POST /, /:id/replies, /:id/like, DELETE /:id | 社群討論系統 **(DB)** |
 | Learning | GET /progress, /leaderboard, POST /quiz-result, /mark-learned | 學習進度追蹤 + 徽章 + 排行榜 |
-| Registrations | POST /events/:id, DELETE /events/:id, GET /events/:id, /my, /check/:id | 活動報名系統 |
+| Registrations | POST /events/:id, DELETE /events/:id, GET /events/:id, /my, /check/:id | 活動報名系統 **(DB)** |
 | Approval | GET /queue, POST /:id/approve, /:id/reject, /submit | 內容審核管理 |
-| CulturalSites | GET /, /:id, /nearby | 文化景點 + 地理搜尋 |
+| CulturalSites | GET /, /:id, /nearby | 文化景點 + 地理搜尋 **(DB)** |
 | Exports | GET /:type (users/articles/vocabulary/events/tribes) | CSV 匯出 |
+| **Workflows** | GET /articles/:id/versions, /versions/:id, POST /versions/:id/restore | **文章版本歷史 + 還原 (NEW)** |
 
 ### Frontend — Next.js Pages (35 Routes)
 
 #### 前台頁面 (18 頁)
 | Page | Path | Description | Status |
 |------|------|-------------|--------|
-| 首頁 | / | Hero + 動態統計 + 每日一詞 + 部落/文章/族語/活動 + **文化景點區 + 排行榜** | ✅ ENHANCED |
+| 首頁 | / | Hero + 動態統計 + 每日一詞 + 部落/文章/族語/活動 + 文化景點區 + 排行榜 | ✅ ENHANCED |
 | 部落列表 | /tribes | 卑南八社一覽 + 地圖檢視按鈕 | ✅ |
 | 部落詳情 | /tribes/[id] | 部落歷史、追蹤、Google Maps 連結 | ✅ |
 | 部落地圖 | /tribes/map | Leaflet 互動地圖 + 圖層切換 | ✅ |
@@ -71,14 +72,14 @@ pinuyumayan/
 | 登入 | /login | JWT 登入 + 測試帳號提示 | ✅ |
 | 註冊 | /register | 帳號註冊 + 密碼確認 | ✅ |
 | 忘記密碼 | /forgot-password | 發送重設連結 | ✅ |
-| 個人資料 | /profile | **7 分頁**: 資料/收藏/追蹤/報名/學習/我的發文/密碼 | ✅ ENHANCED |
+| 個人資料 | /profile | 7 分頁: 資料/收藏/追蹤/報名/學習/我的發文/密碼 | ✅ ENHANCED |
 | 通知 | /notifications | 通知列表、已讀/刪除 | ✅ |
 
 #### 管理後台 (15 頁)
 | Page | Path | Description | Status |
 |------|------|-------------|--------|
-| Dashboard | /admin | **增強**: 統計+七日趨勢+審核狀態+平台概覽圖表+快速操作+待審核提醒 | ✅ ENHANCED |
-| 文章管理 | /admin/articles | **增強**: Markdown 預覽/工具列/封面圖片/搜尋過濾/字數統計 | ✅ ENHANCED |
+| Dashboard | /admin | 統計+七日趨勢+審核狀態+平台概覽圖表+快速操作+待審核提醒 | ✅ ENHANCED |
+| 文章管理 | /admin/articles | **版本歷史 + 批次操作 +** Markdown 預覽/工具列/封面圖片/搜尋過濾/字數統計 | ✅ ENHANCED v2 |
 | 部落管理 | /admin/tribes | 部落 CRUD + 地理資訊 | ✅ |
 | 族語管理 | /admin/vocabulary | 詞彙 CRUD + 分類/發音/例句 | ✅ |
 | 活動管理 | /admin/events | 活動 CRUD + 日期/地點 | ✅ |
@@ -93,14 +94,21 @@ pinuyumayan/
 | 資料匯出 | /admin/exports | CSV 匯出 (用戶/文章/詞彙/活動/部落) | ✅ |
 | 系統設定 | /admin/settings | 全站/安全/內容/通知設定 | ✅ |
 
-### v4.4 New Features (Phase 6)
-- 🏠 **首頁升級** — 新增文化景點展示區、學習排行榜、即將到來的活動標示 + 文化景點連結按鈕
-- 👤 **個人資料升級** — 7 分頁: 基本資料/收藏/追蹤/**報名**(取消報名)/**學習**(徽章+排行榜)/**我的發文**/密碼
-- 📝 **文章編輯器升級** — Markdown 預覽/工具列(粗體/斜體/標題/連結/圖片/列表/引用/代碼)/封面圖片/搜尋過濾/字數統計
-- 📊 **Dashboard 升級** — 審核狀態面板+平台概覽橫條圖+快速操作+待審核動態提醒+文化景點/討論統計
-- 🔒 **API Rate Limiting** — 全域 120 req/min + Auth 端點 10 req/min (429 Too Many Requests)
-- 🔄 **JWT Refresh** — POST /api/auth/refresh 端點，支援 Token 刷新
-- 🏷️ **SEO Meta Tags** — 8 個頁面區段加入 Open Graph + description metadata (Tribes/Articles/Language/Events/CulturalSites/Community/Search/Media)
+### v4.5 New Features (Phase 7)
+- 🗄️ **DB 遷移** — discussions / culturalSites / registrations / articleVersions / discussionReplies / discussionLikes 等 6 張新表遷入 PostgreSQL (Supabase)，告別 in-memory
+- 📝 **文章版本歷史** — 更新文章時自動保存版本，支援查看/還原任意歷史版本 (Workflows 模組)
+- 🔄 **批次操作** — 管理員可批次發布/設為草稿/刪除文章 (全選/單選 + 確認對話)
+- 📊 **Admin 文章管理 v2** — 新增「版本」按鈕、批次操作工具列、版本歷史面板 (版本列表/詳情/還原)
+- 🌱 **種子資料擴充** — 4 筆討論 + 8 筆文化景點 + 回覆資料寫入真實 DB
+
+### v4.4 Features (Phase 6)
+- 🏠 首頁升級 — 文化景點展示區、學習排行榜、即將到來的活動標示
+- 👤 個人資料升級 — 7 分頁: 資料/收藏/追蹤/報名/學習/我的發文/密碼
+- 📝 文章編輯器升級 — Markdown 預覽/工具列/封面圖片/搜尋過濾/字數統計
+- 📊 Dashboard 升級 — 審核狀態面板+平台概覽圖表+快速操作+待審核提醒
+- 🔒 API Rate Limiting — 全域 120 req/min + Auth 端點 10 req/min
+- 🔄 JWT Refresh — POST /api/auth/refresh 端點
+- 🏷️ SEO Meta Tags — 8 個頁面區段 Open Graph + description metadata
 
 ### v4.3 Features (Phase 5)
 - 🏺 文化景點 — 8 個重要景點，類型篩選、GIS 定位
@@ -135,21 +143,21 @@ pinuyumayan/
 ## Data Architecture
 - **Database**: PostgreSQL 17.6 on Supabase (ap-southeast-1)
 - **ORM**: Drizzle ORM v0.39
-- **Tables (11)**: users, tribes, articles, vocabulary, events, media, comments, likes, bookmarks, tribe_follows, notifications
-- **In-Memory**: discussions, audit_logs, feature_flags, learning_records, registrations, approval_items, cultural_sites
+- **Tables (17)**: users, tribes, articles, vocabulary, events, media, comments, likes, bookmarks, tribe_follows, notifications, **discussions, discussion_replies, discussion_likes, cultural_sites, event_registrations, article_versions**
+- **In-Memory (remaining)**: audit_logs, feature_flags, learning_records, approval_items
 
 ## Seed Data
 | Table | Count | Description |
 |-------|-------|-------------|
 | tribes | 8 | 卑南八社 (南王、知本、建和、利嘉、初鹿、龍過脈、下賓朗、寶桑) |
 | users | 3 | admin, editor, user |
-| articles | 6 | 文化、工藝、語言、信仰、音樂、歷史 |
-| vocabulary | 15 | 問候、親屬、自然、數字、文化、日常 |
-| events | 6 | 祭典、活動、工作坊、展覽 |
+| articles | 14 | 文化、工藝、語言、信仰、音樂、歷史 |
+| vocabulary | 14 | 問候、親屬、自然、數字、文化、日常 |
+| events | 5 | 祭典、活動、工作坊、展覽 |
 | media | 5 | 照片、影片、音檔 |
-| discussions | 4 | 綜合/族語/文化/活動討論 |
-| cultural_sites | 8 | 集會所、祭祀場、遺址、工藝坊等 |
-| approval_items | 4 | 預設審核項目 (3 待審、1 已核准) |
+| discussions | 4 | 綜合/族語/文化/活動討論 (DB) |
+| cultural_sites | 8 | 集會所、祭祀場、遺址、工藝坊等 (DB) |
+| approval_items | 4 | 預設審核項目 (in-memory) |
 
 ## Test Accounts
 | Role | Email | Password |
@@ -163,7 +171,7 @@ pinuyumayan/
 # Auth
 POST /api/auth/register           # 註冊 (Rate limited: 10/min)
 POST /api/auth/login              # 登入 (Rate limited: 10/min)
-POST /api/auth/refresh            # 刷新 Token (JWT) [NEW v4.4]
+POST /api/auth/refresh            # 刷新 Token (JWT)
 GET  /api/auth/me                 # 取得個人資料 (JWT)
 PUT  /api/auth/me                 # 更新個人資料 (JWT)
 POST /api/auth/change-password    # 修改密碼 (JWT)
@@ -175,6 +183,8 @@ GET  /api/tribes                  # 部落列表
 GET  /api/articles                # 文章列表 (?page, ?limit, ?category, ?search)
 GET  /api/articles/:slug          # 單篇文章
 POST /api/articles                # 新增文章 (JWT)
+PUT  /api/articles/:id            # 更新文章 (JWT, 自動保存版本)
+DELETE /api/articles/:id          # 刪除文章 (JWT)
 GET  /api/language/vocabulary     # 詞彙列表
 GET  /api/language/daily          # 每日一詞
 GET  /api/events                  # 活動列表
@@ -205,6 +215,15 @@ DELETE /api/registrations/events/:id   # 取消報名 (JWT)
 GET    /api/registrations/events/:id   # 活動報名列表
 GET    /api/registrations/my           # 我的報名 (JWT)
 
+# Workflows (Article Versioning) [NEW v4.5]
+GET  /api/workflows/articles/:id/versions  # 取得版本歷史 (JWT)
+GET  /api/workflows/versions/:id           # 取得特定版本 (JWT)
+POST /api/workflows/versions/:id/restore   # 還原至指定版本 (JWT)
+
+# Batch Operations [NEW v4.5]
+POST /api/articles/batch/publish   # 批次發布/取消發布 (JWT, Admin)
+POST /api/articles/batch/delete    # 批次刪除 (JWT, Admin)
+
 # Approval (Admin)
 GET  /api/approval/queue          # 審核隊列
 POST /api/approval/:id/approve    # 核准
@@ -213,7 +232,7 @@ POST /api/approval/:id/reject     # 退回
 # Exports (Admin)
 GET /api/exports/:type            # CSV 匯出
 
-# Global Rate Limit: 120 req/min per IP [NEW v4.4]
+# Global Rate Limit: 120 req/min per IP
 ```
 
 ## Development
@@ -230,6 +249,11 @@ cd apps/web && npx next dev
 # PM2 (Production-like)
 pm2 start "cd apps/api && node dist/main.js" --name pinuyumayan-api
 pm2 start "cd apps/web && npx next start -p 3000 -H 0.0.0.0" --name pinuyumayan-web
+
+# Database
+npx drizzle-kit generate        # Generate migration
+npx drizzle-kit push            # Push to Supabase
+npm run db:seed                 # Seed data
 ```
 
 ## Vercel Deployment (Frontend)
@@ -241,7 +265,7 @@ pm2 start "cd apps/web && npx next start -p 3000 -H 0.0.0.0" --name pinuyumayan-
 5. Deploy
 
 ## Deployment Status
-- **Supabase PostgreSQL**: ✅ Connected
+- **Supabase PostgreSQL**: ✅ Connected (17 tables)
 - **NestJS API (Render)**: ✅ Deployed -> https://pinuyumayan-api.onrender.com
 - **Next.js Frontend (Vercel)**: ⚠️ 需重新連結 GitHub 自動部署
 - **GitHub (Monorepo)**: ✅ https://github.com/fj5200-ui/pinuyumayan
@@ -250,11 +274,9 @@ pm2 start "cd apps/web && npx next start -p 3000 -H 0.0.0.0" --name pinuyumayan-
 - OAuth 社群登入 (Google/Facebook/LINE)
 - 2FA 雙因素驗證
 - 即時聊天 (WebSocket)
-- 文章版本歷史
 - 手寫辨識
 - 語音辨識
 - AI 翻譯 (實際 API 串接)
-- 批次操作
 - CI/CD Pipeline
 - E2E 測試
 
@@ -265,7 +287,8 @@ pm2 start "cd apps/web && npx next start -p 3000 -H 0.0.0.0" --name pinuyumayan-
 - **Phase 4** ✅ Feature Flags + AI 工具 + 監控 + 設定 + 討論 API + 搜尋升級
 - **Phase 5** ✅ 文化景點 + 活動報名 + 審核管理 + 資料匯出 + 學習進度追蹤
 - **Phase 6** ✅ 首頁/Profile/Dashboard/文章編輯器升級 + Rate Limiting + JWT Refresh + SEO
-- **Overall**: ~65% of planned system (35 routes, 18 API modules)
+- **Phase 7** ✅ DB 遷移 (6 新表) + 文章版本歷史 + 批次操作 + Workflows 模組 + 種子擴充
+- **Overall**: ~70% of planned system (35 routes, 19 API modules, 17 DB tables)
 
 ## Last Updated
-2026-04-02 v4.4
+2026-04-02 v4.5

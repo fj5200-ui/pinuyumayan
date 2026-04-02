@@ -72,4 +72,20 @@ export class ArticlesController {
   async remove(@Param('id', ParseIntPipe) id: number, @Req() req: any) {
     return this.articlesService.remove(id, req.user.id, req.user.role);
   }
+
+  @Post('batch/delete')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: '批次刪除文章' })
+  async batchDelete(@Body() body: { ids: number[] }) {
+    return this.articlesService.batchDelete(body.ids);
+  }
+
+  @Post('batch/publish')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: '批次發布/取消發布' })
+  async batchPublish(@Body() body: { ids: number[]; published: boolean }) {
+    return this.articlesService.batchPublish(body.ids, body.published);
+  }
 }
