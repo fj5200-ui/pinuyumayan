@@ -240,4 +240,14 @@ export class AdminController {
   // ── System Monitoring (real metrics) ──
   @Get('system-metrics') @UseGuards(AdminGuard) @ApiBearerAuth() @ApiOperation({ summary: '系統指標' })
   async getSystemMetrics() { return this.s.getSystemMetrics(); }
+
+  // ── Site Settings (hero, header, footer customization) ──
+  @Get('site-settings') @ApiOperation({ summary: '取得網站設定 (公開)' })
+  async getSiteSettings() { return this.s.getSiteSettings(); }
+
+  @Put('site-settings') @UseGuards(AdminGuard) @ApiBearerAuth() @ApiOperation({ summary: '更新網站設定' })
+  async updateSiteSettings(@Body() body: any, @Req() req: any) {
+    this.s.logAction(req.user.id, 'UPDATE_SITE_SETTINGS', JSON.stringify(Object.keys(body)).slice(0, 100));
+    return this.s.updateSiteSettings(body);
+  }
 }

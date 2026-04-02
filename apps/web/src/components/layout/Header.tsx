@@ -6,7 +6,7 @@ import { useAuth } from "@/lib/auth-context";
 import { useTheme } from "@/lib/theme-context";
 import { api } from "@/lib/api";
 
-const NAV = [
+const DEFAULT_NAV = [
   { href: "/", label: "首頁" },
   { href: "/tribes", label: "部落" },
   { href: "/articles", label: "文化誌" },
@@ -28,8 +28,19 @@ export default function Header() {
   const [notifCount, setNotifCount] = useState(0);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [brand, setBrand] = useState("Pinuyumayan");
+  const [NAV, setNAV] = useState(DEFAULT_NAV);
   const searchRef = useRef<HTMLInputElement>(null);
   const userMenuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    api.get<any>("/api/admin/site-settings")
+      .then(r => {
+        if (r.settings?.headerBrand) setBrand(r.settings.headerBrand);
+        if (r.settings?.headerNav?.length) setNAV(r.settings.headerNav);
+      })
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     const h = () => setScrolled(window.scrollY > 10);
@@ -83,7 +94,7 @@ export default function Header() {
             {/* Logo */}
             <Link href="/" className="flex items-center gap-2 shrink-0">
               <span className="font-black text-xl tracking-wider" style={{ color: "var(--black)" }}>
-                <span className="dark:text-gray-100">Pinuyumayan</span>
+                <span className="dark:text-gray-100">{brand}</span>
               </span>
             </Link>
 

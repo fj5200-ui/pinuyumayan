@@ -1,9 +1,26 @@
 "use client";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { api } from "@/lib/api";
+
+interface FooterSettings {
+  footerBrand?: string;
+  footerDescription?: string;
+  footerCtaTitle?: string;
+  footerCtaSubtitle?: string;
+  footerCtaButtonText?: string;
+  footerCtaButtonLink?: string;
+}
 
 export default function Footer() {
   const [showLang, setShowLang] = useState(false);
+  const [cfg, setCfg] = useState<FooterSettings>({});
+
+  useEffect(() => {
+    api.get<any>("/api/admin/site-settings")
+      .then(r => { if (r.settings) setCfg(r.settings); })
+      .catch(() => {});
+  }, []);
 
   return (
     <footer className="mt-auto">
@@ -13,12 +30,14 @@ export default function Footer() {
           <div className="flex items-center gap-3">
             <div className="w-8 h-1 rounded-full" style={{ background: "var(--yellow)" }} />
             <div className="text-left">
-              <p className="font-black text-lg">開始探索卑南族文化</p>
-              <p className="text-sm text-white/70">學習族語、認識部落、參與文化活動</p>
+              <p className="font-black text-lg">{cfg.footerCtaTitle || "開始探索卑南族文化"}</p>
+              <p className="text-sm text-white/70">{cfg.footerCtaSubtitle || "學習族語、認識部落、參與文化活動"}</p>
             </div>
           </div>
           <div className="flex gap-3">
-            <Link href="/register" className="btn-brand text-sm !px-5 !py-2.5">免費加入</Link>
+            <Link href={cfg.footerCtaButtonLink || "/register"} className="btn-brand text-sm !px-5 !py-2.5">
+              {cfg.footerCtaButtonText || "免費加入"}
+            </Link>
             <Link href="/language/quiz" className="btn-glass text-sm !px-5 !py-2.5 !border-white/50 !text-white hover:!bg-white/10">
               族語測驗
             </Link>
@@ -37,10 +56,12 @@ export default function Footer() {
             <div className="md:col-span-2">
               <h3 className="font-black text-lg mb-3 flex items-center gap-2">
                 <span className="w-6 h-1 rounded-full inline-block" style={{ background: "var(--red)" }} />
-                <span style={{ color: "var(--black)" }} className="dark:text-gray-100 tracking-wider">Pinuyumayan</span>
+                <span style={{ color: "var(--black)" }} className="dark:text-gray-100 tracking-wider">
+                  {cfg.footerBrand || "Pinuyumayan"}
+                </span>
               </h3>
               <p className="text-sm leading-relaxed text-[var(--text-soft)] mb-4">
-                卑南族文化入口網 — 保存與推廣卑南族語言、文化與傳統知識的數位平台。致力於以數位科技連結傳統智慧。
+                {cfg.footerDescription || "卑南族文化入口網 — 保存與推廣卑南族語言、文化與傳統知識的數位平台。致力於以數位科技連結傳統智慧。"}
               </p>
               <div className="flex gap-2">
                 {[
@@ -145,7 +166,7 @@ export default function Footer() {
             </div>
 
             <div className="text-center text-sm text-[var(--text-soft)] space-y-1">
-              <p className="font-bold">&copy; {new Date().getFullYear()} Pinuyumayan 卑南族入口網</p>
+              <p className="font-bold">&copy; {new Date().getFullYear()} {cfg.footerBrand || "Pinuyumayan"} 卑南族入口網</p>
               <p className="text-xs">Preserving Puyuma Culture for Future Generations</p>
               <p className="text-xs mt-2">
                 Built with Next.js + NestJS + PostgreSQL ·

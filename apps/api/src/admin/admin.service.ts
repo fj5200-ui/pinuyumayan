@@ -363,4 +363,90 @@ export class AdminService {
       memoryUsage: process.memoryUsage(),
     };
   }
+
+  // ── Site Settings (JSON-based, stored in site_settings table) ──
+  async getSiteSettings() {
+    try {
+      const rows = await this.db.execute(sql`SELECT key, value FROM site_settings`);
+      const settings: Record<string, any> = {};
+      for (const row of rows as any[]) {
+        try { settings[row.key] = JSON.parse(row.value); } catch { settings[row.key] = row.value; }
+      }
+      return { settings };
+    } catch {
+      // Table may not exist yet — return defaults
+      return { settings: this.getDefaultSiteSettings() };
+    }
+  }
+
+  async updateSiteSettings(body: Record<string, any>) {
+    // Ensure table exists
+    await this.db.execute(sql`CREATE TABLE IF NOT EXISTS site_settings (key TEXT PRIMARY KEY, value TEXT NOT NULL, updated_at TIMESTAMP DEFAULT NOW())`);
+    for (const [key, value] of Object.entries(body)) {
+      const jsonValue = typeof value === 'string' ? value : JSON.stringify(value);
+      await this.db.execute(sql`INSERT INTO site_settings (key, value, updated_at) VALUES (${key}, ${jsonValue}, NOW()) ON CONFLICT (key) DO UPDATE SET value = ${jsonValue}, updated_at = NOW()`);
+    }
+    return this.getSiteSettings();
+  }
+
+  private getDefaultSiteSettings() {
+    return {
+      heroSlides: [
+        { id: "h1", title: "Pinuyumayan", subtitle: "卑南族入口網", description: "探索卑南族豐富的文化遺產 — 從部落歷史、傳統祭儀，到族語學習與文化藝術，一起守護這份珍貴的文化寶藏。", buttonText: "探索部落 →", buttonLink: "/tribes", bgColor: "var(--cream)" },
+        { id: "h2", title: "族語學習", subtitle: "Puyuma Language", description: "學習卑南語，讓珍貴的母語代代相傳。提供詞彙庫、每日一詞與互動測驗。", buttonText: "開始學習 →", buttonLink: "/language", bgColor: "var(--bg-2)" },
+        { id: "h3", title: "文化祭典", subtitle: "Cultural Events", description: "大獵祭、海祭等傳統祭典是卑南族最重要的文化傳承活動。", buttonText: "查看活動 →", buttonLink: "/events", bgColor: "var(--bg-3)" },
+      ],
+      // Homepage section layout — order & visibility
+      homeSections: [
+        { id: "hero", label: "主視覺輪播", enabled: true },
+        { id: "daily", label: "每日一詞", enabled: true },
+        { id: "stats", label: "統計數字", enabled: true },
+        { id: "tribes", label: "卑南八社", enabled: true },
+        { id: "sites", label: "文化景點", enabled: true },
+        { id: "articles", label: "文化誌", enabled: true },
+        { id: "vocab", label: "族語學習 + 排行榜", enabled: true },
+        { id: "events", label: "活動祭典", enabled: true },
+        { id: "cta", label: "行動呼籲", enabled: true },
+      ],
+      headerBrand: "Pinuyumayan",
+      headerNav: [
+        { href: "/", label: "首頁" },
+        { href: "/tribes", label: "部落" },
+        { href: "/articles", label: "文化誌" },
+        { href: "/language", label: "族語" },
+        { href: "/events", label: "活動" },
+        { href: "/cultural-sites", label: "景點" },
+        { href: "/community", label: "社群" },
+        { href: "/media", label: "媒體" },
+      ],
+      footerBrand: "Pinuyumayan",
+      footerDescription: "卑南族文化入口網 — 保存與推廣卑南族語言、文化與傳統知識的數位平台。致力於以數位科技連結傳統智慧。",
+      footerCtaTitle: "開始探索卑南族文化",
+      footerCtaSubtitle: "學習族語、認識部落、參與文化活動",
+      footerCtaButtonText: "免費加入",
+      footerCtaButtonLink: "/register",
+      footerLinks: {
+        explore: [
+          { href: "/tribes", label: "部落巡禮" },
+          { href: "/tribes/map", label: "部落地圖" },
+          { href: "/articles", label: "文化誌" },
+          { href: "/events", label: "活動祭典" },
+          { href: "/cultural-sites", label: "文化景點" },
+        ],
+        learn: [
+          { href: "/language", label: "族語詞彙" },
+          { href: "/language/quiz", label: "族語測驗" },
+          { href: "/media", label: "媒體庫" },
+          { href: "/community", label: "討論區" },
+          { href: "/search", label: "搜尋" },
+        ],
+        account: [
+          { href: "/login", label: "登入" },
+          { href: "/register", label: "註冊" },
+          { href: "/profile", label: "個人檔案" },
+          { href: "/about", label: "關於平台" },
+        ],
+      },
+    };
+  }
 }
