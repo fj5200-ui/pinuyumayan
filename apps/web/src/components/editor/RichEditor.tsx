@@ -178,6 +178,7 @@ export default function RichEditor({ content, onChange, placeholder }: Props) {
   const [mediaOpen, setMediaOpen] = useState(false);
 
   const editor = useEditor({
+    immediatelyRender: false,
     extensions: [
       StarterKit.configure({
         heading: { levels: [1, 2, 3, 4] },
