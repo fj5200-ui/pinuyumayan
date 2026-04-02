@@ -1,12 +1,15 @@
 "use client";
 import { useState, useEffect, useCallback } from "react";
+import dynamic from "next/dynamic";
 import { api } from "@/lib/api";
 import { useToast } from "@/lib/toast-context";
 import Modal from "@/components/ui/Modal";
 
+const RichEditor = dynamic(() => import("@/components/editor/RichEditor"), { ssr: false });
+
 const CATEGORIES = ["文化", "部落", "歷史", "音樂", "工藝", "信仰", "語言", "教育"];
 
-// Simple Markdown renderer
+// Simple Markdown renderer (kept for backward compatibility with old Markdown content)
 function renderMarkdown(md: string): string {
   return md
     .replace(/^### (.+)$/gm, '<h3 class="text-lg font-bold mt-4 mb-2">$1</h3>')
@@ -21,31 +24,6 @@ function renderMarkdown(md: string): string {
     .replace(/`([^`]+)`/g, '<code class="bg-stone-100 dark:bg-stone-700 px-1.5 py-0.5 rounded text-sm">$1</code>')
     .replace(/\n\n/g, '</p><p class="my-2">')
     .replace(/\n/g, '<br/>');
-}
-
-// Toolbar for quick Markdown insert
-function EditorToolbar({ onInsert }: { onInsert: (before: string, after: string) => void }) {
-  const tools = [
-    { label: "B", title: "粗體", before: "**", after: "**" },
-    { label: "I", title: "斜體", before: "*", after: "*" },
-    { label: "H2", title: "標題", before: "## ", after: "" },
-    { label: "H3", title: "小標題", before: "### ", after: "" },
-    { label: "\ud83d\udd17", title: "連結", before: "[", after: "](https://)" },
-    { label: "\ud83d\uddbc\ufe0f", title: "圖片", before: "![描述](", after: ")" },
-    { label: "\u2022", title: "列表", before: "- ", after: "" },
-    { label: ">", title: "引用", before: "> ", after: "" },
-    { label: "<>", title: "程式碼", before: "`", after: "`" },
-  ];
-  return (
-    <div className="flex gap-1 flex-wrap mb-1">
-      {tools.map(t => (
-        <button key={t.label} onClick={() => onInsert(t.before, t.after)} title={t.title} type="button"
-          className="px-2.5 py-1 bg-stone-100 dark:bg-stone-700 rounded text-xs font-mono hover:bg-stone-200 dark:hover:bg-stone-600 transition dark:text-stone-300">
-          {t.label}
-        </button>
-      ))}
-    </div>
-  );
 }
 
 // Version History Panel
@@ -142,10 +120,8 @@ export default function AdminArticles() {
   const [showEditor, setShowEditor] = useState(false);
   const [editItem, setEditItem] = useState<any>(null);
   const [form, setForm] = useState({ title: "", slug: "", content: "", excerpt: "", category: "文化", tags: "", published: true, imageUrl: "" });
-  const [previewMode, setPreviewMode] = useState(false);
   const [filterCat, setFilterCat] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
-  const [wordCount, setWordCount] = useState(0);
 
   // Batch operation states
   const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
@@ -159,10 +135,6 @@ export default function AdminArticles() {
   const load = () => { setLoading(true); api.get<any>("/api/articles?limit=100").then(d => { setArticles(d.articles || []); setLoading(false); }).catch(() => setLoading(false)); };
   useEffect(load, []);
 
-  useEffect(() => {
-    setWordCount(form.content.replace(/\s/g, "").length);
-  }, [form.content]);
-
   const autoSlug = (title: string) => title.toLowerCase().replace(/[^\w\u4e00-\u9fff]+/g, "-").replace(/^-|-$/g, "").slice(0, 80) || `article-${Date.now()}`;
 
   const openEditor = (item?: any) => {
@@ -174,20 +146,8 @@ export default function AdminArticles() {
       setEditItem(null);
       setForm({ title: "", slug: "", content: "", excerpt: "", category: "文化", tags: "", published: true, imageUrl: "" });
     }
-    setPreviewMode(false);
     setShowEditor(true);
   };
-
-  const handleInsert = useCallback((before: string, after: string) => {
-    const textarea = document.querySelector<HTMLTextAreaElement>("#article-editor");
-    if (!textarea) return;
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
-    const selected = form.content.substring(start, end);
-    const newContent = form.content.substring(0, start) + before + (selected || "文字") + after + form.content.substring(end);
-    setForm(f => ({ ...f, content: newContent }));
-    setTimeout(() => { textarea.focus(); textarea.setSelectionRange(start + before.length, start + before.length + (selected || "文字").length); }, 50);
-  }, [form.content]);
 
   const save = async () => {
     try {
@@ -367,31 +327,14 @@ export default function AdminArticles() {
           <div><label className="block text-sm font-medium mb-1 dark:text-stone-300">封面圖片 URL</label>
             <input value={form.imageUrl} onChange={e => setForm({ ...form, imageUrl: e.target.value })} placeholder="https://example.com/image.jpg" className="w-full px-3 py-2 border rounded-lg dark:border-stone-600 dark:bg-stone-700 dark:text-stone-100 text-sm" /></div>
 
-          {/* Content editor with tabs */}
+          {/* Rich block editor */}
           <div>
-            <div className="flex items-center justify-between mb-1">
-              <label className="text-sm font-medium dark:text-stone-300">內容 (支援 Markdown)</label>
-              <div className="flex items-center gap-3">
-                <span className="text-xs text-stone-400">{wordCount} 字</span>
-                <div className="flex gap-1">
-                  <button onClick={() => setPreviewMode(false)} type="button"
-                    className={`px-3 py-1 rounded text-xs ${!previewMode ? "bg-amber-700 text-white" : "bg-stone-100 dark:bg-stone-700 dark:text-stone-300"}`}>編輯</button>
-                  <button onClick={() => setPreviewMode(true)} type="button"
-                    className={`px-3 py-1 rounded text-xs ${previewMode ? "bg-amber-700 text-white" : "bg-stone-100 dark:bg-stone-700 dark:text-stone-300"}`}>預覽</button>
-                </div>
-              </div>
-            </div>
-            {!previewMode ? (
-              <>
-                <EditorToolbar onInsert={handleInsert} />
-                <textarea id="article-editor" value={form.content} onChange={e => setForm({ ...form, content: e.target.value })} rows={12}
-                  className="w-full px-3 py-2 border rounded-lg dark:border-stone-600 dark:bg-stone-700 dark:text-stone-100 font-mono text-sm leading-relaxed"
-                  placeholder="使用 Markdown 格式撰寫文章內容..." />
-              </>
-            ) : (
-              <div className="w-full min-h-[280px] px-4 py-3 border rounded-lg dark:border-stone-600 bg-white dark:bg-stone-700 prose prose-stone dark:prose-invert max-w-none text-sm"
-                dangerouslySetInnerHTML={{ __html: `<p class="my-2">${renderMarkdown(form.content || "（空白）")}</p>` }} />
-            )}
+            <label className="block text-sm font-medium mb-1 dark:text-stone-300">內容</label>
+            <RichEditor
+              content={form.content}
+              onChange={(html: string) => setForm(f => ({ ...f, content: html }))}
+              placeholder="開始撰寫文章內容..."
+            />
           </div>
 
           <div className="grid grid-cols-3 gap-4">
