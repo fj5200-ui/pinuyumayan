@@ -368,11 +368,13 @@ export class AdminService {
   async getSiteSettings() {
     try {
       const rows = await this.db.execute(sql`SELECT key, value FROM site_settings`);
-      const settings: Record<string, any> = {};
+      const saved: Record<string, any> = {};
       for (const row of rows as any[]) {
-        try { settings[row.key] = JSON.parse(row.value); } catch { settings[row.key] = row.value; }
+        try { saved[row.key] = JSON.parse(row.value); } catch { saved[row.key] = row.value; }
       }
-      return { settings };
+      // Merge defaults with saved — saved values override defaults
+      const defaults = this.getDefaultSiteSettings();
+      return { settings: { ...defaults, ...saved } };
     } catch {
       // Table may not exist yet — return defaults
       return { settings: this.getDefaultSiteSettings() };

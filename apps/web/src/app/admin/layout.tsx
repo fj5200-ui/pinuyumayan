@@ -4,11 +4,19 @@ import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
 import { useState, useEffect } from "react";
 
-/* ── Accordion menu structure ── */
+/*
+ * ── Accordion menu structure ──
+ * 選單按照功能架構分類，新增功能時只需：
+ * 1. 在對應分類的 items 陣列加入 { href, label, icon? }
+ * 2. 在 apps/web/src/app/admin/<path>/page.tsx 建立頁面
+ * 3. (選) 在 apps/api/src/admin/admin.controller.ts 加入 API 路由
+ * 選單會自動根據 pathname 高亮對應項目與展開分類。
+ */
 const MENU_GROUPS = [
   {
     id: "content",
     label: "內容管理",
+    icon: "M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z",
     items: [
       { href: "/admin/articles", label: "文章管理" },
       { href: "/admin/tribes", label: "部落管理" },
@@ -22,6 +30,7 @@ const MENU_GROUPS = [
   {
     id: "community",
     label: "社群管理",
+    icon: "M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z",
     items: [
       { href: "/admin/users", label: "會員管理" },
       { href: "/admin/comments", label: "留言管理" },
@@ -32,6 +41,7 @@ const MENU_GROUPS = [
   {
     id: "appearance",
     label: "外觀設定",
+    icon: "M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z",
     items: [
       { href: "/admin/appearance", label: "首頁與輪播" },
       { href: "/admin/settings", label: "系統設定" },
@@ -40,6 +50,7 @@ const MENU_GROUPS = [
   {
     id: "system",
     label: "系統工具",
+    icon: "M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z",
     items: [
       { href: "/admin/feature-flags", label: "Feature Flags" },
       { href: "/admin/agents", label: "AI Agent" },
@@ -149,19 +160,27 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <div key={group.id}>
                 {/* Group header */}
                 <button onClick={() => !collapsed && toggleGroup(group.id)}
-                  className={`w-full flex items-center justify-between rounded-md transition-all
+                  className={`w-full flex items-center gap-2 rounded-md transition-all
                     ${collapsed ? "justify-center px-2 py-2" : "px-3 py-2"}
                     ${hasActive ? "text-white" : "text-white/40 hover:text-white/70"}
                     text-[11px] font-bold uppercase tracking-wider mt-3 mb-0.5`}>
-                  {!collapsed && <span>{group.label}</span>}
+                  {/* Group icon */}
+                  {group.icon && (
+                    <svg className={`w-3.5 h-3.5 shrink-0 ${hasActive ? "text-[var(--red)]" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d={group.icon} />
+                    </svg>
+                  )}
+                  {!collapsed && <span className="flex-1 text-left">{group.label}</span>}
                   {!collapsed && <ChevronIcon open={isOpen} />}
-                  {collapsed && (
+                  {collapsed && !group.icon && (
                     <div className={`w-1.5 h-1.5 rounded-full ${hasActive ? "bg-[var(--red)]" : "bg-white/20"}`} />
                   )}
                 </button>
 
-                {/* Group items */}
-                {(isOpen || collapsed) && (
+                {/* Group items with smooth collapse */}
+                <div className={`overflow-hidden transition-all duration-200 ${
+                  (isOpen || collapsed) ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
+                }`}>
                   <div className={`space-y-0.5 ${collapsed ? "" : "ml-1 border-l border-white/10 pl-2"}`}>
                     {group.items.map(item => (
                       <Link key={item.href} href={item.href} onClick={() => setSidebarOpen(false)}
@@ -180,7 +199,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                       </Link>
                     ))}
                   </div>
-                )}
+                </div>
               </div>
             );
           })}
@@ -217,7 +236,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               Pinuyumayan 管理系統
             </h1>
             <span className="text-[10px] px-2 py-0.5 bg-[rgba(153,27,27,0.06)] dark:bg-[#222] text-[var(--red)] dark:text-[var(--yellow)] rounded font-bold">
-              v5.3
+              v5.4
             </span>
           </div>
           <div className="flex items-center gap-3">

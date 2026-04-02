@@ -233,15 +233,7 @@ export class AdminController {
     return this.s.deleteCulturalSite(id);
   }
 
-  // ── User Detail ──
-  @Get('users/:id') @UseGuards(AdminGuard) @ApiBearerAuth() @ApiOperation({ summary: '用戶詳情' })
-  async getUserDetail(@Param('id', ParseIntPipe) id: number) { return this.s.getUserDetail(id); }
-
-  // ── System Monitoring (real metrics) ──
-  @Get('system-metrics') @UseGuards(AdminGuard) @ApiBearerAuth() @ApiOperation({ summary: '系統指標' })
-  async getSystemMetrics() { return this.s.getSystemMetrics(); }
-
-  // ── Site Settings (hero, header, footer customization) ──
+  // ── Site Settings (hero, header, footer customization) ── MUST be before users/:id
   @Get('site-settings') @ApiOperation({ summary: '取得網站設定 (公開)' })
   async getSiteSettings() { return this.s.getSiteSettings(); }
 
@@ -250,4 +242,12 @@ export class AdminController {
     this.s.logAction(req.user.id, 'UPDATE_SITE_SETTINGS', JSON.stringify(Object.keys(body)).slice(0, 100));
     return this.s.updateSiteSettings(body);
   }
+
+  // ── System Monitoring (real metrics) ──
+  @Get('system-metrics') @UseGuards(AdminGuard) @ApiBearerAuth() @ApiOperation({ summary: '系統指標' })
+  async getSystemMetrics() { return this.s.getSystemMetrics(); }
+
+  // ── User Detail (MUST be last — :id is a catch-all param) ──
+  @Get('users/:id') @UseGuards(AdminGuard) @ApiBearerAuth() @ApiOperation({ summary: '用戶詳情' })
+  async getUserDetail(@Param('id', ParseIntPipe) id: number) { return this.s.getUserDetail(id); }
 }

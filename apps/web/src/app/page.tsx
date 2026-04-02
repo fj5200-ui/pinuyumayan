@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { api } from "@/lib/api";
 
 /* ---------- Animated counter ---------- */
@@ -29,7 +29,10 @@ function AnimatedNumber({ target, duration = 1200 }: { target: number; duration?
 }
 
 /* ---------- Types ---------- */
-interface HeroSlide { id: string; title: string; subtitle: string; description: string; buttonText: string; buttonLink: string; bgColor: string; }
+interface HeroSlide {
+  id: string; title: string; subtitle: string; description: string;
+  buttonText: string; buttonLink: string; bgColor: string; imageUrl?: string;
+}
 interface HomeSection { id: string; label: string; enabled: boolean; }
 
 export default function Home() {
@@ -47,7 +50,7 @@ export default function Home() {
   const [heroSlides, setHeroSlides] = useState<HeroSlide[]>([]);
   const [homeSections, setHomeSections] = useState<HomeSection[]>([]);
   const [heroIdx, setHeroIdx] = useState(0);
-  const heroTimer = useRef<NodeJS.Timeout | null>(null);
+  const heroTimer = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
     Promise.all([
@@ -104,38 +107,64 @@ export default function Home() {
   const sections: Record<string, () => React.ReactNode> = {
     hero: () => {
       const slide = heroSlides.length > 0 ? heroSlides[heroIdx % heroSlides.length] : null;
+      const hasImage = !!slide?.imageUrl;
       return (
-        <section className="hero-section relative overflow-hidden" style={{ background: slide?.bgColor || "var(--cream)" }}>
-          <div className="w-[min(1180px,92%)] mx-auto">
+        <section
+          className="hero-section relative overflow-hidden"
+          style={{
+            background: hasImage
+              ? `linear-gradient(135deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.2) 100%)`
+              : slide?.bgColor || "var(--cream)",
+          }}
+        >
+          {/* Background image layer */}
+          {hasImage && (
+            <div
+              className="absolute inset-0 bg-cover bg-center transition-opacity duration-700"
+              style={{ backgroundImage: `url(${slide!.imageUrl})`, zIndex: 0 }}
+            />
+          )}
+          {hasImage && <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/30 to-transparent z-[1]" />}
+
+          <div className="w-[min(1180px,92%)] mx-auto relative z-[2]">
             <div className="py-16 md:py-24 transition-all duration-500">
-              <p className="text-sm font-bold tracking-widest uppercase mb-4" style={{ color: "var(--red)" }}>
+              <p className={`text-sm font-bold tracking-widest uppercase mb-4 ${hasImage ? "text-white/80" : ""}`}
+                style={!hasImage ? { color: "var(--red)" } : undefined}>
                 {slide?.subtitle || "Puyuma Cultural Portal"}
               </p>
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-black leading-tight mb-6">
+              <h1 className={`text-4xl md:text-5xl lg:text-6xl font-black leading-tight mb-6 ${hasImage ? "text-white" : ""}`}>
                 {slide?.title ? (
-                  <span dangerouslySetInnerHTML={{ __html: slide.title.replace(/(卑南族|Pinuyumayan)/g, '<span style="color:var(--red)">$1</span>') }} />
+                  hasImage ? (
+                    <span>{slide.title}</span>
+                  ) : (
+                    <span dangerouslySetInnerHTML={{ __html: slide.title.replace(/(卑南族|Pinuyumayan)/g, '<span style="color:var(--red)">$1</span>') }} />
+                  )
                 ) : (
-                  <>Pinuyumayan<br/><span style={{ color: "var(--red)" }}>卑南族</span>入口網</>
+                  <>Pinuyumayan<br /><span style={{ color: "var(--red)" }}>卑南族</span>入口網</>
                 )}
               </h1>
-              <p className="text-lg max-w-2xl mb-8" style={{ color: "var(--text-soft)" }}>
+              <p className={`text-lg max-w-2xl mb-8 ${hasImage ? "text-white/80" : ""}`}
+                style={!hasImage ? { color: "var(--text-soft)" } : undefined}>
                 {slide?.description || "探索卑南族豐富的文化遺產"}
               </p>
               <div className="flex flex-wrap gap-3">
                 <Link href={slide?.buttonLink || "/tribes"} className="btn-brand">
                   {slide?.buttonText || "探索部落 →"}
                 </Link>
-                <Link href="/language" className="btn-glass">學習族語</Link>
-                <Link href="/tribes/map" className="btn-glass">部落地圖</Link>
-                <Link href="/cultural-sites" className="btn-glass hidden sm:inline-flex">文化景點</Link>
+                <Link href="/language" className={`btn-glass ${hasImage ? "!border-white/50 !text-white hover:!bg-white/10" : ""}`}>學習族語</Link>
+                <Link href="/tribes/map" className={`btn-glass ${hasImage ? "!border-white/50 !text-white hover:!bg-white/10" : ""}`}>部落地圖</Link>
+                <Link href="/cultural-sites" className={`btn-glass hidden sm:inline-flex ${hasImage ? "!border-white/50 !text-white hover:!bg-white/10" : ""}`}>文化景點</Link>
               </div>
               {/* Hero dots */}
               {heroSlides.length > 1 && (
                 <div className="flex gap-2 mt-8">
                   {heroSlides.map((_, i) => (
-                    <button key={i} onClick={() => setHeroIdx(i)}
-                      className={`h-1.5 rounded-full transition-all duration-300 ${i === heroIdx % heroSlides.length ? "w-8" : "w-3 bg-gray-400/40"}`}
-                      style={i === heroIdx % heroSlides.length ? { background: "var(--red)" } : undefined}
+                    <button key={i} onClick={() => { setHeroIdx(i); if (heroTimer.current) { clearInterval(heroTimer.current); heroTimer.current = setInterval(() => setHeroIdx(prev => (prev + 1) % heroSlides.length), 5000); } }}
+                      className={`h-1.5 rounded-full transition-all duration-300 ${i === heroIdx % heroSlides.length
+                        ? `w-8 ${hasImage ? "bg-white" : ""}`
+                        : `w-3 ${hasImage ? "bg-white/40" : "bg-gray-400/40"}`
+                        }`}
+                      style={i === heroIdx % heroSlides.length && !hasImage ? { background: "var(--red)" } : undefined}
                     />
                   ))}
                 </div>
@@ -290,9 +319,8 @@ export default function Home() {
                   <div className="divide-y divide-[var(--border)] dark:divide-[#333]">
                     {leaderboard.map((u: any, i: number) => (
                       <div key={u.userId || i} className="flex items-center gap-3 px-5 py-4 hover:bg-gray-50 dark:hover:bg-[#222] transition group">
-                        <span className={`w-9 h-9 rounded-[var(--radius-sm)] flex items-center justify-center text-sm font-black shrink-0 ${
-                          i === 0 ? "text-white" : i === 1 ? "bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300" : i === 2 ? "bg-[rgba(217,119,6,0.1)] dark:bg-orange-900/40 text-[var(--yellow)]" : "bg-gray-100 dark:bg-gray-700 text-gray-500"
-                        }`} style={i === 0 ? { background: "var(--red)" } : undefined}>{i + 1}</span>
+                        <span className={`w-9 h-9 rounded-[var(--radius-sm)] flex items-center justify-center text-sm font-black shrink-0 ${i === 0 ? "text-white" : i === 1 ? "bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300" : i === 2 ? "bg-[rgba(217,119,6,0.1)] dark:bg-orange-900/40 text-[var(--yellow)]" : "bg-gray-100 dark:bg-gray-700 text-gray-500"
+                          }`} style={i === 0 ? { background: "var(--red)" } : undefined}>{i + 1}</span>
                         <div className="flex-1 min-w-0">
                           <p className="font-bold text-sm truncate">{u.userName || `用戶 #${u.userId}`}</p>
                           <p className="text-xs" style={{ color: "var(--text-light)" }}>{u.learnedCount || 0} 詞彙已學</p>
@@ -377,8 +405,7 @@ export default function Home() {
 
   return (
     <>
-      {/* Color bar after hero needs special handling */}
-      {sectionOrder.map((id, i) => {
+      {sectionOrder.map((id) => {
         if (!isSectionEnabled(id)) return null;
         const renderer = sections[id];
         if (!renderer) return null;
@@ -396,7 +423,7 @@ export default function Home() {
           return (
             <div key={id} className="w-[min(1180px,92%)] mx-auto py-16">
               <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
-                {[1,2,3,4].map(j => (
+                {[1, 2, 3, 4].map(j => (
                   <div key={j} className="card-solid">
                     <div className="animate-pulse bg-gray-200 dark:bg-gray-700 rounded h-4 w-2/3 mb-3" />
                     <div className="animate-pulse bg-gray-200 dark:bg-gray-700 rounded h-3 w-full mb-2" />
