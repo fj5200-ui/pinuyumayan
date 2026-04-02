@@ -15,10 +15,10 @@ function renderMarkdown(md: string): string {
     .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
     .replace(/\*(.+?)\*/g, '<em>$1</em>')
     .replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" class="rounded-lg max-w-full my-3" />')
-    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="text-amber-700 underline">$1</a>')
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="text-[var(--red)] underline">$1</a>')
     .replace(/^- (.+)$/gm, '<li class="ml-4">\u2022 $1</li>')
-    .replace(/^> (.+)$/gm, '<blockquote class="border-l-4 border-amber-300 pl-4 italic text-stone-500 my-2">$1</blockquote>')
-    .replace(/`([^`]+)`/g, '<code class="bg-stone-100 dark:bg-stone-700 px-1.5 py-0.5 rounded text-sm">$1</code>')
+    .replace(/^> (.+)$/gm, '<blockquote class="border-l-4 border-amber-300 pl-4 italic text-[var(--text-soft)] my-2">$1</blockquote>')
+    .replace(/`([^`]+)`/g, '<code class="bg-gray-100 dark:bg-[#222] px-1.5 py-0.5 rounded text-sm">$1</code>')
     .replace(/\n\n/g, '</p><p class="my-2">')
     .replace(/\n/g, '<br/>');
 }
@@ -40,7 +40,7 @@ function EditorToolbar({ onInsert }: { onInsert: (before: string, after: string)
     <div className="flex gap-1 flex-wrap mb-1">
       {tools.map(t => (
         <button key={t.label} onClick={() => onInsert(t.before, t.after)} title={t.title} type="button"
-          className="px-2.5 py-1 bg-stone-100 dark:bg-stone-700 rounded text-xs font-mono hover:bg-stone-200 dark:hover:bg-stone-600 transition dark:text-stone-300">
+          className="px-2.5 py-1 bg-gray-100 dark:bg-[#222] rounded text-xs font-mono hover:bg-gray-200 dark:hover:bg-[#444] transition dark:text-[var(--text-light)]">
           {t.label}
         </button>
       ))}
@@ -81,12 +81,12 @@ function VersionHistory({ articleId, onRestore, onClose }: { articleId: number; 
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h3 className="font-bold text-lg dark:text-stone-100">\ud83d\udcc3 版本歷史</h3>
-        <button onClick={onClose} className="text-stone-400 hover:text-stone-600 text-sm">關閉</button>
+        <h3 className="font-bold text-lg dark:text-gray-100">\ud83d\udcc3 版本歷史</h3>
+        <button onClick={onClose} className="text-[var(--text-light)] hover:text-[var(--text-soft)] text-sm">關閉</button>
       </div>
 
-      {loading ? <p className="text-center py-6 text-stone-400">載入中...</p> : versions.length === 0 ? (
-        <div className="text-center py-8 text-stone-400">
+      {loading ? <p className="text-center py-6 text-[var(--text-light)]">載入中...</p> : versions.length === 0 ? (
+        <div className="text-center py-8 text-[var(--text-light)]">
           <p className="text-3xl mb-2">\ud83d\udcad</p>
           <p>尚無版本記錄</p>
           <p className="text-xs mt-1">編輯文章後將自動保存版本</p>
@@ -94,19 +94,19 @@ function VersionHistory({ articleId, onRestore, onClose }: { articleId: number; 
       ) : (
         <div className="space-y-2 max-h-[400px] overflow-y-auto">
           {versions.map((v, i) => (
-            <div key={v.id} className={`p-3 rounded-lg border transition ${viewVersion?.id === v.id ? "border-amber-500 bg-amber-50 dark:bg-amber-900/20" : "border-stone-200 dark:border-stone-600 hover:border-stone-300 dark:hover:border-stone-500"}`}>
+            <div key={v.id} className={`p-3 rounded-lg border transition ${viewVersion?.id === v.id ? "border-[var(--red)] bg-white dark:bg-[#222]/20" : "border-[var(--border)] dark:border-[#444] hover:border-gray-300 dark:hover:border-stone-500"}`}>
               <div className="flex items-center justify-between">
                 <div>
-                  <span className="text-xs font-mono bg-stone-100 dark:bg-stone-700 px-2 py-0.5 rounded dark:text-stone-300">v{v.version}</span>
-                  <span className="ml-2 text-sm dark:text-stone-200">{v.title}</span>
-                  {i === 0 && <span className="ml-2 text-xs bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300 px-2 py-0.5 rounded-full">最新</span>}
+                  <span className="text-xs font-mono bg-gray-100 dark:bg-[#222] px-2 py-0.5 rounded dark:text-[var(--text-light)]">v{v.version}</span>
+                  <span className="ml-2 text-sm dark:text-gray-200">{v.title}</span>
+                  {i === 0 && <span className="ml-2 text-xs bg-[rgba(153,27,27,0.06)] text-[var(--red)] dark:bg-[#222]/30 dark:text-[var(--yellow)] px-2 py-0.5 rounded-full">最新</span>}
                 </div>
                 <div className="flex gap-2">
                   <button onClick={() => viewDetail(v.id)} className="text-xs text-blue-600 hover:text-blue-700 dark:text-blue-400">查看</button>
-                  <button onClick={() => restore(v.id)} className="text-xs text-amber-700 hover:text-amber-800 dark:text-amber-400">還原</button>
+                  <button onClick={() => restore(v.id)} className="text-xs text-[var(--red)] hover:text-[var(--red)] dark:text-[var(--yellow)]">還原</button>
                 </div>
               </div>
-              <div className="flex items-center gap-3 mt-1 text-xs text-stone-400">
+              <div className="flex items-center gap-3 mt-1 text-xs text-[var(--text-light)]">
                 <span>\ud83d\udc64 {v.editedByName}</span>
                 <span>\ud83d\udcc5 {new Date(v.createdAt).toLocaleString("zh-TW")}</span>
                 {v.changeNote && <span className="italic">\ud83d\udcdd {v.changeNote}</span>}
@@ -118,14 +118,14 @@ function VersionHistory({ articleId, onRestore, onClose }: { articleId: number; 
 
       {/* Version detail view */}
       {viewVersion && (
-        <div className="mt-4 border-t dark:border-stone-600 pt-4">
+        <div className="mt-4 border-t dark:border-[#444] pt-4">
           <div className="flex items-center justify-between mb-2">
-            <h4 className="font-medium dark:text-stone-200">v{viewVersion.version} 內容預覽</h4>
-            <button onClick={() => setViewVersion(null)} className="text-xs text-stone-400 hover:text-stone-600">收起</button>
+            <h4 className="font-medium dark:text-gray-200">v{viewVersion.version} 內容預覽</h4>
+            <button onClick={() => setViewVersion(null)} className="text-xs text-[var(--text-light)] hover:text-[var(--text-soft)]">收起</button>
           </div>
-          <div className="bg-stone-50 dark:bg-stone-800 rounded-lg p-4 max-h-60 overflow-y-auto">
-            <p className="text-sm font-bold mb-2 dark:text-stone-200">{viewVersion.title}</p>
-            {viewVersion.excerpt && <p className="text-sm text-stone-500 mb-3 italic">{viewVersion.excerpt}</p>}
+          <div className="bg-[var(--cream)] dark:bg-[#1a1a1a] rounded-lg p-4 max-h-60 overflow-y-auto">
+            <p className="text-sm font-bold mb-2 dark:text-gray-200">{viewVersion.title}</p>
+            {viewVersion.excerpt && <p className="text-sm text-[var(--text-soft)] mb-3 italic">{viewVersion.excerpt}</p>}
             <div className="prose prose-stone dark:prose-invert prose-sm max-w-none"
               dangerouslySetInnerHTML={{ __html: `<p class="my-2">${renderMarkdown(viewVersion.content || "")}</p>` }} />
           </div>
@@ -262,29 +262,29 @@ export default function AdminArticles() {
     <div>
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold dark:text-stone-100">\ud83d\udcdd 文章管理</h1>
-          <p className="text-sm text-stone-500">{articles.length} 篇文章 {selectedIds.size > 0 && <span className="text-amber-600">| 已選取 {selectedIds.size} 篇</span>}</p>
+          <h1 className="text-2xl font-bold dark:text-gray-100">\ud83d\udcdd 文章管理</h1>
+          <p className="text-sm text-[var(--text-soft)]">{articles.length} 篇文章 {selectedIds.size > 0 && <span className="text-[var(--yellow)]">| 已選取 {selectedIds.size} 篇</span>}</p>
         </div>
         <div className="flex gap-2">
           <button onClick={() => { setBatchMode(!batchMode); setSelectedIds(new Set()); }}
-            className={`px-3 py-2 rounded-lg text-sm transition ${batchMode ? "bg-stone-600 text-white" : "bg-stone-100 dark:bg-stone-700 dark:text-stone-300 hover:bg-stone-200"}`}>
+            className={`px-3 py-2 rounded-lg text-sm transition ${batchMode ? "bg-[#444] text-white" : "bg-gray-100 dark:bg-[#222] dark:text-[var(--text-light)] hover:bg-gray-200"}`}>
             {batchMode ? "\u2716 取消批次" : "\u2610 批次操作"}
           </button>
-          <button onClick={() => openEditor()} className="bg-amber-700 text-white px-4 py-2 rounded-lg hover:bg-amber-800 transition text-sm">+ 新增文章</button>
+          <button onClick={() => openEditor()} className="bg-[var(--red)] text-white px-4 py-2 rounded-lg hover:bg-[var(--red)] transition text-sm">+ 新增文章</button>
         </div>
       </div>
 
       {/* Batch Actions Bar */}
       {batchMode && selectedIds.size > 0 && (
-        <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg p-3 mb-4 flex items-center gap-3 flex-wrap">
-          <span className="text-sm font-medium text-amber-800 dark:text-amber-200">已選取 {selectedIds.size} 篇文章</span>
+        <div className="bg-white dark:bg-[#222]/20 border border-amber-200 dark:border-amber-800 rounded-lg p-3 mb-4 flex items-center gap-3 flex-wrap">
+          <span className="text-sm font-medium text-[var(--red)] dark:text-white/80">已選取 {selectedIds.size} 篇文章</span>
           <div className="flex gap-2 ml-auto">
             <button onClick={() => batchPublish(true)} disabled={batchLoading}
               className="bg-green-600 text-white px-3 py-1.5 rounded text-xs hover:bg-green-700 disabled:opacity-50 transition">
               \u2714 批次發布
             </button>
             <button onClick={() => batchPublish(false)} disabled={batchLoading}
-              className="bg-stone-500 text-white px-3 py-1.5 rounded text-xs hover:bg-stone-600 disabled:opacity-50 transition">
+              className="bg-[var(--cream)]0 text-white px-3 py-1.5 rounded text-xs hover:bg-[#444] disabled:opacity-50 transition">
               \u23f8 設為草稿
             </button>
             <button onClick={batchDelete} disabled={batchLoading}
@@ -298,45 +298,45 @@ export default function AdminArticles() {
       {/* Filters */}
       <div className="flex gap-2 mb-4 flex-wrap">
         <input value={searchTerm} onChange={e => setSearchTerm(e.target.value)} placeholder="搜尋標題..."
-          className="px-3 py-2 border rounded-lg text-sm dark:bg-stone-800 dark:border-stone-700 dark:text-stone-200 w-48" />
+          className="px-3 py-2 border rounded-lg text-sm dark:bg-[#1a1a1a] dark:border-[#333] dark:text-gray-200 w-48" />
         <select value={filterCat} onChange={e => setFilterCat(e.target.value)}
-          className="px-3 py-2 border rounded-lg text-sm dark:bg-stone-800 dark:border-stone-700 dark:text-stone-200">
+          className="px-3 py-2 border rounded-lg text-sm dark:bg-[#1a1a1a] dark:border-[#333] dark:text-gray-200">
           <option value="">全部分類</option>
           {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
         </select>
-        <span className="text-sm text-stone-400 self-center ml-auto">顯示 {filtered.length} / {articles.length}</span>
+        <span className="text-sm text-[var(--text-light)] self-center ml-auto">顯示 {filtered.length} / {articles.length}</span>
       </div>
 
-      {loading ? <div className="text-center py-10 text-stone-400">載入中...</div> : (
-        <div className="bg-white dark:bg-stone-800 rounded-xl border dark:border-stone-700 overflow-x-auto">
+      {loading ? <div className="text-center py-10 text-[var(--text-light)]">載入中...</div> : (
+        <div className="bg-white dark:bg-[#1a1a1a] rounded-[var(--radius-md)] border dark:border-[#333] overflow-x-auto">
           <table className="w-full text-sm">
-            <thead><tr className="border-b dark:border-stone-700 text-left">
+            <thead><tr className="border-b dark:border-[#333] text-left">
               {batchMode && (
                 <th className="p-3 w-10">
                   <input type="checkbox" checked={selectedIds.size === filtered.length && filtered.length > 0} onChange={toggleSelectAll}
-                    className="rounded border-stone-300 dark:border-stone-600" />
+                    className="rounded border-gray-300 dark:border-[#444]" />
                 </th>
               )}
-              <th className="p-3 text-stone-500">標題</th><th className="p-3 text-stone-500">分類</th><th className="p-3 text-stone-500">瀏覽</th><th className="p-3 text-stone-500">狀態</th><th className="p-3 text-stone-500">字數</th><th className="p-3 text-stone-500">日期</th><th className="p-3 text-stone-500">操作</th>
+              <th className="p-3 text-[var(--text-soft)]">標題</th><th className="p-3 text-[var(--text-soft)]">分類</th><th className="p-3 text-[var(--text-soft)]">瀏覽</th><th className="p-3 text-[var(--text-soft)]">狀態</th><th className="p-3 text-[var(--text-soft)]">字數</th><th className="p-3 text-[var(--text-soft)]">日期</th><th className="p-3 text-[var(--text-soft)]">操作</th>
             </tr></thead>
-            <tbody className="divide-y dark:divide-stone-700">
+            <tbody className="divide-y dark:divide-[#333]">
               {filtered.map(a => (
-                <tr key={a.id} className={`hover:bg-stone-50 dark:hover:bg-stone-700/50 ${selectedIds.has(a.id) ? "bg-amber-50/50 dark:bg-amber-900/10" : ""}`}>
+                <tr key={a.id} className={`hover:bg-[var(--cream)] dark:hover:bg-[#333]/50 ${selectedIds.has(a.id) ? "bg-white/50 dark:bg-[#222]/10" : ""}`}>
                   {batchMode && (
                     <td className="p-3">
                       <input type="checkbox" checked={selectedIds.has(a.id)} onChange={() => toggleSelect(a.id)}
-                        className="rounded border-stone-300 dark:border-stone-600" />
+                        className="rounded border-gray-300 dark:border-[#444]" />
                     </td>
                   )}
-                  <td className="p-3 font-medium dark:text-stone-200 max-w-xs truncate">{a.title}</td>
-                  <td className="p-3"><span className="bg-stone-100 dark:bg-stone-700 px-2 py-1 rounded text-xs">{a.category}</span></td>
-                  <td className="p-3 text-stone-500">\ud83d\udc41\ufe0f {a.views}</td>
-                  <td className="p-3"><span className={`text-xs px-2 py-1 rounded-full ${a.published ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300" : "bg-stone-100 text-stone-500"}`}>{a.published ? "已發布" : "草稿"}</span></td>
-                  <td className="p-3 text-stone-400 text-xs">{(a.content || "").replace(/\s/g, "").length}</td>
-                  <td className="p-3 text-stone-400 text-xs">{new Date(a.createdAt).toLocaleDateString("zh-TW")}</td>
+                  <td className="p-3 font-medium dark:text-gray-200 max-w-xs truncate">{a.title}</td>
+                  <td className="p-3"><span className="bg-gray-100 dark:bg-[#222] px-2 py-1 rounded text-xs">{a.category}</span></td>
+                  <td className="p-3 text-[var(--text-soft)]">\ud83d\udc41\ufe0f {a.views}</td>
+                  <td className="p-3"><span className={`text-xs px-2 py-1 rounded-full ${a.published ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300" : "bg-gray-100 text-[var(--text-soft)]"}`}>{a.published ? "已發布" : "草稿"}</span></td>
+                  <td className="p-3 text-[var(--text-light)] text-xs">{(a.content || "").replace(/\s/g, "").length}</td>
+                  <td className="p-3 text-[var(--text-light)] text-xs">{new Date(a.createdAt).toLocaleDateString("zh-TW")}</td>
                   <td className="p-3">
                     <div className="flex gap-2">
-                      <button onClick={() => openEditor(a)} className="text-amber-700 hover:text-amber-800 text-xs">編輯</button>
+                      <button onClick={() => openEditor(a)} className="text-[var(--red)] hover:text-[var(--red)] text-xs">編輯</button>
                       <button onClick={() => openVersionHistory(a.id)} className="text-blue-600 hover:text-blue-700 dark:text-blue-400 text-xs">版本</button>
                       <button onClick={() => del(a.id)} className="text-red-500 hover:text-red-700 text-xs">刪除</button>
                     </div>
@@ -346,7 +346,7 @@ export default function AdminArticles() {
             </tbody>
           </table>
           {filtered.length === 0 && (
-            <div className="text-center py-10 text-stone-400">
+            <div className="text-center py-10 text-[var(--text-light)]">
               {searchTerm || filterCat ? "找不到符合條件的文章" : "尚無文章"}
             </div>
           )}
@@ -357,27 +357,27 @@ export default function AdminArticles() {
       <Modal open={showEditor} onClose={() => setShowEditor(false)} title={editItem ? "編輯文章" : "新增文章"}>
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
-            <div><label className="block text-sm font-medium mb-1 dark:text-stone-300">標題</label>
-              <input value={form.title} onChange={e => { setForm({ ...form, title: e.target.value, slug: form.slug || autoSlug(e.target.value) }); }} className="w-full px-3 py-2 border rounded-lg dark:border-stone-600 dark:bg-stone-700 dark:text-stone-100" /></div>
-            <div><label className="block text-sm font-medium mb-1 dark:text-stone-300">Slug</label>
-              <input value={form.slug} onChange={e => setForm({ ...form, slug: e.target.value })} className="w-full px-3 py-2 border rounded-lg dark:border-stone-600 dark:bg-stone-700 dark:text-stone-100 text-sm" /></div>
+            <div><label className="block text-sm font-medium mb-1 dark:text-[var(--text-light)]">標題</label>
+              <input value={form.title} onChange={e => { setForm({ ...form, title: e.target.value, slug: form.slug || autoSlug(e.target.value) }); }} className="w-full px-3 py-2 border rounded-lg dark:border-[#444] dark:bg-[#222] dark:text-gray-100" /></div>
+            <div><label className="block text-sm font-medium mb-1 dark:text-[var(--text-light)]">Slug</label>
+              <input value={form.slug} onChange={e => setForm({ ...form, slug: e.target.value })} className="w-full px-3 py-2 border rounded-lg dark:border-[#444] dark:bg-[#222] dark:text-gray-100 text-sm" /></div>
           </div>
-          <div><label className="block text-sm font-medium mb-1 dark:text-stone-300">摘要</label>
-            <textarea value={form.excerpt} onChange={e => setForm({ ...form, excerpt: e.target.value })} rows={2} className="w-full px-3 py-2 border rounded-lg dark:border-stone-600 dark:bg-stone-700 dark:text-stone-100" /></div>
-          <div><label className="block text-sm font-medium mb-1 dark:text-stone-300">封面圖片 URL</label>
-            <input value={form.imageUrl} onChange={e => setForm({ ...form, imageUrl: e.target.value })} placeholder="https://example.com/image.jpg" className="w-full px-3 py-2 border rounded-lg dark:border-stone-600 dark:bg-stone-700 dark:text-stone-100 text-sm" /></div>
+          <div><label className="block text-sm font-medium mb-1 dark:text-[var(--text-light)]">摘要</label>
+            <textarea value={form.excerpt} onChange={e => setForm({ ...form, excerpt: e.target.value })} rows={2} className="w-full px-3 py-2 border rounded-lg dark:border-[#444] dark:bg-[#222] dark:text-gray-100" /></div>
+          <div><label className="block text-sm font-medium mb-1 dark:text-[var(--text-light)]">封面圖片 URL</label>
+            <input value={form.imageUrl} onChange={e => setForm({ ...form, imageUrl: e.target.value })} placeholder="https://example.com/image.jpg" className="w-full px-3 py-2 border rounded-lg dark:border-[#444] dark:bg-[#222] dark:text-gray-100 text-sm" /></div>
 
           {/* Content editor with tabs */}
           <div>
             <div className="flex items-center justify-between mb-1">
-              <label className="text-sm font-medium dark:text-stone-300">內容 (支援 Markdown)</label>
+              <label className="text-sm font-medium dark:text-[var(--text-light)]">內容 (支援 Markdown)</label>
               <div className="flex items-center gap-3">
-                <span className="text-xs text-stone-400">{wordCount} 字</span>
+                <span className="text-xs text-[var(--text-light)]">{wordCount} 字</span>
                 <div className="flex gap-1">
                   <button onClick={() => setPreviewMode(false)} type="button"
-                    className={`px-3 py-1 rounded text-xs ${!previewMode ? "bg-amber-700 text-white" : "bg-stone-100 dark:bg-stone-700 dark:text-stone-300"}`}>編輯</button>
+                    className={`px-3 py-1 rounded text-xs ${!previewMode ? "bg-[var(--red)] text-white" : "bg-gray-100 dark:bg-[#222] dark:text-[var(--text-light)]"}`}>編輯</button>
                   <button onClick={() => setPreviewMode(true)} type="button"
-                    className={`px-3 py-1 rounded text-xs ${previewMode ? "bg-amber-700 text-white" : "bg-stone-100 dark:bg-stone-700 dark:text-stone-300"}`}>預覽</button>
+                    className={`px-3 py-1 rounded text-xs ${previewMode ? "bg-[var(--red)] text-white" : "bg-gray-100 dark:bg-[#222] dark:text-[var(--text-light)]"}`}>預覽</button>
                 </div>
               </div>
             </div>
@@ -385,24 +385,24 @@ export default function AdminArticles() {
               <>
                 <EditorToolbar onInsert={handleInsert} />
                 <textarea id="article-editor" value={form.content} onChange={e => setForm({ ...form, content: e.target.value })} rows={12}
-                  className="w-full px-3 py-2 border rounded-lg dark:border-stone-600 dark:bg-stone-700 dark:text-stone-100 font-mono text-sm leading-relaxed"
+                  className="w-full px-3 py-2 border rounded-lg dark:border-[#444] dark:bg-[#222] dark:text-gray-100 font-mono text-sm leading-relaxed"
                   placeholder="使用 Markdown 格式撰寫文章內容..." />
               </>
             ) : (
-              <div className="w-full min-h-[280px] px-4 py-3 border rounded-lg dark:border-stone-600 bg-white dark:bg-stone-700 prose prose-stone dark:prose-invert max-w-none text-sm"
+              <div className="w-full min-h-[280px] px-4 py-3 border rounded-lg dark:border-[#444] bg-white dark:bg-[#222] prose prose-stone dark:prose-invert max-w-none text-sm"
                 dangerouslySetInnerHTML={{ __html: `<p class="my-2">${renderMarkdown(form.content || "（空白）")}</p>` }} />
             )}
           </div>
 
           <div className="grid grid-cols-3 gap-4">
-            <div><label className="block text-sm font-medium mb-1 dark:text-stone-300">分類</label>
-              <select value={form.category} onChange={e => setForm({ ...form, category: e.target.value })} className="w-full px-3 py-2 border rounded-lg dark:border-stone-600 dark:bg-stone-700 dark:text-stone-100">
+            <div><label className="block text-sm font-medium mb-1 dark:text-[var(--text-light)]">分類</label>
+              <select value={form.category} onChange={e => setForm({ ...form, category: e.target.value })} className="w-full px-3 py-2 border rounded-lg dark:border-[#444] dark:bg-[#222] dark:text-gray-100">
                 {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
               </select></div>
-            <div><label className="block text-sm font-medium mb-1 dark:text-stone-300">標籤 (逗號分隔)</label>
-              <input value={form.tags} onChange={e => setForm({ ...form, tags: e.target.value })} className="w-full px-3 py-2 border rounded-lg dark:border-stone-600 dark:bg-stone-700 dark:text-stone-100" /></div>
+            <div><label className="block text-sm font-medium mb-1 dark:text-[var(--text-light)]">標籤 (逗號分隔)</label>
+              <input value={form.tags} onChange={e => setForm({ ...form, tags: e.target.value })} className="w-full px-3 py-2 border rounded-lg dark:border-[#444] dark:bg-[#222] dark:text-gray-100" /></div>
             <div className="flex items-end">
-              <label className="flex items-center gap-2 text-sm dark:text-stone-300 py-2">
+              <label className="flex items-center gap-2 text-sm dark:text-[var(--text-light)] py-2">
                 <input type="checkbox" checked={form.published} onChange={e => setForm({ ...form, published: e.target.checked })} className="rounded" /> 發布
               </label>
             </div>
@@ -410,18 +410,18 @@ export default function AdminArticles() {
 
           {/* Version history link in editor */}
           {editItem && (
-            <div className="flex items-center gap-2 pt-1 border-t dark:border-stone-600">
+            <div className="flex items-center gap-2 pt-1 border-t dark:border-[#444]">
               <button onClick={() => { setShowEditor(false); openVersionHistory(editItem.id); }} type="button"
                 className="text-xs text-blue-600 hover:text-blue-700 dark:text-blue-400 flex items-center gap-1">
                 \ud83d\udcc3 查看版本歷史
               </button>
-              <span className="text-xs text-stone-400">（儲存時將自動保存版本）</span>
+              <span className="text-xs text-[var(--text-light)]">（儲存時將自動保存版本）</span>
             </div>
           )}
 
           <div className="flex gap-3 pt-2">
-            <button onClick={save} className="bg-amber-700 text-white px-6 py-2 rounded-lg hover:bg-amber-800 transition">儲存</button>
-            <button onClick={() => setShowEditor(false)} className="px-6 py-2 rounded-lg border dark:border-stone-600 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-700 transition">取消</button>
+            <button onClick={save} className="bg-[var(--red)] text-white px-6 py-2 rounded-lg hover:bg-[var(--red)] transition">儲存</button>
+            <button onClick={() => setShowEditor(false)} className="px-6 py-2 rounded-lg border dark:border-[#444] dark:text-[var(--text-light)] hover:bg-[var(--cream)] dark:hover:bg-[#333] transition">取消</button>
           </div>
         </div>
       </Modal>

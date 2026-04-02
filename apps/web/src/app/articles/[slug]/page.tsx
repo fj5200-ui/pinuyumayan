@@ -32,11 +32,11 @@ function renderMarkdown(md: string): string {
     .replace(/^# (.+)$/gm, (_, t) => `<h1 id="${t.trim().replace(/[^\w\u4e00-\u9fff]+/g, '-').toLowerCase()}" class="text-2xl font-bold mt-10 mb-4 scroll-mt-20">${t}</h1>`)
     .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
     .replace(/\*(.+?)\*/g, '<em>$1</em>')
-    .replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" class="rounded-xl max-w-full my-4 shadow-sm" />')
-    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="text-amber-700 dark:text-amber-400 underline hover:text-amber-800">$1</a>')
+    .replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" class="rounded-[var(--radius-md)] max-w-full my-4 shadow-sm" />')
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="text-[var(--red)] dark:text-[var(--yellow)] underline hover:text-[var(--red)]">$1</a>')
     .replace(/^- (.+)$/gm, '<li class="ml-4 my-1">\u2022 $1</li>')
-    .replace(/^> (.+)$/gm, '<blockquote class="border-l-4 border-amber-300 dark:border-amber-600 pl-4 italic text-stone-500 dark:text-stone-400 my-3 py-1 bg-amber-50/50 dark:bg-amber-900/10 rounded-r-lg">$1</blockquote>')
-    .replace(/`([^`]+)`/g, '<code class="bg-stone-100 dark:bg-stone-700 px-1.5 py-0.5 rounded text-sm font-mono">$1</code>')
+    .replace(/^> (.+)$/gm, '<blockquote class="border-l-4 border-amber-300 dark:border-[var(--red)] pl-4 italic text-[var(--text-soft)] dark:text-[var(--text-light)] my-3 py-1 bg-white/50 dark:bg-[#222]/10 rounded-r-lg">$1</blockquote>')
+    .replace(/`([^`]+)`/g, '<code class="bg-gray-100 dark:bg-[#222] px-1.5 py-0.5 rounded text-sm font-mono">$1</code>')
     .replace(/\n\n/g, '</p><p class="my-3 leading-relaxed">')
     .replace(/\n/g, '<br/>');
 }
@@ -159,12 +159,12 @@ export default function ArticleDetail() {
   if (loading) return (
     <div className="max-w-4xl mx-auto px-4 py-20">
       <div className="animate-pulse space-y-4">
-        <div className="h-6 w-20 bg-stone-200 dark:bg-stone-700 rounded" />
-        <div className="h-64 bg-stone-200 dark:bg-stone-700 rounded-2xl" />
-        <div className="h-8 w-3/4 bg-stone-200 dark:bg-stone-700 rounded" />
-        <div className="h-4 w-1/2 bg-stone-200 dark:bg-stone-700 rounded" />
+        <div className="h-6 w-20 bg-gray-200 dark:bg-[#222] rounded" />
+        <div className="h-64 bg-gray-200 dark:bg-[#222] rounded-[var(--radius-md)]" />
+        <div className="h-8 w-3/4 bg-gray-200 dark:bg-[#222] rounded" />
+        <div className="h-4 w-1/2 bg-gray-200 dark:bg-[#222] rounded" />
         <div className="space-y-2 mt-8">
-          {[...Array(6)].map((_, i) => <div key={i} className="h-4 bg-stone-200 dark:bg-stone-700 rounded" style={{ width: `${85 - i * 5}%` }} />)}
+          {[...Array(6)].map((_, i) => <div key={i} className="h-4 bg-gray-200 dark:bg-[#222] rounded" style={{ width: `${85 - i * 5}%` }} />)}
         </div>
       </div>
     </div>
@@ -173,9 +173,9 @@ export default function ArticleDetail() {
   if (!article) return (
     <div className="max-w-4xl mx-auto px-4 py-20 text-center">
       <div className="text-6xl mb-4">📭</div>
-      <h1 className="text-2xl font-bold dark:text-stone-100">找不到此文章</h1>
-      <p className="text-stone-400 mt-2 mb-6">文章可能已被移除或尚未發佈</p>
-      <Link href="/articles" className="inline-block px-6 py-3 bg-amber-700 text-white rounded-xl font-medium hover:bg-amber-800 transition">&larr; 返回文章列表</Link>
+      <h1 className="text-2xl font-bold dark:text-gray-100">找不到此文章</h1>
+      <p className="text-[var(--text-light)] mt-2 mb-6">文章可能已被移除或尚未發佈</p>
+      <Link href="/articles" className="inline-block px-6 py-3 bg-[var(--red)] text-white rounded-[var(--radius-md)] font-medium hover:bg-[var(--red)] transition">&larr; 返回文章列表</Link>
     </div>
   );
 
@@ -186,13 +186,13 @@ export default function ArticleDetail() {
   return (
     <>
       {/* Reading progress bar */}
-      <div className="fixed top-0 left-0 right-0 z-[60] h-1 bg-stone-200 dark:bg-stone-700">
-        <div className="h-full bg-gradient-to-r from-amber-500 to-orange-500 transition-all duration-150" style={{ width: `${progress}%` }} />
+      <div className="fixed top-0 left-0 right-0 z-[60] h-1 bg-gray-200 dark:bg-[#222]">
+        <div className="h-full bg-gradient-to-r from-white0 to-[var(--yellow)] transition-all duration-150" style={{ width: `${progress}%` }} />
       </div>
 
       {/* Estimated reading time pill (appears when scrolling) */}
       {progress > 5 && progress < 95 && (
-        <div className="fixed top-3 right-4 z-[60] bg-white/90 dark:bg-stone-800/90 backdrop-blur-sm px-3 py-1 rounded-full shadow-sm border dark:border-stone-700 text-xs text-stone-500 dark:text-stone-400 transition-opacity">
+        <div className="fixed top-3 right-4 z-[60] bg-white/90 dark:bg-[#1a1a1a]/90 backdrop-blur-sm px-3 py-1 rounded-full shadow-sm border dark:border-[#333] text-xs text-[var(--text-soft)] dark:text-[var(--text-light)] transition-opacity">
           {Math.max(1, Math.ceil(readingTime * (1 - progress / 100)))} 分鐘可讀完
         </div>
       )}
@@ -200,25 +200,25 @@ export default function ArticleDetail() {
       {/* TOC floating button (mobile) */}
       {headings.length > 2 && (
         <button onClick={() => setShowToc(!showToc)}
-          className="lg:hidden fixed bottom-6 right-6 z-50 w-12 h-12 bg-amber-700 text-white rounded-full shadow-lg flex items-center justify-center text-lg hover:bg-amber-800 transition">
+          className="lg:hidden fixed bottom-6 right-6 z-50 w-12 h-12 bg-[var(--red)] text-white rounded-full shadow-lg flex items-center justify-center text-lg hover:bg-[var(--red)] transition">
           {showToc ? '\u2715' : '\u2630'}
         </button>
       )}
 
       <div className="max-w-6xl mx-auto px-4 py-12">
         {/* Breadcrumb */}
-        <nav className="flex items-center gap-2 text-sm text-stone-400 dark:text-stone-500 mb-6">
-          <Link href="/" className="hover:text-amber-700 dark:hover:text-amber-400 transition">首頁</Link>
+        <nav className="flex items-center gap-2 text-sm text-[var(--text-light)] dark:text-[var(--text-soft)] mb-6">
+          <Link href="/" className="hover:text-[var(--red)] dark:hover:text-[var(--yellow)] transition">首頁</Link>
           <span>/</span>
-          <Link href="/articles" className="hover:text-amber-700 dark:hover:text-amber-400 transition">文化誌</Link>
+          <Link href="/articles" className="hover:text-[var(--red)] dark:hover:text-[var(--yellow)] transition">文化誌</Link>
           <span>/</span>
-          <span className="text-stone-600 dark:text-stone-300 truncate max-w-[200px]">{article.title}</span>
+          <span className="text-[var(--text-soft)] dark:text-[var(--text-light)] truncate max-w-[200px]">{article.title}</span>
         </nav>
 
         <div className="flex gap-8">
           {/* Main content */}
           <div className="flex-1 min-w-0">
-            <article ref={articleRef} className="bg-white dark:bg-stone-800 rounded-2xl shadow-sm p-8 border border-stone-100 dark:border-stone-700">
+            <article ref={articleRef} className="bg-white dark:bg-[#1a1a1a] rounded-[var(--radius-md)] shadow-sm p-8 border border-[var(--border)] dark:border-[#333]">
               {/* Cover image */}
               {article.coverImage && (
                 <div className="mb-6 -mx-8 -mt-8 rounded-t-2xl overflow-hidden">
@@ -227,23 +227,23 @@ export default function ArticleDetail() {
               )}
 
               <div className="flex items-center gap-2 mb-3 flex-wrap">
-                <span className="text-xs bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-300 px-2.5 py-1 rounded-full font-medium">{article.category}</span>
-                <span className="text-xs text-stone-400">{wordCount.toLocaleString()} 字</span>
-                <span className="text-xs text-stone-400">&middot; 約 {readingTime} 分鐘閱讀</span>
-                <span className="text-xs text-stone-400">&middot; 👁️ {article.views} 次瀏覽</span>
+                <span className="text-xs bg-[rgba(153,27,27,0.06)] dark:bg-[#222]/50 text-[var(--red)] dark:text-[var(--yellow)] px-2.5 py-1 rounded-full font-medium">{article.category}</span>
+                <span className="text-xs text-[var(--text-light)]">{wordCount.toLocaleString()} 字</span>
+                <span className="text-xs text-[var(--text-light)]">&middot; 約 {readingTime} 分鐘閱讀</span>
+                <span className="text-xs text-[var(--text-light)]">&middot; 👁️ {article.views} 次瀏覽</span>
               </div>
-              <h1 className="text-3xl font-bold text-stone-800 dark:text-stone-100 mt-3 mb-4 leading-tight">{article.title}</h1>
+              <h1 className="text-3xl font-bold text-[var(--text-main)] dark:text-gray-100 mt-3 mb-4 leading-tight">{article.title}</h1>
 
               {/* Author card (enhanced) */}
-              <div className="flex items-center gap-4 text-sm text-stone-400 dark:text-stone-500 mb-6 pb-6 border-b dark:border-stone-700">
+              <div className="flex items-center gap-4 text-sm text-[var(--text-light)] dark:text-[var(--text-soft)] mb-6 pb-6 border-b dark:border-[#333]">
                 <div className="flex items-center gap-3 flex-1">
-                  <div className="w-11 h-11 bg-gradient-to-br from-amber-200 to-orange-300 dark:from-amber-700 dark:to-orange-800 rounded-full flex items-center justify-center text-white font-bold text-sm shadow-sm overflow-hidden">
+                  <div className="w-11 h-11 bg-gradient-to-br from-[rgba(217,119,6,0.1)] to-[var(--yellow)] dark:from-[var(--red)] dark:to-orange-800 rounded-full flex items-center justify-center text-white font-bold text-sm shadow-sm overflow-hidden">
                     {authorProfile?.avatarUrl ? (
                       <img src={authorProfile.avatarUrl} alt="" className="w-full h-full object-cover" />
                     ) : (article.authorName || '?')[0]}
                   </div>
                   <div>
-                    <span className="block text-stone-700 dark:text-stone-200 font-medium">{article.authorName || "佚名"}</span>
+                    <span className="block text-[var(--text-main)] dark:text-gray-200 font-medium">{article.authorName || "佚名"}</span>
                     <div className="flex items-center gap-2 text-xs">
                       <span>{new Date(article.createdAt).toLocaleDateString("zh-TW", { year: "numeric", month: "long", day: "numeric" })}</span>
                       {authorProfile && (
@@ -261,8 +261,8 @@ export default function ArticleDetail() {
 
               {/* Excerpt */}
               {article.excerpt && (
-                <div className="mb-8 p-4 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-xl border border-amber-100 dark:border-amber-800/30">
-                  <p className="text-stone-600 dark:text-stone-300 italic leading-relaxed">{article.excerpt}</p>
+                <div className="mb-8 p-4 bg-gradient-to-r from-white to-white dark:from-[#222]/20 dark:to-[#222]/20 rounded-[var(--radius-md)] border border-amber-100 dark:border-amber-800/30">
+                  <p className="text-[var(--text-soft)] dark:text-[var(--text-light)] italic leading-relaxed">{article.excerpt}</p>
                 </div>
               )}
 
@@ -272,10 +272,10 @@ export default function ArticleDetail() {
 
               {/* Tags */}
               {tags.length > 0 && (
-                <div className="mt-8 pt-6 border-t dark:border-stone-700 flex flex-wrap gap-2">
+                <div className="mt-8 pt-6 border-t dark:border-[#333] flex flex-wrap gap-2">
                   {tags.map((tag: string) => (
                     <Link key={tag} href={`/search?q=${encodeURIComponent(tag)}`}
-                      className="bg-stone-100 dark:bg-stone-700 text-stone-600 dark:text-stone-300 px-3 py-1 rounded-full text-sm hover:bg-amber-100 dark:hover:bg-amber-900/30 transition">
+                      className="bg-gray-100 dark:bg-[#222] text-[var(--text-soft)] dark:text-[var(--text-light)] px-3 py-1 rounded-full text-sm hover:bg-[rgba(153,27,27,0.06)] dark:hover:bg-[#222]/30 transition">
                       #{tag}
                     </Link>
                   ))}
@@ -283,18 +283,18 @@ export default function ArticleDetail() {
               )}
 
               {/* Actions */}
-              <div className="mt-6 pt-6 border-t dark:border-stone-700 flex flex-wrap items-center gap-3">
-                <button onClick={toggleLike} className={`flex items-center gap-2 px-4 py-2 rounded-xl border transition text-sm ${liked ? "bg-red-50 dark:bg-red-900/30 border-red-200 dark:border-red-800 text-red-600" : "border-stone-200 dark:border-stone-600 hover:bg-stone-50 dark:hover:bg-stone-700"}`}>
+              <div className="mt-6 pt-6 border-t dark:border-[#333] flex flex-wrap items-center gap-3">
+                <button onClick={toggleLike} className={`flex items-center gap-2 px-4 py-2 rounded-[var(--radius-md)] border transition text-sm ${liked ? "bg-red-50 dark:bg-red-900/30 border-red-200 dark:border-red-800 text-red-600" : "border-[var(--border)] dark:border-[#444] hover:bg-[var(--cream)] dark:hover:bg-[#333]"}`}>
                   {liked ? "❤️" : "🤍"} {likeCount > 0 && likeCount}
                 </button>
-                <button onClick={toggleBookmark} className={`flex items-center gap-2 px-4 py-2 rounded-xl border transition text-sm ${bookmarked ? "bg-amber-50 dark:bg-amber-900/30 border-amber-200 text-amber-700" : "border-stone-200 dark:border-stone-600 hover:bg-stone-50 dark:hover:bg-stone-700"}`}>
+                <button onClick={toggleBookmark} className={`flex items-center gap-2 px-4 py-2 rounded-[var(--radius-md)] border transition text-sm ${bookmarked ? "bg-white dark:bg-[#222]/30 border-amber-200 text-[var(--red)]" : "border-[var(--border)] dark:border-[#444] hover:bg-[var(--cream)] dark:hover:bg-[#333]"}`}>
                   {bookmarked ? "🔖 已收藏" : "📑 收藏"}
                 </button>
                 <div className="flex items-center gap-1 ml-auto">
-                  <span className="text-xs text-stone-400 mr-2">分享：</span>
+                  <span className="text-xs text-[var(--text-light)] mr-2">分享：</span>
                   <button onClick={() => share("line")} className="p-2 rounded-lg hover:bg-green-50 dark:hover:bg-green-900/20 transition" title="LINE">💚</button>
                   <button onClick={() => share("fb")} className="p-2 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 transition" title="Facebook">💙</button>
-                  <button onClick={() => share("copy")} className="p-2 rounded-lg hover:bg-stone-50 dark:hover:bg-stone-700 transition" title="複製連結">🔗</button>
+                  <button onClick={() => share("copy")} className="p-2 rounded-lg hover:bg-[var(--cream)] dark:hover:bg-[#333] transition" title="複製連結">🔗</button>
                 </div>
               </div>
             </article>
@@ -304,22 +304,22 @@ export default function ArticleDetail() {
               <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
                 {navigation.prev ? (
                   <Link href={`/articles/${navigation.prev.slug}`}
-                    className="group p-5 bg-white dark:bg-stone-800 rounded-xl border dark:border-stone-700 hover:border-amber-300 dark:hover:border-amber-700 transition hover:shadow-sm">
-                    <span className="text-xs text-stone-400 dark:text-stone-500 flex items-center gap-1 mb-2">
+                    className="group p-5 bg-white dark:bg-[#1a1a1a] rounded-[var(--radius-md)] border dark:border-[#333] hover:border-amber-300 dark:hover:border-amber-700 transition hover:shadow-sm">
+                    <span className="text-xs text-[var(--text-light)] dark:text-[var(--text-soft)] flex items-center gap-1 mb-2">
                       ← 上一篇
                     </span>
-                    <span className="font-medium text-stone-700 dark:text-stone-200 group-hover:text-amber-700 dark:group-hover:text-amber-400 transition line-clamp-2">{navigation.prev.title}</span>
-                    <span className="text-xs text-stone-400 mt-1 block">{navigation.prev.category}</span>
+                    <span className="font-medium text-[var(--text-main)] dark:text-gray-200 group-hover:text-[var(--red)] dark:group-hover:text-[var(--yellow)] transition line-clamp-2">{navigation.prev.title}</span>
+                    <span className="text-xs text-[var(--text-light)] mt-1 block">{navigation.prev.category}</span>
                   </Link>
                 ) : <div />}
                 {navigation.next ? (
                   <Link href={`/articles/${navigation.next.slug}`}
-                    className="group p-5 bg-white dark:bg-stone-800 rounded-xl border dark:border-stone-700 hover:border-amber-300 dark:hover:border-amber-700 transition text-right hover:shadow-sm">
-                    <span className="text-xs text-stone-400 dark:text-stone-500 flex items-center gap-1 justify-end mb-2">
+                    className="group p-5 bg-white dark:bg-[#1a1a1a] rounded-[var(--radius-md)] border dark:border-[#333] hover:border-amber-300 dark:hover:border-amber-700 transition text-right hover:shadow-sm">
+                    <span className="text-xs text-[var(--text-light)] dark:text-[var(--text-soft)] flex items-center gap-1 justify-end mb-2">
                       下一篇 →
                     </span>
-                    <span className="font-medium text-stone-700 dark:text-stone-200 group-hover:text-amber-700 dark:group-hover:text-amber-400 transition line-clamp-2">{navigation.next.title}</span>
-                    <span className="text-xs text-stone-400 mt-1 block">{navigation.next.category}</span>
+                    <span className="font-medium text-[var(--text-main)] dark:text-gray-200 group-hover:text-[var(--red)] dark:group-hover:text-[var(--yellow)] transition line-clamp-2">{navigation.next.title}</span>
+                    <span className="text-xs text-[var(--text-light)] mt-1 block">{navigation.next.category}</span>
                   </Link>
                 ) : <div />}
               </div>
@@ -327,18 +327,18 @@ export default function ArticleDetail() {
 
             {/* Author bio card (if available) */}
             {authorProfile && authorProfile.bio && (
-              <div className="mt-6 bg-white dark:bg-stone-800 rounded-2xl shadow-sm p-6 border dark:border-stone-700">
-                <h2 className="text-lg font-bold mb-3 dark:text-stone-100">✍️ 關於作者</h2>
+              <div className="mt-6 bg-white dark:bg-[#1a1a1a] rounded-[var(--radius-md)] shadow-sm p-6 border dark:border-[#333]">
+                <h2 className="text-lg font-bold mb-3 dark:text-gray-100">✍️ 關於作者</h2>
                 <div className="flex items-start gap-4">
-                  <div className="w-14 h-14 bg-gradient-to-br from-amber-200 to-orange-300 dark:from-amber-700 dark:to-orange-800 rounded-full flex items-center justify-center text-white font-bold text-xl shadow-sm flex-shrink-0 overflow-hidden">
+                  <div className="w-14 h-14 bg-gradient-to-br from-[rgba(217,119,6,0.1)] to-[var(--yellow)] dark:from-[var(--red)] dark:to-orange-800 rounded-full flex items-center justify-center text-white font-bold text-xl shadow-sm flex-shrink-0 overflow-hidden">
                     {authorProfile.avatarUrl ? (
                       <img src={authorProfile.avatarUrl} alt="" className="w-full h-full object-cover" />
                     ) : (authorProfile.name || '?')[0]}
                   </div>
                   <div>
-                    <h3 className="font-bold text-stone-800 dark:text-stone-100">{authorProfile.name}</h3>
-                    <p className="text-sm text-stone-500 dark:text-stone-400 mt-1 leading-relaxed">{authorProfile.bio}</p>
-                    <div className="flex gap-4 mt-3 text-xs text-stone-400">
+                    <h3 className="font-bold text-[var(--text-main)] dark:text-gray-100">{authorProfile.name}</h3>
+                    <p className="text-sm text-[var(--text-soft)] dark:text-[var(--text-light)] mt-1 leading-relaxed">{authorProfile.bio}</p>
+                    <div className="flex gap-4 mt-3 text-xs text-[var(--text-light)]">
                       <span>📝 {authorProfile.articleCount} 篇文章</span>
                       <span>👁️ {authorProfile.totalViews?.toLocaleString()} 次總閱覽</span>
                     </div>
@@ -349,15 +349,15 @@ export default function ArticleDetail() {
 
             {/* Related Articles */}
             {related.length > 0 && (
-              <div className="mt-6 bg-white dark:bg-stone-800 rounded-2xl shadow-sm p-6 border dark:border-stone-700">
-                <h2 className="text-xl font-bold mb-4 dark:text-stone-100">📚 相關文章</h2>
+              <div className="mt-6 bg-white dark:bg-[#1a1a1a] rounded-[var(--radius-md)] shadow-sm p-6 border dark:border-[#333]">
+                <h2 className="text-xl font-bold mb-4 dark:text-gray-100">📚 相關文章</h2>
                 <div className="grid md:grid-cols-3 gap-4">
                   {related.slice(0, 3).map((r: any) => (
-                    <Link key={r.id} href={`/articles/${r.slug}`} className="group p-4 bg-stone-50 dark:bg-stone-700/50 rounded-xl hover:bg-stone-100 dark:hover:bg-stone-700 transition">
-                      <span className="text-xs bg-amber-100 dark:bg-amber-900/50 text-amber-700 px-2 py-0.5 rounded-full">{r.category}</span>
-                      <h3 className="font-medium mt-2 dark:text-stone-200 line-clamp-2 text-sm group-hover:text-amber-700 dark:group-hover:text-amber-400 transition">{r.title}</h3>
-                      {r.excerpt && <p className="text-xs text-stone-400 mt-1 line-clamp-2">{r.excerpt}</p>}
-                      <div className="flex items-center gap-2 mt-2 text-xs text-stone-400">
+                    <Link key={r.id} href={`/articles/${r.slug}`} className="group p-4 bg-[var(--cream)] dark:bg-[#222]/50 rounded-[var(--radius-md)] hover:bg-gray-100 dark:hover:bg-[#333] transition">
+                      <span className="text-xs bg-[rgba(153,27,27,0.06)] dark:bg-[#222]/50 text-[var(--red)] px-2 py-0.5 rounded-full">{r.category}</span>
+                      <h3 className="font-medium mt-2 dark:text-gray-200 line-clamp-2 text-sm group-hover:text-[var(--red)] dark:group-hover:text-[var(--yellow)] transition">{r.title}</h3>
+                      {r.excerpt && <p className="text-xs text-[var(--text-light)] mt-1 line-clamp-2">{r.excerpt}</p>}
+                      <div className="flex items-center gap-2 mt-2 text-xs text-[var(--text-light)]">
                         <span>👁️ {r.views || 0}</span>
                       </div>
                     </Link>
@@ -367,29 +367,29 @@ export default function ArticleDetail() {
             )}
 
             {/* Comments */}
-            <div className="mt-6 bg-white dark:bg-stone-800 rounded-2xl shadow-sm p-6 border dark:border-stone-700">
-              <h2 className="text-xl font-bold mb-4 dark:text-stone-100">💬 留言 ({comments.length})</h2>
+            <div className="mt-6 bg-white dark:bg-[#1a1a1a] rounded-[var(--radius-md)] shadow-sm p-6 border dark:border-[#333]">
+              <h2 className="text-xl font-bold mb-4 dark:text-gray-100">💬 留言 ({comments.length})</h2>
               {user ? (
                 <div className="flex gap-3 mb-6">
                   <input value={newComment} onChange={e => setNewComment(e.target.value)} onKeyDown={e => e.key === "Enter" && submitComment()}
-                    placeholder="分享你的想法..." className="flex-1 px-4 py-2.5 rounded-xl border dark:border-stone-600 dark:bg-stone-700 dark:text-stone-100 focus:border-amber-500 outline-none transition" />
-                  <button onClick={submitComment} className="px-5 py-2.5 bg-amber-700 text-white rounded-xl font-medium hover:bg-amber-800 transition">送出</button>
+                    placeholder="分享你的想法..." className="flex-1 px-4 py-2.5 rounded-[var(--radius-md)] border dark:border-[#444] dark:bg-[#222] dark:text-gray-100 focus:border-red-500 outline-none transition" />
+                  <button onClick={submitComment} className="px-5 py-2.5 bg-[var(--red)] text-white rounded-[var(--radius-md)] font-medium hover:bg-[var(--red)] transition">送出</button>
                 </div>
               ) : (
-                <div className="mb-6 p-4 bg-stone-50 dark:bg-stone-700 rounded-xl text-center"><Link href="/login" className="text-amber-700 dark:text-amber-400 font-medium">登入後即可留言</Link></div>
+                <div className="mb-6 p-4 bg-[var(--cream)] dark:bg-[#222] rounded-[var(--radius-md)] text-center"><Link href="/login" className="text-[var(--red)] dark:text-[var(--yellow)] font-medium">登入後即可留言</Link></div>
               )}
               <div className="space-y-4">
                 {comments.map(c => (
-                  <div key={c.id} className="p-4 bg-stone-50 dark:bg-stone-700/50 rounded-xl">
+                  <div key={c.id} className="p-4 bg-[var(--cream)] dark:bg-[#222]/50 rounded-[var(--radius-md)]">
                     <div className="flex items-center gap-2 mb-2">
-                      <span className="w-8 h-8 bg-amber-100 dark:bg-amber-900 rounded-full flex items-center justify-center text-sm">👤</span>
-                      <span className="font-medium text-stone-800 dark:text-stone-200">{c.authorName || c.userName || "匿名"}</span>
-                      <span className="text-xs text-stone-400">{new Date(c.createdAt).toLocaleDateString("zh-TW")}</span>
+                      <span className="w-8 h-8 bg-[rgba(153,27,27,0.06)] dark:bg-[#222] rounded-full flex items-center justify-center text-sm">👤</span>
+                      <span className="font-medium text-[var(--text-main)] dark:text-gray-200">{c.authorName || c.userName || "匿名"}</span>
+                      <span className="text-xs text-[var(--text-light)]">{new Date(c.createdAt).toLocaleDateString("zh-TW")}</span>
                     </div>
-                    <p className="text-stone-600 dark:text-stone-300 pl-10">{c.content}</p>
+                    <p className="text-[var(--text-soft)] dark:text-[var(--text-light)] pl-10">{c.content}</p>
                   </div>
                 ))}
-                {comments.length === 0 && <p className="text-center text-stone-400 py-4">還沒有留言，來當第一個吧！</p>}
+                {comments.length === 0 && <p className="text-center text-[var(--text-light)] py-4">還沒有留言，來當第一個吧！</p>}
               </div>
             </div>
           </div>
@@ -398,14 +398,14 @@ export default function ArticleDetail() {
           {headings.length > 2 && (
             <aside className="hidden lg:block w-64 flex-shrink-0">
               <div className="sticky top-20">
-                <div className="bg-white dark:bg-stone-800 rounded-xl shadow-sm p-4 border dark:border-stone-700">
-                  <h3 className="text-sm font-bold mb-3 dark:text-stone-200">📖 文章目錄</h3>
+                <div className="bg-white dark:bg-[#1a1a1a] rounded-[var(--radius-md)] shadow-sm p-4 border dark:border-[#333]">
+                  <h3 className="text-sm font-bold mb-3 dark:text-gray-200">📖 文章目錄</h3>
                   <nav className="space-y-1.5">
                     {headings.map((h, i) => (
                       <button key={i} onClick={() => scrollToHeading(h.id)}
-                        className={`block text-left w-full text-xs hover:text-amber-700 dark:hover:text-amber-400 transition truncate ${
-                          activeHeading === h.id ? "text-amber-700 dark:text-amber-400 font-semibold" : ""
-                        } ${h.level === 1 ? "font-medium text-stone-700 dark:text-stone-200" : h.level === 2 ? "pl-3 text-stone-500 dark:text-stone-400" : "pl-6 text-stone-400 dark:text-stone-500"}`}>
+                        className={`block text-left w-full text-xs hover:text-[var(--red)] dark:hover:text-[var(--yellow)] transition truncate ${
+                          activeHeading === h.id ? "text-[var(--red)] dark:text-[var(--yellow)] font-semibold" : ""
+                        } ${h.level === 1 ? "font-medium text-[var(--text-main)] dark:text-gray-200" : h.level === 2 ? "pl-3 text-[var(--text-soft)] dark:text-[var(--text-light)]" : "pl-6 text-[var(--text-light)] dark:text-[var(--text-soft)]"}`}>
                         {h.text}
                       </button>
                     ))}
@@ -413,25 +413,25 @@ export default function ArticleDetail() {
                 </div>
 
                 {/* Article stats mini card */}
-                <div className="mt-4 bg-white dark:bg-stone-800 rounded-xl shadow-sm p-4 border dark:border-stone-700">
-                  <h3 className="text-sm font-bold mb-2 dark:text-stone-200">📊 文章資訊</h3>
-                  <div className="space-y-1.5 text-xs text-stone-500 dark:text-stone-400">
-                    <div className="flex justify-between"><span>字數</span><span className="font-medium text-stone-700 dark:text-stone-200">{wordCount.toLocaleString()}</span></div>
-                    <div className="flex justify-between"><span>閱讀時間</span><span className="font-medium text-stone-700 dark:text-stone-200">~{readingTime} 分鐘</span></div>
-                    <div className="flex justify-between"><span>瀏覽次數</span><span className="font-medium text-stone-700 dark:text-stone-200">{article.views}</span></div>
-                    <div className="flex justify-between"><span>留言數</span><span className="font-medium text-stone-700 dark:text-stone-200">{comments.length}</span></div>
-                    <div className="flex justify-between"><span>發佈日期</span><span className="font-medium text-stone-700 dark:text-stone-200">{new Date(article.createdAt).toLocaleDateString("zh-TW")}</span></div>
+                <div className="mt-4 bg-white dark:bg-[#1a1a1a] rounded-[var(--radius-md)] shadow-sm p-4 border dark:border-[#333]">
+                  <h3 className="text-sm font-bold mb-2 dark:text-gray-200">📊 文章資訊</h3>
+                  <div className="space-y-1.5 text-xs text-[var(--text-soft)] dark:text-[var(--text-light)]">
+                    <div className="flex justify-between"><span>字數</span><span className="font-medium text-[var(--text-main)] dark:text-gray-200">{wordCount.toLocaleString()}</span></div>
+                    <div className="flex justify-between"><span>閱讀時間</span><span className="font-medium text-[var(--text-main)] dark:text-gray-200">~{readingTime} 分鐘</span></div>
+                    <div className="flex justify-between"><span>瀏覽次數</span><span className="font-medium text-[var(--text-main)] dark:text-gray-200">{article.views}</span></div>
+                    <div className="flex justify-between"><span>留言數</span><span className="font-medium text-[var(--text-main)] dark:text-gray-200">{comments.length}</span></div>
+                    <div className="flex justify-between"><span>發佈日期</span><span className="font-medium text-[var(--text-main)] dark:text-gray-200">{new Date(article.createdAt).toLocaleDateString("zh-TW")}</span></div>
                   </div>
                 </div>
 
                 {/* Quick actions */}
-                <div className="mt-4 bg-white dark:bg-stone-800 rounded-xl shadow-sm p-4 border dark:border-stone-700 space-y-2">
+                <div className="mt-4 bg-white dark:bg-[#1a1a1a] rounded-[var(--radius-md)] shadow-sm p-4 border dark:border-[#333] space-y-2">
                   <button onClick={toggleBookmark}
-                    className={`w-full text-left text-xs px-3 py-2 rounded-lg transition ${bookmarked ? "bg-amber-50 dark:bg-amber-900/30 text-amber-700" : "hover:bg-stone-50 dark:hover:bg-stone-700 text-stone-600 dark:text-stone-400"}`}>
+                    className={`w-full text-left text-xs px-3 py-2 rounded-lg transition ${bookmarked ? "bg-white dark:bg-[#222]/30 text-[var(--red)]" : "hover:bg-[var(--cream)] dark:hover:bg-[#333] text-[var(--text-soft)] dark:text-[var(--text-light)]"}`}>
                     {bookmarked ? "🔖 已收藏" : "📑 加入收藏"}
                   </button>
                   <button onClick={() => share("copy")}
-                    className="w-full text-left text-xs px-3 py-2 rounded-lg hover:bg-stone-50 dark:hover:bg-stone-700 text-stone-600 dark:text-stone-400 transition">
+                    className="w-full text-left text-xs px-3 py-2 rounded-lg hover:bg-[var(--cream)] dark:hover:bg-[#333] text-[var(--text-soft)] dark:text-[var(--text-light)] transition">
                     🔗 複製連結
                   </button>
                 </div>
@@ -444,14 +444,14 @@ export default function ArticleDetail() {
       {/* Mobile TOC overlay */}
       {showToc && headings.length > 2 && (
         <div className="lg:hidden fixed inset-0 z-50 bg-black/50" onClick={() => setShowToc(false)}>
-          <div className="absolute bottom-0 left-0 right-0 bg-white dark:bg-stone-800 rounded-t-2xl p-6 max-h-[60vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
-            <h3 className="text-lg font-bold mb-4 dark:text-stone-100">📖 文章目錄</h3>
+          <div className="absolute bottom-0 left-0 right-0 bg-white dark:bg-[#1a1a1a] rounded-t-2xl p-6 max-h-[60vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+            <h3 className="text-lg font-bold mb-4 dark:text-gray-100">📖 文章目錄</h3>
             <nav className="space-y-2">
               {headings.map((h, i) => (
                 <button key={i} onClick={() => scrollToHeading(h.id)}
-                  className={`block text-left w-full text-sm hover:text-amber-700 dark:hover:text-amber-400 transition ${
-                    activeHeading === h.id ? "text-amber-700 dark:text-amber-400 font-semibold" : ""
-                  } ${h.level === 1 ? "font-medium text-stone-700 dark:text-stone-200" : h.level === 2 ? "pl-4 text-stone-500 dark:text-stone-400" : "pl-8 text-stone-400"}`}>
+                  className={`block text-left w-full text-sm hover:text-[var(--red)] dark:hover:text-[var(--yellow)] transition ${
+                    activeHeading === h.id ? "text-[var(--red)] dark:text-[var(--yellow)] font-semibold" : ""
+                  } ${h.level === 1 ? "font-medium text-[var(--text-main)] dark:text-gray-200" : h.level === 2 ? "pl-4 text-[var(--text-soft)] dark:text-[var(--text-light)]" : "pl-8 text-[var(--text-light)]"}`}>
                   {h.text}
                 </button>
               ))}

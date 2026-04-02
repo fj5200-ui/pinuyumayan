@@ -1,10 +1,9 @@
 import type { NextConfig } from "next";
 
+const API_BACKEND = process.env.API_BACKEND_URL || "http://localhost:3001";
+
 const nextConfig: NextConfig = {
   images: { unoptimized: true },
-  env: {
-    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || "https://pinuyumayan-api.onrender.com",
-  },
   typescript: {
     ignoreBuildErrors: true,
   },
@@ -14,6 +13,14 @@ const nextConfig: NextConfig = {
   experimental: {
     workerThreads: false,
     cpus: 1,
+  },
+  async rewrites() {
+    return [
+      {
+        source: "/api/:path*",
+        destination: `${API_BACKEND}/api/:path*`,
+      },
+    ];
   },
 };
 

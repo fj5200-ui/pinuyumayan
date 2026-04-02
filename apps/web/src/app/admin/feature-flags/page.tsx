@@ -50,46 +50,46 @@ export default function FeatureFlagsPage() {
     <div>
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold dark:text-stone-100">🚩 Feature Flags</h1>
-          <p className="text-sm text-stone-500 mt-1">{enabledCount}/{flags.length} 個功能已啟用</p>
+          <h1 className="text-2xl font-bold dark:text-gray-100">🚩 Feature Flags</h1>
+          <p className="text-sm text-[var(--text-soft)] mt-1">{enabledCount}/{flags.length} 個功能已啟用</p>
         </div>
-        <button onClick={() => setShowAdd(!showAdd)} className="bg-amber-700 text-white px-4 py-2 rounded-lg hover:bg-amber-800 transition text-sm">+ 新增開關</button>
+        <button onClick={() => setShowAdd(!showAdd)} className="bg-[var(--red)] text-white px-4 py-2 rounded-lg hover:bg-[var(--red)] transition text-sm">+ 新增開關</button>
       </div>
 
       {showAdd && (
-        <div className="bg-white dark:bg-stone-800 rounded-xl border dark:border-stone-700 p-6 mb-6">
-          <h3 className="font-bold dark:text-stone-100 mb-4">新增功能開關</h3>
+        <div className="bg-white dark:bg-[#1a1a1a] rounded-[var(--radius-md)] border dark:border-[#333] p-6 mb-6">
+          <h3 className="font-bold dark:text-gray-100 mb-4">新增功能開關</h3>
           <div className="grid md:grid-cols-2 gap-4">
-            <div><label className="block text-sm font-medium mb-1 dark:text-stone-300">名稱</label>
-              <input value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} className="w-full px-3 py-2 border rounded-lg dark:border-stone-600 dark:bg-stone-700 dark:text-stone-100" placeholder="例：AI 翻譯助手" /></div>
-            <div><label className="block text-sm font-medium mb-1 dark:text-stone-300">Key</label>
-              <input value={form.key} onChange={e => setForm({ ...form, key: e.target.value })} className="w-full px-3 py-2 border rounded-lg dark:border-stone-600 dark:bg-stone-700 dark:text-stone-100 font-mono" placeholder="feature_xxx" /></div>
-            <div><label className="block text-sm font-medium mb-1 dark:text-stone-300">描述</label>
-              <input value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} className="w-full px-3 py-2 border rounded-lg dark:border-stone-600 dark:bg-stone-700 dark:text-stone-100" /></div>
-            <div><label className="block text-sm font-medium mb-1 dark:text-stone-300">範圍</label>
-              <select value={form.scope} onChange={e => setForm({ ...form, scope: e.target.value })} className="w-full px-3 py-2 border rounded-lg dark:border-stone-600 dark:bg-stone-700 dark:text-stone-100">
+            <div><label className="block text-sm font-medium mb-1 dark:text-[var(--text-light)]">名稱</label>
+              <input value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} className="w-full px-3 py-2 border rounded-lg dark:border-[#444] dark:bg-[#222] dark:text-gray-100" placeholder="例：AI 翻譯助手" /></div>
+            <div><label className="block text-sm font-medium mb-1 dark:text-[var(--text-light)]">Key</label>
+              <input value={form.key} onChange={e => setForm({ ...form, key: e.target.value })} className="w-full px-3 py-2 border rounded-lg dark:border-[#444] dark:bg-[#222] dark:text-gray-100 font-mono" placeholder="feature_xxx" /></div>
+            <div><label className="block text-sm font-medium mb-1 dark:text-[var(--text-light)]">描述</label>
+              <input value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} className="w-full px-3 py-2 border rounded-lg dark:border-[#444] dark:bg-[#222] dark:text-gray-100" /></div>
+            <div><label className="block text-sm font-medium mb-1 dark:text-[var(--text-light)]">範圍</label>
+              <select value={form.scope} onChange={e => setForm({ ...form, scope: e.target.value })} className="w-full px-3 py-2 border rounded-lg dark:border-[#444] dark:bg-[#222] dark:text-gray-100">
                 <option value="all">所有用戶</option><option value="admin">僅管理員</option><option value="editor">編輯者+</option><option value="beta">Beta 測試</option>
               </select></div>
           </div>
           <div className="flex gap-2 mt-4">
-            <button onClick={addFlag} className="bg-amber-700 text-white px-6 py-2 rounded-lg hover:bg-amber-800 text-sm">新增</button>
-            <button onClick={() => setShowAdd(false)} className="px-6 py-2 border rounded-lg dark:border-stone-600 dark:text-stone-300 text-sm">取消</button>
+            <button onClick={addFlag} className="bg-[var(--red)] text-white px-6 py-2 rounded-lg hover:bg-[var(--red)] text-sm">新增</button>
+            <button onClick={() => setShowAdd(false)} className="px-6 py-2 border rounded-lg dark:border-[#444] dark:text-[var(--text-light)] text-sm">取消</button>
           </div>
         </div>
       )}
 
       <div className="mb-4">
         <input value={filter} onChange={e => setFilter(e.target.value)} placeholder="搜尋功能名稱或 Key..."
-          className="w-full md:w-80 px-4 py-2 border rounded-lg dark:border-stone-600 dark:bg-stone-700 dark:text-stone-100" />
+          className="w-full md:w-80 px-4 py-2 border rounded-lg dark:border-[#444] dark:bg-[#222] dark:text-gray-100" />
       </div>
 
       <div className="space-y-3">
         {filtered.map(f => (
-          <div key={f.id} className="bg-white dark:bg-stone-800 rounded-xl border dark:border-stone-700 p-5 flex items-center justify-between">
+          <div key={f.id} className="bg-white dark:bg-[#1a1a1a] rounded-[var(--radius-md)] border dark:border-[#333] p-5 flex items-center justify-between">
             <div className="flex-1 mr-4">
               <div className="flex items-center gap-3">
-                <h3 className="font-bold dark:text-stone-100">{f.name}</h3>
-                <code className="text-xs bg-stone-100 dark:bg-stone-700 px-2 py-0.5 rounded font-mono text-stone-500 dark:text-stone-400">{f.key}</code>
+                <h3 className="font-bold dark:text-gray-100">{f.name}</h3>
+                <code className="text-xs bg-gray-100 dark:bg-[#222] px-2 py-0.5 rounded font-mono text-[var(--text-soft)] dark:text-[var(--text-light)]">{f.key}</code>
                 <span className={`text-xs px-2 py-0.5 rounded-full ${
                   f.scope === "all" ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300" :
                   f.scope === "admin" ? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300" :
@@ -97,12 +97,12 @@ export default function FeatureFlagsPage() {
                   "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300"
                 }`}>{f.scope}</span>
               </div>
-              <p className="text-sm text-stone-500 dark:text-stone-400 mt-1">{f.description}</p>
-              <p className="text-xs text-stone-400 mt-1">更新：{f.updatedAt}</p>
+              <p className="text-sm text-[var(--text-soft)] dark:text-[var(--text-light)] mt-1">{f.description}</p>
+              <p className="text-xs text-[var(--text-light)] mt-1">更新：{f.updatedAt}</p>
             </div>
             <div className="flex items-center gap-3">
               <button onClick={() => toggle(f.id)}
-                className={`relative inline-flex h-7 w-12 shrink-0 cursor-pointer rounded-full transition-colors ${f.enabled ? "bg-green-500" : "bg-stone-300 dark:bg-stone-600"}`}>
+                className={`relative inline-flex h-7 w-12 shrink-0 cursor-pointer rounded-full transition-colors ${f.enabled ? "bg-green-500" : "bg-gray-300 dark:bg-[#444]"}`}>
                 <span className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-lg ring-0 transition-transform mt-1 ${f.enabled ? "translate-x-6 ml-0.5" : "translate-x-0.5"}`} />
               </button>
               <button onClick={() => removeFlag(f.id)} className="text-red-400 hover:text-red-600 text-sm">刪除</button>

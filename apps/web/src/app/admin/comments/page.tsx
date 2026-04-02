@@ -19,21 +19,21 @@ export default function AdminComments() {
   return (
     <div>
       <div className="mb-6">
-        <h1 className="text-2xl font-bold dark:text-stone-100">💬 留言管理</h1>
-        <p className="text-sm text-stone-500">{comments.length} 則留言</p>
+        <h1 className="text-2xl font-bold dark:text-gray-100">💬 留言管理</h1>
+        <p className="text-sm text-[var(--text-soft)]">{comments.length} 則留言</p>
       </div>
-      {loading ? <div className="text-center py-10 text-stone-400">載入中...</div> : comments.length === 0 ? (
-        <div className="text-center py-20 text-stone-400">暫無留言</div>
+      {loading ? <div className="text-center py-10 text-[var(--text-light)]">載入中...</div> : comments.length === 0 ? (
+        <div className="text-center py-20 text-[var(--text-light)]">暫無留言</div>
       ) : (
         <div className="space-y-3">
           {comments.map(c => (
-            <div key={c.id} className="bg-white dark:bg-stone-800 rounded-xl border dark:border-stone-700 p-4">
+            <div key={c.id} className="bg-white dark:bg-[#1a1a1a] rounded-[var(--radius-md)] border dark:border-[#333] p-4">
               <div className="flex items-start justify-between">
                 <div className="flex-1">
-                  <p className="text-sm dark:text-stone-200">{c.content}</p>
-                  <div className="flex items-center gap-3 mt-2 text-xs text-stone-400">
+                  <p className="text-sm dark:text-gray-200">{c.content}</p>
+                  <div className="flex items-center gap-3 mt-2 text-xs text-[var(--text-light)]">
                     <span>👤 {c.authorName}</span>
-                    {c.authorRole && <span className="bg-stone-100 dark:bg-stone-700 px-2 py-0.5 rounded">{c.authorRole}</span>}
+                    {c.authorRole && <span className="bg-gray-100 dark:bg-[#222] px-2 py-0.5 rounded">{c.authorRole}</span>}
                     <span>📝 {c.articleTitle}</span>
                     <span>{new Date(c.createdAt).toLocaleDateString("zh-TW")}</span>
                   </div>

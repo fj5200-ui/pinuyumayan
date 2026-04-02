@@ -43,23 +43,23 @@ export default function AdminTribes() {
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <div><h1 className="text-2xl font-bold dark:text-stone-100">🏘️ 部落管理</h1><p className="text-sm text-stone-500">{tribes.length} 個部落</p></div>
-        <button onClick={() => openEditor()} className="bg-amber-700 text-white px-4 py-2 rounded-lg hover:bg-amber-800 transition text-sm">+ 新增部落</button>
+        <div><h1 className="text-2xl font-bold dark:text-gray-100">🏘️ 部落管理</h1><p className="text-sm text-[var(--text-soft)]">{tribes.length} 個部落</p></div>
+        <button onClick={() => openEditor()} className="bg-[var(--red)] text-white px-4 py-2 rounded-lg hover:bg-[var(--red)] transition text-sm">+ 新增部落</button>
       </div>
-      {loading ? <div className="text-center py-10 text-stone-400">載入中...</div> : (
+      {loading ? <div className="text-center py-10 text-[var(--text-light)]">載入中...</div> : (
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
           {tribes.map(t => (
-            <div key={t.id} className="bg-white dark:bg-stone-800 rounded-xl border dark:border-stone-700 p-5">
+            <div key={t.id} className="bg-white dark:bg-[#1a1a1a] rounded-[var(--radius-md)] border dark:border-[#333] p-5">
               <div className="flex items-start justify-between mb-3">
-                <div><h3 className="font-bold dark:text-stone-100">{t.name}</h3>{t.traditionalName && <p className="text-sm text-amber-600 dark:text-amber-400">{t.traditionalName}</p>}</div>
+                <div><h3 className="font-bold dark:text-gray-100">{t.name}</h3>{t.traditionalName && <p className="text-sm text-[var(--yellow)] dark:text-[var(--yellow)]">{t.traditionalName}</p>}</div>
                 <div className="flex gap-2">
-                  <button onClick={() => openEditor(t)} className="text-amber-700 text-xs hover:underline">編輯</button>
+                  <button onClick={() => openEditor(t)} className="text-[var(--red)] text-xs hover:underline">編輯</button>
                   <button onClick={() => del(t.id)} className="text-red-500 text-xs hover:underline">刪除</button>
                 </div>
               </div>
-              {t.region && <p className="text-xs text-stone-400 mb-1">📍 {t.region}</p>}
-              {t.population && <p className="text-xs text-stone-400 mb-2">👥 {t.population?.toLocaleString()}</p>}
-              <p className="text-sm text-stone-500 dark:text-stone-400 line-clamp-2">{t.description}</p>
+              {t.region && <p className="text-xs text-[var(--text-light)] mb-1">📍 {t.region}</p>}
+              {t.population && <p className="text-xs text-[var(--text-light)] mb-2">👥 {t.population?.toLocaleString()}</p>}
+              <p className="text-sm text-[var(--text-soft)] dark:text-[var(--text-light)] line-clamp-2">{t.description}</p>
             </div>
           ))}
         </div>
@@ -67,21 +67,21 @@ export default function AdminTribes() {
       <Modal open={showEditor} onClose={() => setShowEditor(false)} title={editItem ? "編輯部落" : "新增部落"}>
         <div className="space-y-3">
           {[{ k: "name", l: "名稱" }, { k: "traditionalName", l: "傳統名稱" }, { k: "region", l: "地區" }].map(f => (
-            <div key={f.k}><label className="block text-sm font-medium mb-1 dark:text-stone-300">{f.l}</label>
-              <input value={(form as any)[f.k]} onChange={e => setForm({ ...form, [f.k]: e.target.value })} className="w-full px-3 py-2 border rounded-lg dark:border-stone-600 dark:bg-stone-700 dark:text-stone-100" /></div>
+            <div key={f.k}><label className="block text-sm font-medium mb-1 dark:text-[var(--text-light)]">{f.l}</label>
+              <input value={(form as any)[f.k]} onChange={e => setForm({ ...form, [f.k]: e.target.value })} className="w-full px-3 py-2 border rounded-lg dark:border-[#444] dark:bg-[#222] dark:text-gray-100" /></div>
           ))}
-          <div><label className="block text-sm font-medium mb-1 dark:text-stone-300">簡介</label>
-            <textarea value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} rows={3} className="w-full px-3 py-2 border rounded-lg dark:border-stone-600 dark:bg-stone-700 dark:text-stone-100" /></div>
-          <div><label className="block text-sm font-medium mb-1 dark:text-stone-300">歷史</label>
-            <textarea value={form.history} onChange={e => setForm({ ...form, history: e.target.value })} rows={3} className="w-full px-3 py-2 border rounded-lg dark:border-stone-600 dark:bg-stone-700 dark:text-stone-100" /></div>
+          <div><label className="block text-sm font-medium mb-1 dark:text-[var(--text-light)]">簡介</label>
+            <textarea value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} rows={3} className="w-full px-3 py-2 border rounded-lg dark:border-[#444] dark:bg-[#222] dark:text-gray-100" /></div>
+          <div><label className="block text-sm font-medium mb-1 dark:text-[var(--text-light)]">歷史</label>
+            <textarea value={form.history} onChange={e => setForm({ ...form, history: e.target.value })} rows={3} className="w-full px-3 py-2 border rounded-lg dark:border-[#444] dark:bg-[#222] dark:text-gray-100" /></div>
           <div className="grid grid-cols-3 gap-3">
-            <div><label className="block text-sm font-medium mb-1 dark:text-stone-300">緯度</label><input value={form.latitude} onChange={e => setForm({ ...form, latitude: e.target.value })} className="w-full px-3 py-2 border rounded-lg dark:border-stone-600 dark:bg-stone-700 dark:text-stone-100" /></div>
-            <div><label className="block text-sm font-medium mb-1 dark:text-stone-300">經度</label><input value={form.longitude} onChange={e => setForm({ ...form, longitude: e.target.value })} className="w-full px-3 py-2 border rounded-lg dark:border-stone-600 dark:bg-stone-700 dark:text-stone-100" /></div>
-            <div><label className="block text-sm font-medium mb-1 dark:text-stone-300">人口</label><input value={form.population} onChange={e => setForm({ ...form, population: e.target.value })} className="w-full px-3 py-2 border rounded-lg dark:border-stone-600 dark:bg-stone-700 dark:text-stone-100" /></div>
+            <div><label className="block text-sm font-medium mb-1 dark:text-[var(--text-light)]">緯度</label><input value={form.latitude} onChange={e => setForm({ ...form, latitude: e.target.value })} className="w-full px-3 py-2 border rounded-lg dark:border-[#444] dark:bg-[#222] dark:text-gray-100" /></div>
+            <div><label className="block text-sm font-medium mb-1 dark:text-[var(--text-light)]">經度</label><input value={form.longitude} onChange={e => setForm({ ...form, longitude: e.target.value })} className="w-full px-3 py-2 border rounded-lg dark:border-[#444] dark:bg-[#222] dark:text-gray-100" /></div>
+            <div><label className="block text-sm font-medium mb-1 dark:text-[var(--text-light)]">人口</label><input value={form.population} onChange={e => setForm({ ...form, population: e.target.value })} className="w-full px-3 py-2 border rounded-lg dark:border-[#444] dark:bg-[#222] dark:text-gray-100" /></div>
           </div>
           <div className="flex gap-3 pt-2">
-            <button onClick={save} className="bg-amber-700 text-white px-6 py-2 rounded-lg hover:bg-amber-800">儲存</button>
-            <button onClick={() => setShowEditor(false)} className="px-6 py-2 rounded-lg border dark:border-stone-600 dark:text-stone-300">取消</button>
+            <button onClick={save} className="bg-[var(--red)] text-white px-6 py-2 rounded-lg hover:bg-[var(--red)]">儲存</button>
+            <button onClick={() => setShowEditor(false)} className="px-6 py-2 rounded-lg border dark:border-[#444] dark:text-[var(--text-light)]">取消</button>
           </div>
         </div>
       </Modal>

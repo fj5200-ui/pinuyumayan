@@ -63,49 +63,49 @@ export default function AdminMapMarkers() {
   return (
     <div>
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-6">
-        <div><h1 className="text-2xl font-bold dark:text-stone-100">🗺️ 地圖標記管理</h1><p className="text-sm text-stone-500">{markers.length} 個標記</p></div>
-        <button onClick={() => openEditor()} className="bg-amber-700 text-white px-4 py-2 rounded-lg hover:bg-amber-800 transition text-sm">+ 新增標記</button>
+        <div><h1 className="text-2xl font-bold dark:text-gray-100">🗺️ 地圖標記管理</h1><p className="text-sm text-[var(--text-soft)]">{markers.length} 個標記</p></div>
+        <button onClick={() => openEditor()} className="bg-[var(--red)] text-white px-4 py-2 rounded-lg hover:bg-[var(--red)] transition text-sm">+ 新增標記</button>
       </div>
 
       {/* Type filter */}
       <div className="flex flex-wrap gap-2 mb-4">
-        <button onClick={() => setFilterType("")} className={`text-xs px-3 py-1.5 rounded-full border transition ${!filterType ? "bg-amber-100 border-amber-300 text-amber-700 dark:bg-amber-900/30 dark:border-amber-700 dark:text-amber-300" : "dark:border-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-700"}`}>
+        <button onClick={() => setFilterType("")} className={`text-xs px-3 py-1.5 rounded-full border transition ${!filterType ? "bg-[rgba(153,27,27,0.06)] border-amber-300 text-[var(--red)] dark:bg-[#222]/30 dark:border-amber-700 dark:text-[var(--yellow)]" : "dark:border-[#444] dark:text-[var(--text-light)] hover:bg-gray-100 dark:hover:bg-[#333]"}`}>
           全部 ({markers.length})
         </button>
         {MARKER_TYPES.map(t => {
           const count = markers.filter(m => m.type === t).length;
-          return <button key={t} onClick={() => setFilterType(t)} className={`text-xs px-3 py-1.5 rounded-full border transition ${filterType === t ? "bg-amber-100 border-amber-300 text-amber-700 dark:bg-amber-900/30 dark:border-amber-700 dark:text-amber-300" : "dark:border-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-700"}`}>
+          return <button key={t} onClick={() => setFilterType(t)} className={`text-xs px-3 py-1.5 rounded-full border transition ${filterType === t ? "bg-[rgba(153,27,27,0.06)] border-amber-300 text-[var(--red)] dark:bg-[#222]/30 dark:border-amber-700 dark:text-[var(--yellow)]" : "dark:border-[#444] dark:text-[var(--text-light)] hover:bg-gray-100 dark:hover:bg-[#333]"}`}>
             {TYPE_ICONS[t]} {TYPE_LABELS[t]} ({count})
           </button>;
         })}
       </div>
 
-      {loading ? <div className="text-center py-10 text-stone-400">載入中...</div> : filtered.length === 0 ? (
-        <div className="text-center py-16 text-stone-400">
+      {loading ? <div className="text-center py-10 text-[var(--text-light)]">載入中...</div> : filtered.length === 0 ? (
+        <div className="text-center py-16 text-[var(--text-light)]">
           <p className="text-4xl mb-2">🗺️</p>
           <p className="font-bold">尚無地圖標記</p>
         </div>
       ) : (
-        <div className="overflow-x-auto bg-white dark:bg-stone-800 rounded-xl border dark:border-stone-700">
+        <div className="overflow-x-auto bg-white dark:bg-[#1a1a1a] rounded-[var(--radius-md)] border dark:border-[#333]">
           <table className="w-full text-sm">
-            <thead className="bg-stone-50 dark:bg-stone-750 border-b dark:border-stone-700">
+            <thead className="bg-[var(--cream)] dark:bg-stone-750 border-b dark:border-[#333]">
               <tr>
-                <th className="text-left px-4 py-3 font-bold text-stone-500">標記</th>
-                <th className="text-left px-4 py-3 font-bold text-stone-500">類型</th>
-                <th className="text-left px-4 py-3 font-bold text-stone-500 hidden md:table-cell">座標</th>
-                <th className="text-center px-4 py-3 font-bold text-stone-500">顯示</th>
-                <th className="text-right px-4 py-3 font-bold text-stone-500">操作</th>
+                <th className="text-left px-4 py-3 font-bold text-[var(--text-soft)]">標記</th>
+                <th className="text-left px-4 py-3 font-bold text-[var(--text-soft)]">類型</th>
+                <th className="text-left px-4 py-3 font-bold text-[var(--text-soft)] hidden md:table-cell">座標</th>
+                <th className="text-center px-4 py-3 font-bold text-[var(--text-soft)]">顯示</th>
+                <th className="text-right px-4 py-3 font-bold text-[var(--text-soft)]">操作</th>
               </tr>
             </thead>
             <tbody>
               {filtered.map(m => (
-                <tr key={m.id} className="border-b dark:border-stone-700 hover:bg-stone-50 dark:hover:bg-stone-750 transition">
+                <tr key={m.id} className="border-b dark:border-[#333] hover:bg-[var(--cream)] dark:hover:bg-stone-750 transition">
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2">
                       <span className="text-xl" style={{ filter: m.visible ? "none" : "grayscale(1) opacity(0.5)" }}>{m.icon}</span>
                       <div>
-                        <p className="font-bold dark:text-stone-100">{m.name}</p>
-                        <p className="text-xs text-stone-400 line-clamp-1">{m.description}</p>
+                        <p className="font-bold dark:text-gray-100">{m.name}</p>
+                        <p className="text-xs text-[var(--text-light)] line-clamp-1">{m.description}</p>
                       </div>
                     </div>
                   </td>
@@ -114,14 +114,14 @@ export default function AdminMapMarkers() {
                       {TYPE_LABELS[m.type] || m.type}
                     </span>
                   </td>
-                  <td className="px-4 py-3 hidden md:table-cell text-xs text-stone-400 font-mono">
+                  <td className="px-4 py-3 hidden md:table-cell text-xs text-[var(--text-light)] font-mono">
                     {m.latitude?.toFixed(4)}, {m.longitude?.toFixed(4)}
                   </td>
                   <td className="px-4 py-3 text-center">
-                    <span className={`inline-block w-3 h-3 rounded-full ${m.visible ? "bg-green-400" : "bg-stone-300"}`} title={m.visible ? "可見" : "隱藏"} />
+                    <span className={`inline-block w-3 h-3 rounded-full ${m.visible ? "bg-green-400" : "bg-gray-300"}`} title={m.visible ? "可見" : "隱藏"} />
                   </td>
                   <td className="px-4 py-3 text-right">
-                    <button onClick={() => openEditor(m)} className="text-amber-700 text-xs hover:underline mr-3">編輯</button>
+                    <button onClick={() => openEditor(m)} className="text-[var(--red)] text-xs hover:underline mr-3">編輯</button>
                     <button onClick={() => del(m.id)} className="text-red-500 text-xs hover:underline">刪除</button>
                   </td>
                 </tr>
@@ -134,36 +134,36 @@ export default function AdminMapMarkers() {
       <Modal open={showEditor} onClose={() => setShowEditor(false)} title={editItem ? "編輯標記" : "新增標記"}>
         <div className="space-y-3">
           <div className="grid grid-cols-2 gap-3">
-            <div><label className="block text-sm font-medium mb-1 dark:text-stone-300">名稱 *</label>
-              <input value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} className="w-full px-3 py-2 border rounded-lg dark:border-stone-600 dark:bg-stone-700 dark:text-stone-100" /></div>
-            <div><label className="block text-sm font-medium mb-1 dark:text-stone-300">類型</label>
-              <select value={form.type} onChange={e => setForm({ ...form, type: e.target.value })} className="w-full px-3 py-2 border rounded-lg dark:border-stone-600 dark:bg-stone-700 dark:text-stone-100">
+            <div><label className="block text-sm font-medium mb-1 dark:text-[var(--text-light)]">名稱 *</label>
+              <input value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} className="w-full px-3 py-2 border rounded-lg dark:border-[#444] dark:bg-[#222] dark:text-gray-100" /></div>
+            <div><label className="block text-sm font-medium mb-1 dark:text-[var(--text-light)]">類型</label>
+              <select value={form.type} onChange={e => setForm({ ...form, type: e.target.value })} className="w-full px-3 py-2 border rounded-lg dark:border-[#444] dark:bg-[#222] dark:text-gray-100">
                 {MARKER_TYPES.map(t => <option key={t} value={t}>{TYPE_ICONS[t]} {TYPE_LABELS[t]}</option>)}
               </select></div>
           </div>
-          <div><label className="block text-sm font-medium mb-1 dark:text-stone-300">描述</label>
-            <textarea value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} rows={2} className="w-full px-3 py-2 border rounded-lg dark:border-stone-600 dark:bg-stone-700 dark:text-stone-100" /></div>
+          <div><label className="block text-sm font-medium mb-1 dark:text-[var(--text-light)]">描述</label>
+            <textarea value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} rows={2} className="w-full px-3 py-2 border rounded-lg dark:border-[#444] dark:bg-[#222] dark:text-gray-100" /></div>
           <div className="grid grid-cols-2 gap-3">
-            <div><label className="block text-sm font-medium mb-1 dark:text-stone-300">緯度</label>
-              <input value={form.latitude} onChange={e => setForm({ ...form, latitude: e.target.value })} className="w-full px-3 py-2 border rounded-lg dark:border-stone-600 dark:bg-stone-700 dark:text-stone-100" placeholder="22.75" /></div>
-            <div><label className="block text-sm font-medium mb-1 dark:text-stone-300">經度</label>
-              <input value={form.longitude} onChange={e => setForm({ ...form, longitude: e.target.value })} className="w-full px-3 py-2 border rounded-lg dark:border-stone-600 dark:bg-stone-700 dark:text-stone-100" placeholder="121.15" /></div>
+            <div><label className="block text-sm font-medium mb-1 dark:text-[var(--text-light)]">緯度</label>
+              <input value={form.latitude} onChange={e => setForm({ ...form, latitude: e.target.value })} className="w-full px-3 py-2 border rounded-lg dark:border-[#444] dark:bg-[#222] dark:text-gray-100" placeholder="22.75" /></div>
+            <div><label className="block text-sm font-medium mb-1 dark:text-[var(--text-light)]">經度</label>
+              <input value={form.longitude} onChange={e => setForm({ ...form, longitude: e.target.value })} className="w-full px-3 py-2 border rounded-lg dark:border-[#444] dark:bg-[#222] dark:text-gray-100" placeholder="121.15" /></div>
           </div>
           <div className="grid grid-cols-3 gap-3">
-            <div><label className="block text-sm font-medium mb-1 dark:text-stone-300">圖示</label>
-              <input value={form.icon} onChange={e => setForm({ ...form, icon: e.target.value })} className="w-full px-3 py-2 border rounded-lg dark:border-stone-600 dark:bg-stone-700 dark:text-stone-100 text-center text-xl" /></div>
-            <div><label className="block text-sm font-medium mb-1 dark:text-stone-300">顏色</label>
-              <input type="color" value={form.color} onChange={e => setForm({ ...form, color: e.target.value })} className="w-full h-10 border rounded-lg dark:border-stone-600 cursor-pointer" /></div>
+            <div><label className="block text-sm font-medium mb-1 dark:text-[var(--text-light)]">圖示</label>
+              <input value={form.icon} onChange={e => setForm({ ...form, icon: e.target.value })} className="w-full px-3 py-2 border rounded-lg dark:border-[#444] dark:bg-[#222] dark:text-gray-100 text-center text-xl" /></div>
+            <div><label className="block text-sm font-medium mb-1 dark:text-[var(--text-light)]">顏色</label>
+              <input type="color" value={form.color} onChange={e => setForm({ ...form, color: e.target.value })} className="w-full h-10 border rounded-lg dark:border-[#444] cursor-pointer" /></div>
             <div className="flex items-end pb-1">
               <label className="flex items-center gap-2 cursor-pointer">
                 <input type="checkbox" checked={form.visible} onChange={e => setForm({ ...form, visible: e.target.checked })} className="w-4 h-4 rounded" />
-                <span className="text-sm dark:text-stone-300">可見</span>
+                <span className="text-sm dark:text-[var(--text-light)]">可見</span>
               </label>
             </div>
           </div>
           <div className="flex gap-3 pt-2">
-            <button onClick={save} className="bg-amber-700 text-white px-6 py-2 rounded-lg hover:bg-amber-800">儲存</button>
-            <button onClick={() => setShowEditor(false)} className="px-6 py-2 rounded-lg border dark:border-stone-600 dark:text-stone-300">取消</button>
+            <button onClick={save} className="bg-[var(--red)] text-white px-6 py-2 rounded-lg hover:bg-[var(--red)]">儲存</button>
+            <button onClick={() => setShowEditor(false)} className="px-6 py-2 rounded-lg border dark:border-[#444] dark:text-[var(--text-light)]">取消</button>
           </div>
         </div>
       </Modal>

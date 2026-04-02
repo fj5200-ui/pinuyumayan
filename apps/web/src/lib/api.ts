@@ -1,10 +1,18 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+// API client — uses relative path so Next.js rewrites proxy to NestJS backend
+// Browser: /api/* → Next.js → rewrite → http://localhost:3001/api/*
 
 async function fetcher<T>(path: string, options?: RequestInit): Promise<T> {
   const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
   const headers: HeadersInit = { "Content-Type": "application/json", ...(options?.headers || {}) };
   if (token) (headers as Record<string, string>)["Authorization"] = `Bearer ${token}`;
-  const res = await fetch(`${API_URL}${path}`, { ...options, headers });
+
+  // Use relative path for browser (proxied via Next.js rewrites)
+  // Use absolute URL for SSR (server-side needs full URL)
+  const base = typeof window === "undefined"
+    ? (process.env.API_BACKEND_URL || "http://localhost:3001")
+    : "";
+
+  const res = await fetch(`${base}${path}`, { ...options, headers });
   if (!res.ok) {
     const err = await res.json().catch(() => ({ message: res.statusText }));
     throw new Error(err.message || "API Error");

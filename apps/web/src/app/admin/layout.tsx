@@ -36,42 +36,42 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const { user, isAdmin, loading } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  if (loading) return <div className="flex items-center justify-center min-h-screen"><div className="animate-spin w-8 h-8 border-4 border-amber-600 border-t-transparent rounded-full" /></div>;
+  if (loading) return <div className="flex items-center justify-center min-h-screen"><div className="animate-spin w-8 h-8 border-4 border-[var(--red)] border-t-transparent rounded-full" /></div>;
   if (!user || !isAdmin) { router.push("/login"); return null; }
 
   return (
     <div className="flex min-h-[calc(100vh-64px)]">
       {/* Mobile sidebar toggle */}
-      <button onClick={() => setSidebarOpen(!sidebarOpen)} className="md:hidden fixed bottom-4 right-4 z-50 bg-amber-700 text-white p-3 rounded-full shadow-lg">
+      <button onClick={() => setSidebarOpen(!sidebarOpen)} className="md:hidden fixed bottom-4 right-4 z-50 bg-[var(--red)] text-white p-3 rounded-full shadow-lg">
         {sidebarOpen ? "✕" : "☰"}
       </button>
 
       {/* Sidebar */}
-      <aside className={`${sidebarOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0 fixed md:sticky top-16 left-0 z-40 w-64 bg-white dark:bg-stone-900 border-r dark:border-stone-700 h-[calc(100vh-64px)] overflow-y-auto transition-transform`}>
-        <div className="p-4 border-b dark:border-stone-700">
-          <h2 className="font-bold text-lg text-stone-800 dark:text-stone-100">⚙️ 管理後台</h2>
-          <p className="text-xs text-stone-400 mt-1">{user.name} ({user.role})</p>
+      <aside className={`${sidebarOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0 fixed md:sticky top-16 left-0 z-40 w-64 bg-white dark:bg-[#111] border-r dark:border-[#333] h-[calc(100vh-64px)] overflow-y-auto transition-transform`}>
+        <div className="p-4 border-b dark:border-[#333]">
+          <h2 className="font-bold text-lg text-[var(--text-main)] dark:text-gray-100">⚙️ 管理後台</h2>
+          <p className="text-xs text-[var(--text-light)] mt-1">{user.name} ({user.role})</p>
         </div>
         <nav className="p-2">
           {MENU.map((m, i) => {
             if ((m as any).type === "divider") {
-              return <p key={i} className="text-xs font-bold text-stone-400 dark:text-stone-500 uppercase tracking-wider mt-4 mb-1 px-4">{m.label}</p>;
+              return <p key={i} className="text-xs font-bold text-[var(--text-light)] dark:text-[var(--text-soft)] uppercase tracking-wider mt-4 mb-1 px-4">{m.label}</p>;
             }
             const item = m as { href: string; label: string; icon: string };
             return (
               <Link key={item.href} href={item.href} onClick={() => setSidebarOpen(false)}
                 className={`flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition mb-0.5 ${
                   (item.href === "/admin" ? pathname === "/admin" : pathname.startsWith(item.href))
-                    ? "bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-300"
-                    : "text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800"
+                    ? "bg-[rgba(153,27,27,0.06)] dark:bg-[#222]/30 text-[var(--red)] dark:text-[var(--yellow)]"
+                    : "text-[var(--text-soft)] dark:text-[var(--text-light)] hover:bg-gray-100 dark:hover:bg-[#1a1a1a]"
                 }`}>
                 <span className="text-base">{item.icon}</span>{item.label}
               </Link>
             );
           })}
         </nav>
-        <div className="p-4 border-t dark:border-stone-700 mt-auto">
-          <Link href="/" className="flex items-center gap-2 text-sm text-stone-500 hover:text-amber-700 transition">
+        <div className="p-4 border-t dark:border-[#333] mt-auto">
+          <Link href="/" className="flex items-center gap-2 text-sm text-[var(--text-soft)] hover:text-[var(--red)] transition">
             ← 回到前台
           </Link>
         </div>
@@ -81,7 +81,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       {sidebarOpen && <div className="fixed inset-0 bg-black/50 z-30 md:hidden" onClick={() => setSidebarOpen(false)} />}
 
       {/* Content */}
-      <main className="flex-1 min-w-0 bg-stone-50 dark:bg-stone-900">
+      <main className="flex-1 min-w-0 bg-[var(--cream)] dark:bg-[#111]">
         <div className="p-6 max-w-7xl mx-auto">
           {children}
         </div>

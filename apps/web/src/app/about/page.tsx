@@ -28,7 +28,7 @@ const TECH_STACK = [
   ]},
   { cat: "基礎設施", items: [
     { name: "PostgreSQL 17", desc: "Supabase 雲端資料庫", color: "bg-blue-800 text-white" },
-    { name: "Vercel", desc: "前端部署", color: "bg-stone-800 text-white" },
+    { name: "Vercel", desc: "前端部署", color: "bg-[#1a1a1a] text-white" },
     { name: "Render", desc: "API 部署", color: "bg-emerald-600 text-white" },
   ]},
 ];
@@ -58,10 +58,10 @@ export default function AboutPage() {
   return (
     <div className="min-h-screen">
       {/* Hero */}
-      <section className="bg-gradient-to-br from-amber-800 via-amber-700 to-orange-600 dark:from-stone-900 dark:via-amber-900/60 dark:to-stone-900 text-white py-20 relative overflow-hidden">
+      <section className="bg-gradient-to-br from-[var(--red)] via-[var(--yellow)] to-[var(--yellow)] dark:from-[#111] dark:via-[#222]/60 dark:to-[#111] text-white py-20 relative overflow-hidden">
         <div className="absolute inset-0 opacity-10" style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0h20v20H0V0zm20 20h20v20H20V20z' fill='%23ffffff' fill-opacity='.15'/%3E%3C/svg%3E\")" }} />
         <div className="max-w-4xl mx-auto px-4 text-center relative z-10">
-          <p className="text-amber-200 text-lg mb-4 tracking-wider">About Pinuyumayan</p>
+          <p className="text-white/80 text-lg mb-4 tracking-wider">About Pinuyumayan</p>
           <h1 className="text-5xl md:text-6xl font-bold mb-6">🌾 關於我們</h1>
           <p className="text-xl text-white/85 max-w-2xl mx-auto leading-relaxed">
             Pinuyumayan（卑南族入口網）致力於以數位科技保存、推廣與傳承卑南族豐富的文化遺產
@@ -74,8 +74,8 @@ export default function AboutPage() {
         {/* Mission */}
         <section className="grid md:grid-cols-2 gap-12 items-center">
           <div>
-            <h2 className="text-3xl font-bold text-stone-800 dark:text-stone-100 mb-4">🎯 使命與願景</h2>
-            <p className="text-stone-600 dark:text-stone-300 leading-relaxed mb-6">
+            <h2 className="text-3xl font-bold text-[var(--text-main)] dark:text-gray-100 mb-4">🎯 使命與願景</h2>
+            <p className="text-[var(--text-soft)] dark:text-[var(--text-light)] leading-relaxed mb-6">
               我們相信，每一個語言、每一段歷史、每一首古調，都值得被記錄與傳承。
               Pinuyumayan 以現代數位技術為橋樑，連結傳統智慧與當代社會，
               讓卑南族的文化在時代的洪流中永續發展。
@@ -91,14 +91,14 @@ export default function AboutPage() {
                 <div key={v.label} className="flex gap-3 items-start group">
                   <span className="text-2xl shrink-0 group-hover:scale-110 transition-transform">{v.icon}</span>
                   <div>
-                    <p className="font-bold text-stone-800 dark:text-stone-100">{v.label}</p>
-                    <p className="text-sm text-stone-500 dark:text-stone-400">{v.desc}</p>
+                    <p className="font-bold text-[var(--text-main)] dark:text-gray-100">{v.label}</p>
+                    <p className="text-sm text-[var(--text-soft)] dark:text-[var(--text-light)]">{v.desc}</p>
                   </div>
                 </div>
               ))}
             </div>
           </div>
-          <div className="bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-2xl p-8 border border-amber-200 dark:border-amber-800">
+          <div className="bg-gradient-to-br from-white to-white dark:from-[#222]/20 dark:to-[#222]/20 rounded-[var(--radius-md)] p-8 border border-amber-200 dark:border-amber-800">
             <p className="text-center text-6xl mb-6">🌾</p>
             <div className="grid grid-cols-2 gap-4">
               {[
@@ -107,10 +107,10 @@ export default function AboutPage() {
                 { n: stats?.articles || 6, l: "文化文章", icon: "📝", suffix: "+" },
                 { n: stats?.events || 6, l: "活動祭典", icon: "🎉", suffix: "+" },
               ].map(s => (
-                <div key={s.l} className="text-center p-4 bg-white/80 dark:bg-stone-800/80 rounded-xl">
+                <div key={s.l} className="text-center p-4 bg-white/80 dark:bg-[#1a1a1a]/80 rounded-[var(--radius-md)]">
                   <p className="text-2xl mb-1">{s.icon}</p>
-                  <p className="text-2xl font-bold text-amber-700 dark:text-amber-400">{s.n}{(s as any).suffix || ""}</p>
-                  <p className="text-xs text-stone-500 dark:text-stone-400">{s.l}</p>
+                  <p className="text-2xl font-bold text-[var(--red)] dark:text-[var(--yellow)]">{s.n}{(s as any).suffix || ""}</p>
+                  <p className="text-xs text-[var(--text-soft)] dark:text-[var(--text-light)]">{s.l}</p>
                 </div>
               ))}
             </div>
@@ -119,16 +119,16 @@ export default function AboutPage() {
 
         {/* Features grid */}
         <section>
-          <h2 className="text-3xl font-bold text-stone-800 dark:text-stone-100 mb-2 text-center">✨ 平台功能</h2>
-          <p className="text-stone-500 dark:text-stone-400 text-center mb-8">涵蓋文化保存、語言學習、社群互動、內容管理的全方位平台</p>
+          <h2 className="text-3xl font-bold text-[var(--text-main)] dark:text-gray-100 mb-2 text-center">✨ 平台功能</h2>
+          <p className="text-[var(--text-soft)] dark:text-[var(--text-light)] text-center mb-8">涵蓋文化保存、語言學習、社群互動、內容管理的全方位平台</p>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {FEATURES.map(f => (
-              <div key={f.name} className="bg-white dark:bg-stone-800 rounded-xl border dark:border-stone-700 p-5 hover:shadow-lg hover:-translate-y-0.5 transition-all group">
+              <div key={f.name} className="bg-white dark:bg-[#1a1a1a] rounded-[var(--radius-md)] border dark:border-[#333] p-5 hover:shadow-lg hover:-translate-y-0.5 transition-all group">
                 <div className="flex items-center gap-3 mb-2">
                   <span className="text-2xl group-hover:scale-110 transition-transform">{f.icon}</span>
-                  <h3 className="font-bold text-stone-800 dark:text-stone-100">{f.name}</h3>
+                  <h3 className="font-bold text-[var(--text-main)] dark:text-gray-100">{f.name}</h3>
                 </div>
-                <p className="text-sm text-stone-500 dark:text-stone-400">{f.desc}</p>
+                <p className="text-sm text-[var(--text-soft)] dark:text-[var(--text-light)]">{f.desc}</p>
               </div>
             ))}
           </div>
@@ -136,17 +136,17 @@ export default function AboutPage() {
 
         {/* Tech stack */}
         <section>
-          <h2 className="text-3xl font-bold text-stone-800 dark:text-stone-100 mb-2 text-center">🛠️ 技術架構</h2>
-          <p className="text-stone-500 dark:text-stone-400 text-center mb-8">採用現代化全端技術堆疊打造</p>
+          <h2 className="text-3xl font-bold text-[var(--text-main)] dark:text-gray-100 mb-2 text-center">🛠️ 技術架構</h2>
+          <p className="text-[var(--text-soft)] dark:text-[var(--text-light)] text-center mb-8">採用現代化全端技術堆疊打造</p>
           <div className="grid md:grid-cols-3 gap-6">
             {TECH_STACK.map(group => (
-              <div key={group.cat} className="bg-white dark:bg-stone-800 rounded-xl border dark:border-stone-700 p-6">
-                <h3 className="font-bold text-stone-800 dark:text-stone-100 mb-4 text-lg">{group.cat}</h3>
+              <div key={group.cat} className="bg-white dark:bg-[#1a1a1a] rounded-[var(--radius-md)] border dark:border-[#333] p-6">
+                <h3 className="font-bold text-[var(--text-main)] dark:text-gray-100 mb-4 text-lg">{group.cat}</h3>
                 <div className="space-y-3">
                   {group.items.map(item => (
                     <div key={item.name} className="flex items-center gap-3">
                       <span className={`${item.color} text-xs font-bold px-2.5 py-1 rounded-lg shrink-0`}>{item.name}</span>
-                      <span className="text-sm text-stone-500 dark:text-stone-400">{item.desc}</span>
+                      <span className="text-sm text-[var(--text-soft)] dark:text-[var(--text-light)]">{item.desc}</span>
                     </div>
                   ))}
                 </div>
@@ -161,10 +161,10 @@ export default function AboutPage() {
               { n: 22, l: "資料表", icon: "🗄️" },
               { n: 21, l: "API 通過", icon: "✅" },
             ].map(s => (
-              <div key={s.l} className="text-center p-5 bg-stone-50 dark:bg-stone-800 rounded-xl border dark:border-stone-700">
+              <div key={s.l} className="text-center p-5 bg-[var(--cream)] dark:bg-[#1a1a1a] rounded-[var(--radius-md)] border dark:border-[#333]">
                 <p className="text-lg mb-1">{s.icon}</p>
-                <p className="text-3xl font-bold text-amber-700 dark:text-amber-400">{s.n}</p>
-                <p className="text-xs text-stone-500 dark:text-stone-400">{s.l}</p>
+                <p className="text-3xl font-bold text-[var(--red)] dark:text-[var(--yellow)]">{s.n}</p>
+                <p className="text-xs text-[var(--text-soft)] dark:text-[var(--text-light)]">{s.l}</p>
               </div>
             ))}
           </div>
@@ -172,24 +172,24 @@ export default function AboutPage() {
 
         {/* Timeline */}
         <section>
-          <h2 className="text-3xl font-bold text-stone-800 dark:text-stone-100 mb-2 text-center">📅 開發歷程</h2>
-          <p className="text-stone-500 dark:text-stone-400 text-center mb-8">從零到一，從基礎功能到完整文化平台</p>
+          <h2 className="text-3xl font-bold text-[var(--text-main)] dark:text-gray-100 mb-2 text-center">📅 開發歷程</h2>
+          <p className="text-[var(--text-soft)] dark:text-[var(--text-light)] text-center mb-8">從零到一，從基礎功能到完整文化平台</p>
           <div className="relative">
             {/* Vertical line */}
-            <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-amber-200 dark:bg-amber-800 hidden md:block" />
+            <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-[rgba(217,119,6,0.1)] dark:bg-[var(--red)] hidden md:block" />
             <div className="space-y-6">
               {MILESTONES.map((m, i) => (
                 <div key={m.ver} className="flex gap-4 md:gap-6 items-start group">
-                  <div className="w-12 h-12 rounded-xl bg-amber-100 dark:bg-amber-900/30 border-2 border-amber-300 dark:border-amber-700 flex items-center justify-center text-2xl shrink-0 group-hover:scale-110 transition-transform z-10 relative">
+                  <div className="w-12 h-12 rounded-[var(--radius-md)] bg-[rgba(153,27,27,0.06)] dark:bg-[#222]/30 border-2 border-amber-300 dark:border-amber-700 flex items-center justify-center text-2xl shrink-0 group-hover:scale-110 transition-transform z-10 relative">
                     {m.icon}
                   </div>
-                  <div className={`flex-1 bg-white dark:bg-stone-800 rounded-xl border dark:border-stone-700 p-5 hover:shadow-md transition ${i === MILESTONES.length - 1 ? "ring-2 ring-amber-400 dark:ring-amber-600" : ""}`}>
+                  <div className={`flex-1 bg-white dark:bg-[#1a1a1a] rounded-[var(--radius-md)] border dark:border-[#333] p-5 hover:shadow-md transition ${i === MILESTONES.length - 1 ? "ring-2 ring-red-400 dark:ring-red-600" : ""}`}>
                     <div className="flex items-center gap-3 mb-1">
-                      <span className="font-bold text-amber-700 dark:text-amber-400">{m.ver}</span>
-                      <span className="text-xs bg-stone-100 dark:bg-stone-700 text-stone-500 dark:text-stone-400 px-2 py-0.5 rounded-full">{m.date}</span>
-                      {i === MILESTONES.length - 1 && <span className="text-xs bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 px-2 py-0.5 rounded-full font-medium">目前版本</span>}
+                      <span className="font-bold text-[var(--red)] dark:text-[var(--yellow)]">{m.ver}</span>
+                      <span className="text-xs bg-gray-100 dark:bg-[#222] text-[var(--text-soft)] dark:text-[var(--text-light)] px-2 py-0.5 rounded-full">{m.date}</span>
+                      {i === MILESTONES.length - 1 && <span className="text-xs bg-[rgba(153,27,27,0.06)] dark:bg-[#222]/30 text-[var(--red)] dark:text-[var(--yellow)] px-2 py-0.5 rounded-full font-medium">目前版本</span>}
                     </div>
-                    <p className="text-sm text-stone-600 dark:text-stone-300">{m.desc}</p>
+                    <p className="text-sm text-[var(--text-soft)] dark:text-[var(--text-light)]">{m.desc}</p>
                   </div>
                 </div>
               ))}
@@ -198,20 +198,20 @@ export default function AboutPage() {
         </section>
 
         {/* Contact */}
-        <section className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-2xl p-8 border border-amber-200 dark:border-amber-800 text-center">
-          <h2 className="text-2xl font-bold text-amber-800 dark:text-amber-300 mb-3">💬 聯繫我們</h2>
-          <p className="text-stone-600 dark:text-stone-300 mb-4 max-w-lg mx-auto">
+        <section className="bg-gradient-to-r from-white to-white dark:from-[#222]/20 dark:to-[#222]/20 rounded-[var(--radius-md)] p-8 border border-amber-200 dark:border-amber-800 text-center">
+          <h2 className="text-2xl font-bold text-[var(--red)] dark:text-[var(--yellow)] mb-3">💬 聯繫我們</h2>
+          <p className="text-[var(--text-soft)] dark:text-[var(--text-light)] mb-4 max-w-lg mx-auto">
             如果您有任何建議、資料更正或合作意向，歡迎與我們聯繫。
             每一份回饋都是推動平台進步的動力。
           </p>
-          <a href="mailto:pinuyumayan@example.com" className="inline-block bg-amber-700 text-white px-6 py-3 rounded-xl font-medium hover:bg-amber-800 transition">
+          <a href="mailto:pinuyumayan@example.com" className="inline-block bg-[var(--red)] text-white px-6 py-3 rounded-[var(--radius-md)] font-medium hover:bg-[var(--red)] transition">
             📧 pinuyumayan@example.com
           </a>
           <div className="flex justify-center gap-4 mt-6">
-            <Link href="/" className="text-amber-700 dark:text-amber-400 hover:underline text-sm">🏠 首頁</Link>
-            <Link href="/tribes" className="text-amber-700 dark:text-amber-400 hover:underline text-sm">🏘️ 部落</Link>
-            <Link href="/language" className="text-amber-700 dark:text-amber-400 hover:underline text-sm">📖 族語</Link>
-            <Link href="/community" className="text-amber-700 dark:text-amber-400 hover:underline text-sm">💬 社群</Link>
+            <Link href="/" className="text-[var(--red)] dark:text-[var(--yellow)] hover:underline text-sm">🏠 首頁</Link>
+            <Link href="/tribes" className="text-[var(--red)] dark:text-[var(--yellow)] hover:underline text-sm">🏘️ 部落</Link>
+            <Link href="/language" className="text-[var(--red)] dark:text-[var(--yellow)] hover:underline text-sm">📖 族語</Link>
+            <Link href="/community" className="text-[var(--red)] dark:text-[var(--yellow)] hover:underline text-sm">💬 社群</Link>
           </div>
         </section>
       </div>

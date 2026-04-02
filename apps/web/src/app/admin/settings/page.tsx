@@ -66,12 +66,12 @@ export default function SettingsPage() {
     <div>
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold dark:text-stone-100">⚙️ 系統設定</h1>
-          <p className="text-sm text-stone-500 mt-1">全站功能與安全性設定</p>
+          <h1 className="text-2xl font-bold dark:text-gray-100">⚙️ 系統設定</h1>
+          <p className="text-sm text-[var(--text-soft)] mt-1">全站功能與安全性設定</p>
         </div>
         <div className="flex gap-2">
-          <button onClick={resetGroup} className="px-4 py-2 border rounded-lg dark:border-stone-600 dark:text-stone-300 text-sm hover:bg-stone-50 dark:hover:bg-stone-700">重設此分類</button>
-          <button onClick={saveAll} disabled={saving} className="bg-amber-700 text-white px-6 py-2 rounded-lg hover:bg-amber-800 transition text-sm disabled:opacity-50">
+          <button onClick={resetGroup} className="px-4 py-2 border rounded-lg dark:border-[#444] dark:text-[var(--text-light)] text-sm hover:bg-[var(--cream)] dark:hover:bg-[#333]">重設此分類</button>
+          <button onClick={saveAll} disabled={saving} className="bg-[var(--red)] text-white px-6 py-2 rounded-lg hover:bg-[var(--red)] transition text-sm disabled:opacity-50">
             {saving ? "儲存中..." : "儲存設定"}
           </button>
         </div>
@@ -80,12 +80,12 @@ export default function SettingsPage() {
       <div className="grid md:grid-cols-4 gap-6">
         {/* Sidebar */}
         <aside className="md:col-span-1">
-          <div className="bg-white dark:bg-stone-800 rounded-xl border dark:border-stone-700 p-3">
+          <div className="bg-white dark:bg-[#1a1a1a] rounded-[var(--radius-md)] border dark:border-[#333] p-3">
             {GROUPS.map(g => (
               <button key={g.id} onClick={() => setActiveGroup(g.id)}
-                className={`w-full text-left p-3 rounded-lg mb-1 transition text-sm ${activeGroup === g.id ? "bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-300 font-medium" : "text-stone-600 dark:text-stone-400 hover:bg-stone-50 dark:hover:bg-stone-700/50"}`}>
+                className={`w-full text-left p-3 rounded-lg mb-1 transition text-sm ${activeGroup === g.id ? "bg-[rgba(153,27,27,0.06)] dark:bg-[#222]/30 text-[var(--red)] dark:text-[var(--yellow)] font-medium" : "text-[var(--text-soft)] dark:text-[var(--text-light)] hover:bg-[var(--cream)] dark:hover:bg-[#333]/50"}`}>
                 <span className="mr-2">{g.icon}</span>{g.label}
-                <span className="text-xs text-stone-400 ml-2">({settings.filter(s => s.group === g.id).length})</span>
+                <span className="text-xs text-[var(--text-light)] ml-2">({settings.filter(s => s.group === g.id).length})</span>
               </button>
             ))}
           </div>
@@ -94,34 +94,34 @@ export default function SettingsPage() {
         {/* Settings Form */}
         <div className="md:col-span-3 space-y-4">
           {groupSettings.map(s => (
-            <div key={s.key} className="bg-white dark:bg-stone-800 rounded-xl border dark:border-stone-700 p-5">
+            <div key={s.key} className="bg-white dark:bg-[#1a1a1a] rounded-[var(--radius-md)] border dark:border-[#333] p-5">
               <div className="flex items-start justify-between">
                 <div className="flex-1 mr-4">
-                  <label className="font-medium dark:text-stone-100">{s.label}</label>
-                  <p className="text-sm text-stone-500 dark:text-stone-400 mt-0.5">{s.description}</p>
-                  <code className="text-xs text-stone-400 font-mono mt-1 block">{s.key}</code>
+                  <label className="font-medium dark:text-gray-100">{s.label}</label>
+                  <p className="text-sm text-[var(--text-soft)] dark:text-[var(--text-light)] mt-0.5">{s.description}</p>
+                  <code className="text-xs text-[var(--text-light)] font-mono mt-1 block">{s.key}</code>
                 </div>
 
                 {s.type === "toggle" && (
                   <button onClick={() => updateSetting(s.key, !s.value)}
-                    className={`relative inline-flex h-7 w-12 shrink-0 cursor-pointer rounded-full transition-colors ${s.value ? "bg-green-500" : "bg-stone-300 dark:bg-stone-600"}`}>
+                    className={`relative inline-flex h-7 w-12 shrink-0 cursor-pointer rounded-full transition-colors ${s.value ? "bg-green-500" : "bg-gray-300 dark:bg-[#444]"}`}>
                     <span className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-lg ring-0 transition-transform mt-1 ${s.value ? "translate-x-6 ml-0.5" : "translate-x-0.5"}`} />
                   </button>
                 )}
 
                 {s.type === "text" && (
                   <input value={s.value} onChange={e => updateSetting(s.key, e.target.value)}
-                    className="w-64 px-3 py-2 border rounded-lg dark:border-stone-600 dark:bg-stone-700 dark:text-stone-100 text-sm" />
+                    className="w-64 px-3 py-2 border rounded-lg dark:border-[#444] dark:bg-[#222] dark:text-gray-100 text-sm" />
                 )}
 
                 {s.type === "number" && (
                   <input type="number" value={s.value} onChange={e => updateSetting(s.key, parseInt(e.target.value) || 0)}
-                    className="w-24 px-3 py-2 border rounded-lg dark:border-stone-600 dark:bg-stone-700 dark:text-stone-100 text-sm text-center" />
+                    className="w-24 px-3 py-2 border rounded-lg dark:border-[#444] dark:bg-[#222] dark:text-gray-100 text-sm text-center" />
                 )}
 
                 {s.type === "select" && (
                   <select value={s.value} onChange={e => updateSetting(s.key, e.target.value)}
-                    className="w-40 px-3 py-2 border rounded-lg dark:border-stone-600 dark:bg-stone-700 dark:text-stone-100 text-sm">
+                    className="w-40 px-3 py-2 border rounded-lg dark:border-[#444] dark:bg-[#222] dark:text-gray-100 text-sm">
                     {s.options?.map(o => <option key={o} value={o}>{o}</option>)}
                   </select>
                 )}
